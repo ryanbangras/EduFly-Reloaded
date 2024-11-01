@@ -20,8 +20,8 @@
     </style>
 
 </head>
+
 <body>
-    
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
             <img src="../Images/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
@@ -86,13 +86,37 @@
             </tbody>
         </table>
         <p v-if="students.length === 0 && selectedClass">No students available for {{ selectedClass }}</p>
+
+        <!-- Button to show add student form -->
+        <button class="btn btn-primary" @click="showAddStudentForm = true" v-if="selectedClass">Add Student</button>
+
+        <!-- Add Student Form -->
+        <div v-if="showAddStudentForm" class="mt-4">
+            <h3>Add New Student</h3>
+            <form @submit.prevent="addStudent">
+                <div class="mb-3">
+                    <label for="studentId" class="form-label">Student ID</label>
+                    <input type="text" v-model="newStudent.studentId" id="studentId" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" v-model="newStudent.Fname" id="firstName" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" v-model="newStudent.Lname" id="lastName" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-success">Add Student</button>
+                <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
+            </form>
+        </div>
     </div>
-    
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, collection, getDocs, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-    
+
         const firebaseConfig = {
             apiKey: "AIzaSyBkep4kR1KlxAHUQM8-dJo-b0cOjUA1tCc",
             authDomain: "edufly-61bfe.firebaseapp.com",
@@ -102,28 +126,29 @@
             appId: "1:467191151194:web:cac30fd47ebff5a7233663",
             measurementId: "G-NQN411353D"
         };
-    
+
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
-    
+
         const vueApp = Vue.createApp({
             data() {
                 return {
-                    classes: [],                // List of classes Mr. Ryan Ng teaches
-                    selectedClass: "",          // Currently selected class
-                    students: [],          // Announcements for the selected class       
-                    // showAddAnnouncementForm: false, // Controls display of "Add Announcement" form
-                    // newAnnouncement: {          // Data for the new announcement
-                    //     title: "",
-                    //     message: ""
-                    // }
+                    classes: [],                
+                    selectedClass: "",          
+                    students: [],               
+                    showAddStudentForm: false, 
+                    newStudent: {              
+                        studentId: "",
+                        Fname: "",
+                        Lname: ""
+                    }
                 };
             },
             async created() {
                 const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
                 const docSnap = await getDoc(docRef);
-    
+
                 if (docSnap.exists()) {
                     this.classes = docSnap.data().Classes;
                 } else {
@@ -135,7 +160,7 @@
                     this.students = [];
                     if (this.selectedClass) {
                         const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'StudentList'));
-    
+
                         querySnapshot.forEach((doc) => {
                             this.students.push({
                                 studentId: doc.data().StudentID,
@@ -145,33 +170,26 @@
                         });
                     }
                 },
-               
-                // async addAnnouncement() {
-                //     if (this.newAnnouncement.title && this.newAnnouncement.message) {
-                //         const announcementRef = collection(db, 'Classes', this.selectedClass, 'AnnouncementList');
-                //         await addDoc(announcementRef, {
-                //             title: this.newAnnouncement.title,
-                //             message: this.newAnnouncement.message
-                //         });
-                        
-                //         // Refresh the announcements list and reset the form
-                //         this.fetchAnnouncements();
-                //         this.cancelAddAnnouncement();
-                //     }
-                // },
-                // cancelAddAnnouncement() {
-                //     this.showAddAnnouncementForm = false;
-                //     this.newAnnouncement = { title: "", message: "" }; // Reset new announcement data
-                // }
+                async addStudent() {
+                    if (this.newStudent.studentId && this.newStudent.Fname && this.newStudent.Lname) {
+                        const studentRef = collection(db, 'Classes', this.selectedClass, 'StudentList');
+                        await addDoc(studentRef, {
+                            StudentID: this.newStudent.studentId,
+                            FName: this.newStudent.Fname,
+                            LName: this.newStudent.Lname
+                        });
+                        this.fetchStudents(); 
+                        this.cancelAddStudent(); 
+                    }
+                },
+                cancelAddStudent() {
+                    this.showAddStudentForm = false;
+                    this.newStudent = { studentId: "", Fname: "", Lname: "" }; 
+                }
             }
         });
-    
+
         vueApp.mount('#app');
     </script>
- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
 </body>
 </html>
