@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube example on getting Firebase Data as List Items</title>
+
+</head>
+<body>
+    <div id="StudentDiv"></div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+       
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDD13Rr_usNmSfnuKw4hfnBlIc_ysOP1uA",
+    authDomain: "edufly-announcement.firebaseapp.com",
+    databaseURL: "https://edufly-announcement-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "edufly-announcement",
+    storageBucket: "edufly-announcement.appspot.com",
+    messagingSenderId: "160973503753",
+    appId: "1:160973503753:web:62a0e0e09250151b7027d8",
+    measurementId: "G-J7967WL9L5"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+
+        import {getDatabase, ref, get, child} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"
+
+        const db = getDatabase();
+
+        let StudentDiv = document.getElementById("StudentDiv")
+        let stdno = 1;
+
+        function GetStudents(){
+          const dbref = ref(db);
+          // this stores the reference function
+
+          // our list is at the root of the database
+          // inside the then() we need a function which will get the students list 
+          // students contain the array of all students 
+          // std will contain the information of one student 
+          get(child(dbref, 'ListOfStudents')).then((students) => {
+            students.forEach(std =>{
+              AddStudentAsListItem(std)
+            } )
+          })
+        }
+
+        function AddStudentAsListItem(std){
+          let key = std.key;
+          let value = std.val();
+
+          let name = document.createElement('li');
+          let section = document.createElement('li');
+          let grade = document.createElement('li');
+          let seatno = document.createElement('li');
+          let heading = document.createElement('h3');
+
+          name.innerHTML = 'Name: ' + value.name;
+          section.innerHTML = "Section: " + value.section;
+          grade.innerHTML = "Grade: " + value.grade;
+          seatno.innerHTML = "SeatNo: "+ key;
+          heading.innerHTML = "Student #" + stdno
+
+          let ul = document.createElement('ul');
+          ul.append(heading, name, grade, section, seatno);
+          StudentDiv.append(ul);
+          stdno++
+          
+        }
+
+        window.addEventListener('load', GetStudents)
+      </script>
+</body>
+
+</html>
