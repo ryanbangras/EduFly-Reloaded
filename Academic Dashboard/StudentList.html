@@ -90,106 +90,112 @@
         <!-- Button to show add student form -->
         <button class="btn btn-primary" @click="showAddStudentForm = true" v-if="selectedClass">Add Student</button>
 
-        <!-- Add Student Form -->
-        <div v-if="showAddStudentForm" class="mt-4">
-            <h3>Add New Student</h3>
-            <form @submit.prevent="addStudent">
-                <div class="mb-3">
-                    <label for="studentId" class="form-label">Student ID</label>
-                    <input type="text" v-model="newStudent.studentId" id="studentId" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="firstName" class="form-label">First Name</label>
-                    <input type="text" v-model="newStudent.Fname" id="firstName" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="text" v-model="newStudent.Lname" id="lastName" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-success">Add Student</button>
-                <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
-            </form>
+       <!-- Add Student Form -->
+<div v-if="showAddStudentForm" class="mt-4">
+    <h3>Add New Student</h3>
+    <form @submit.prevent="addStudent">
+        <div class="mb-3">
+            <label for="studentId" class="form-label">Student ID</label>
+            <input type="text" v-model="newStudent.studentId" id="studentId" class="form-control" required>
         </div>
-    </div>
+        <div class="mb-3">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" v-model="newStudent.Fname" id="firstName" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" v-model="newStudent.Lname" id="lastName" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Add Student</button>
+        <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
+    </form>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkep4kR1KlxAHUQM8-dJo-b0cOjUA1tCc",
-            authDomain: "edufly-61bfe.firebaseapp.com",
-            projectId: "edufly-61bfe",
-            storageBucket: "edufly-61bfe.appspot.com",
-            messagingSenderId: "467191151194",
-            appId: "1:467191151194:web:cac30fd47ebff5a7233663",
-            measurementId: "G-NQN411353D"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyBkep4kR1KlxAHUQM8-dJo-b0cOjUA1tCc",
+        authDomain: "edufly-61bfe.firebaseapp.com",
+        projectId: "edufly-61bfe",
+        storageBucket: "edufly-61bfe.appspot.com",
+        messagingSenderId: "467191151194",
+        appId: "1:467191151194:web:cac30fd47ebff5a7233663",
+        measurementId: "G-NQN411353D"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
 
-        const vueApp = Vue.createApp({
-            data() {
-                return {
-                    classes: [],                
-                    selectedClass: "",          
-                    students: [],               
-                    showAddStudentForm: false, 
-                    newStudent: {              
-                        studentId: "",
-                        Fname: "",
-                        Lname: ""
-                    }
-                };
-            },
-            async created() {
-                const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    this.classes = docSnap.data().Classes;
-                } else {
-                    console.log("No such document!");
+    const vueApp = Vue.createApp({
+        data() {
+            return {
+                classes: [],                
+                selectedClass: "",          
+                students: [],               
+                showAddStudentForm: false, 
+                newStudent: {              
+                    studentId: "",
+                    Fname: "",
+                    Lname: ""
                 }
-            },
-            methods: {
-                async fetchStudents() {
-                    this.students = [];
-                    if (this.selectedClass) {
-                        const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'StudentList'));
+            };
+        },
+        async created() {
+            const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
+            const docSnap = await getDoc(docRef);
 
-                        querySnapshot.forEach((doc) => {
-                            this.students.push({
-                                studentId: doc.data().StudentID,
-                                Fname: doc.data().FName,
-                                Lname: doc.data().LName,
-                            });
-                        });
-                    }
-                },
-                async addStudent() {
-                    if (this.newStudent.studentId && this.newStudent.Fname && this.newStudent.Lname) {
-                        const studentRef = collection(db, 'Classes', this.selectedClass, 'StudentList');
-                        await addDoc(studentRef, {
-                            StudentID: this.newStudent.studentId,
-                            FName: this.newStudent.Fname,
-                            LName: this.newStudent.Lname
-                        });
-                        this.fetchStudents(); 
-                        this.cancelAddStudent(); 
-                    }
-                },
-                cancelAddStudent() {
-                    this.showAddStudentForm = false;
-                    this.newStudent = { studentId: "", Fname: "", Lname: "" }; 
-                }
+            if (docSnap.exists()) {
+                this.classes = docSnap.data().Classes;
+            } else {
+                console.log("No such document!");
             }
-        });
+        },
+        methods: {
+            async fetchStudents() {
+                this.students = [];
+                if (this.selectedClass) {
+                    const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'StudentList'));
 
-        vueApp.mount('#app');
-    </script>
+                    querySnapshot.forEach((doc) => {
+                        this.students.push({
+                            studentId: doc.data().StudentID,
+                            Fname: doc.data().FName,
+                            Lname: doc.data().LName,
+                        });
+                    });
+                }
+            },
+            async addStudent() {
+                // Log the student data to check for undefined values
+                console.log("Adding student:", this.newStudent);
+
+                // Check that all fields are defined before calling setDoc
+                if (this.newStudent.studentId && this.newStudent.Fname && this.newStudent.Lname) {
+                    const studentRef = doc(db, 'Classes', this.selectedClass, 'StudentList', this.newStudent.studentId); // Use Student ID as document ID
+                    await setDoc(studentRef, {
+                        StudentID: this.newStudent.studentId,
+                        FName: this.newStudent.Fname,
+                        LName: this.newStudent.Lname
+                    });
+                    this.fetchStudents(); 
+                    this.cancelAddStudent(); 
+                } else {
+                    console.error("Some student fields are missing!");
+                }
+            },
+            cancelAddStudent() {
+                this.showAddStudentForm = false;
+                this.newStudent = { studentId: "", Fname: "", Lname: "" }; 
+            }
+        }
+    });
+
+    vueApp.mount('#app');
+</script>
+
 </body>
 </html>
