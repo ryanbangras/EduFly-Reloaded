@@ -1,0 +1,25 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #5B9279;
+    padding: 10px 20px;
+    position:relative;
+}
+
+.navbar-left, .navbar-right {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color:white;
+    padding: 3px;
+
+}
+
+#profile{
+    width:80px;
+    height:50px;
+    position:absolute;
+    top:3px;
+    right: 110px;
+}
