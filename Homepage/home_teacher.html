@@ -49,30 +49,61 @@
         </div>
     </div>
 
-    <div id="app">
-        <label for="classSelect">Select Class:</label>
-        <select v-model="selectedClass" @change="fetchAnnouncements" id="classSelect">
+    <div id="app" class="container mt-4">
+        <label for="classSelect" class="form-label">Select Class:</label>
+        <select v-model="selectedClass" @change="fetchAnnouncements" id="classSelect" class="form-select mb-4">
             <option v-for="classItem in classes" :key="classItem" :value="classItem">
                 {{ classItem }}
             </option>
         </select>
     
-        <ul v-if="announcements.length > 0">
-            <li v-for="announcement in announcements" :key="announcement.id">
-                <h4>{{ announcement.title }}</h4>
-                <p>{{ announcement.message }}</p>
-            </li>
-        </ul>
+        <table v-if="announcements.length > 0" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(announcement, index) in announcements" :key="announcement.id">
+                    <td v-if="!announcement.isEditing">{{ announcement.title }}</td>
+                    <td v-if="announcement.isEditing">
+                        <input v-model="announcement.editTitle" class="form-control" placeholder="Edit title">
+                    </td>
+    
+                    <td v-if="!announcement.isEditing">{{ announcement.message }}</td>
+                    <td v-if="announcement.isEditing">
+                        <input v-model="announcement.editMessage" class="form-control" placeholder="Edit message">
+                    </td>
+    
+                    <td>
+                        <select v-if="!announcement.isEditing" v-model="selectedAction" @change="handleAction(selectedAction, announcement, index)" class="form-select">
+                            <option disabled value="">Select action</option>
+                            <option value="edit">Edit</option>
+                            <option value="delete">Delete</option>
+                        </select>
+                        
+                        <!-- Save/Cancel buttons during edit mode -->
+                        <div v-if="announcement.isEditing" class="mt-2">
+                            <button @click="saveEdit(announcement, index)" class="btn btn-success btn-sm">Save</button>
+                            <button @click="cancelEdit(announcement)" class="btn btn-secondary btn-sm">Cancel</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    
         <p v-else-if="selectedClass">No announcements available for {{ selectedClass }}</p>
     </div>
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
     
         const firebaseConfig = {
-            apiKey: "",
+            apiKey: "AIzaSyBkep4kR1KlxAHUQM8-dJo-b0cOjUA1tCc",
             authDomain: "edufly-61bfe.firebaseapp.com",
             projectId: "edufly-61bfe",
             storageBucket: "edufly-61bfe.appspot.com",
@@ -88,49 +119,72 @@
         const vueApp = Vue.createApp({
             data() {
                 return {
-                    classes: [],          // List of classes Mr. Ryan Ng teaches
-                    selectedClass: "",    // Currently selected class
-                    announcements: []     // Announcements for the selected class
+                    classes: [],           // List of classes Mr. Ryan Ng teaches
+                    selectedClass: "",     // Currently selected class
+                    announcements: [],     // Announcements for the selected class
+                    selectedAction: ""     // Action selected in the dropdown (edit or delete)
                 };
             },
             async created() {
-                // Fetch Mr. Ryan Ng's document to get the classes he teaches
                 const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
                 const docSnap = await getDoc(docRef);
     
                 if (docSnap.exists()) {
-                    this.classes = docSnap.data().Classes; // Store the classes in an array
+                    this.classes = docSnap.data().Classes;
                 } else {
                     console.log("No such document!");
                 }
             },
             methods: {
                 async fetchAnnouncements() {
-                    // Clear previous announcements
                     this.announcements = [];
-    
                     if (this.selectedClass) {
-                        // Fetch announcements for the selected class
                         const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AnnouncementList'));
     
                         querySnapshot.forEach((doc) => {
-                            // Push each announcement into the announcements array
                             this.announcements.push({
                                 id: doc.id,
                                 title: doc.data().title,
-                                message: doc.data().message
+                                message: doc.data().message,
+                                isEditing: false,
+                                editTitle: doc.data().title,
+                                editMessage: doc.data().message
                             });
                         });
                     }
+                },
+                handleAction(action, announcement, index) {
+                    if (action === "edit") {
+                        announcement.isEditing = true;
+                    } else if (action === "delete") {
+                        this.deleteAnnouncement(announcement.id, index);
+                    }
+                    this.selectedAction = ""; // Reset action after handling
+                },
+                async saveEdit(announcement, index) {
+                    const docRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', announcement.id);
+    
+                    await updateDoc(docRef, {
+                        title: announcement.editTitle,
+                        message: announcement.editMessage
+                    });
+    
+                    this.announcements[index].title = announcement.editTitle;
+                    this.announcements[index].message = announcement.editMessage;
+                    this.announcements[index].isEditing = false; // Exit edit mode
+                },
+                cancelEdit(announcement) {
+                    announcement.isEditing = false; // Cancel edit mode
+                },
+                async deleteAnnouncement(id, index) {
+                    const docRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id);
+                    await deleteDoc(docRef);
+                    this.announcements.splice(index, 1); // Remove from local array
                 }
             }
         });
     
         vueApp.mount('#app');
-    </script>
-    
-
-        
 
 
 
