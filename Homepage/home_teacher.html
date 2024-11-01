@@ -50,20 +50,29 @@
     </div>
 
     <div id="app">
-        <ul>
-            <li v-for="(classItem, index) in classes" :key="index">
-                {{ classItem }} 
+        <label for="classSelect">Select Class:</label>
+        <select v-model="selectedClass" @change="fetchAnnouncements" id="classSelect">
+            <option v-for="classItem in classes" :key="classItem" :value="classItem">
+                {{ classItem }}
+            </option>
+        </select>
+    
+        <ul v-if="announcements.length > 0">
+            <li v-for="announcement in announcements" :key="announcement.id">
+                <h4>{{ announcement.title }}</h4>
+                <p>{{ announcement.message }}</p>
             </li>
         </ul>
+        <p v-else-if="selectedClass">No announcements available for {{ selectedClass }}</p>
     </div>
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
     
         const firebaseConfig = {
-            apiKey: "AIzaSyBkep4kR1KlxAHUQM8-dJo-b0cOjUA1tCc",
+            apiKey: "",
             authDomain: "edufly-61bfe.firebaseapp.com",
             projectId: "edufly-61bfe",
             storageBucket: "edufly-61bfe.appspot.com",
@@ -79,18 +88,40 @@
         const vueApp = Vue.createApp({
             data() {
                 return {
-                    classes: [] // Store the classes here
+                    classes: [],          // List of classes Mr. Ryan Ng teaches
+                    selectedClass: "",    // Currently selected class
+                    announcements: []     // Announcements for the selected class
                 };
             },
             async created() {
-                // Fetch Mr. Ryan Ng's document from Firestore
+                // Fetch Mr. Ryan Ng's document to get the classes he teaches
                 const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
                 const docSnap = await getDoc(docRef);
     
                 if (docSnap.exists()) {
-                    this.classes = docSnap.data().Classes; // Access the 'Classes' field
+                    this.classes = docSnap.data().Classes; // Store the classes in an array
                 } else {
                     console.log("No such document!");
+                }
+            },
+            methods: {
+                async fetchAnnouncements() {
+                    // Clear previous announcements
+                    this.announcements = [];
+    
+                    if (this.selectedClass) {
+                        // Fetch announcements for the selected class
+                        const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AnnouncementList'));
+    
+                        querySnapshot.forEach((doc) => {
+                            // Push each announcement into the announcements array
+                            this.announcements.push({
+                                id: doc.id,
+                                title: doc.data().title,
+                                message: doc.data().message
+                            });
+                        });
+                    }
                 }
             }
         });
