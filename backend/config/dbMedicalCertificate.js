@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config({ path: './secret.env' });
+
+var MEDICAL_CERTIFICATE_DB = process.env.MONGOURI_MEDICAL_CERTIFICATE_DB
 
 const connectMedicalCertificateDB = () => {
     return new Promise((resolve, reject) => {
-        const connection = mongoose.createConnection(
-            'mongodb+srv://username:leandro123_1010xX@cluster0.jb9a0.mongodb.net/medical_certificate_db?retryWrites=true&w=majority'
-        );
+        const connection = mongoose.createConnection(MEDICAL_CERTIFICATE_DB);
 
         connection.once('open', () => {
             console.log('Connected to Medical Certificate Database on MongoDB Atlas');

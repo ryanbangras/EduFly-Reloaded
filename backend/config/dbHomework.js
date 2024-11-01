@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config({ path: './secret.env' });
+
+var HOMEWORK_DB = process.env.MONGOURI_HOMEWORK_DB
 
 const connectHomeworkDB = () => {
     return new Promise((resolve, reject) => {
-        const connection = mongoose.createConnection(
-            'mongodb+srv://username:leandro123_1010xX@cluster0.jb9a0.mongodb.net/homework_db?retryWrites=true&w=majority'
-        );
+        const connection = mongoose.createConnection(HOMEWORK_DB);
 
         connection.once('open', () => {
             console.log('Connected to Homework Database on MongoDB Atlas');
