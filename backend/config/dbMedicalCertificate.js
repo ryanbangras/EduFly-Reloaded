@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config({ path: './secret.env' });
+require('dotenv').config({ path: '../secret.env' });
 
 var MEDICAL_CERTIFICATE_DB = process.env.MONGOURI_MEDICAL_CERTIFICATE_DB
 

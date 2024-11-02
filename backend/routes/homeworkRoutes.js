@@ -32,6 +32,7 @@ module.exports = function (homeworkConnection) {
             });
             await newHomework.save();
             res.status(200).json({ message: 'Homework uploaded successfully' });
+            console.log("upload sucessful")
         } catch (error) {
             res.status(500).json({ message: 'Error uploading homework', error });
         }

@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config({ path: './secret.env' });
+require('dotenv').config({ path: '../secret.env' });
 
-var HOMEWORK_DB = process.env.MONGOURI_HOMEWORK_DB
+var HOMEWORK_DB = process.env.MONGOURI_HOMEWORK_DB;
 
 const connectHomeworkDB = () => {
     return new Promise((resolve, reject) => {
