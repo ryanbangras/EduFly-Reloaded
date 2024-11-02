@@ -41,7 +41,7 @@
         </div>
     </nav>
   <!-- Main Container -->
-<div id="app" class="container mt-4">
+  <div id="app" class="container mt-4">
     <label for="classSelect" class="form-label">Select Class:</label>
     <select v-model="selectedClass" @change="fetchStudents" id="classSelect" class="form-select mb-4">
         <option value="" disabled>Select a class</option>
@@ -115,17 +115,18 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
-    
+
     const vueApp = Vue.createApp({
         data() {
             return {
                 classes: [],
                 selectedClass: "",
                 students: [],
-                attendanceDate: new Date().toISOString().substr(0, 10), // Set default date to today
+                attendanceDate: new Date().toISOString().substr(0, 10), // Default to today
             };
         },
         async created() {
+            // Fetch classes for the teacher
             const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
             const docSnap = await getDoc(docRef);
 
@@ -133,6 +134,14 @@
                 this.classes = docSnap.data().Classes;
             } else {
                 console.log("No such document!");
+            }
+
+            // Get the selected class from the URL if it exists
+            const urlParams = new URLSearchParams(window.location.search);
+            const classFromUrl = urlParams.get('class');
+            if (classFromUrl) {
+                this.selectedClass = classFromUrl;
+                await this.fetchStudents();
             }
         },
         methods: {
@@ -149,6 +158,28 @@
                             attendanceStatus: null // Initialize attendance status
                         });
                     });
+
+                    // Fetch attendance data for the selected date
+                    this.fetchAttendance();
+                }
+            },
+            async fetchAttendance() {
+                if (!this.attendanceDate) return;
+
+                try {
+                    const attendanceRef = doc(db, 'Classes', this.selectedClass, 'Attendance', this.attendanceDate);
+                    const attendanceSnap = await getDoc(attendanceRef);
+
+                    if (attendanceSnap.exists()) {
+                        const attendanceData = attendanceSnap.data();
+                        this.students.forEach(student => {
+                            if (attendanceData[student.studentId]) {
+                                student.attendanceStatus = attendanceData[student.studentId].status;
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error fetching attendance data:", error);
                 }
             },
             async markAttendance(student, status) {
@@ -179,10 +210,17 @@
                     console.error("Error marking attendance: ", error);
                 }
             }
+        },
+        watch: {
+            attendanceDate() {
+                this.fetchAttendance();
+            }
         }
     });
 
     vueApp.mount('#app');
+</script>
+
 </script>
 
 
