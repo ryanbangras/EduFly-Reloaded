@@ -14,9 +14,16 @@ document.getElementById('homeworkForm').addEventListener('submit', async (e) => 
             body: formData
         });
         
-        messageDiv.innerHTML = response.ok
-            ? '<div class="alert alert-success">Homework uploaded successfully</div>'
-            : '<div class="alert alert-danger">Failed to upload homework</div>';
+        // messageDiv.innerHTML = response.ok
+        //     ? '<div class="alert alert-success">Homework uploaded successfully</div>'
+        //     : '<div class="alert alert-danger">Failed to upload homework</div>';
+        if (response.ok) {
+            messageDiv.innerHTML = '<div class="alert alert-success">Homework uploaded successfully</div>';
+            document.getElementById('homeworkForm').reset(); // Resets form fields
+        } else {
+            messageDiv.innerHTML = '<div class="alert alert-danger">Failed to upload homework</div>';
+        }
+        
     } catch (error) {
         messageDiv.innerHTML = '<div class="alert alert-danger">Error uploading homework</div>';
     }

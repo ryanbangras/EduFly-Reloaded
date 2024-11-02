@@ -14,9 +14,16 @@ document.getElementById('medicalForm').addEventListener('submit', async (e) => {
             body: formData
         });
         
-        messageDiv.innerHTML = response.ok
-            ? '<div class="alert alert-success">Medical certificate uploaded successfully</div>'
-            : '<div class="alert alert-danger">Failed to upload medical certificate</div>';
+        // messageDiv.innerHTML = response.ok
+        //     ? '<div class="alert alert-success">Medical certificate uploaded successfully</div>'
+        //     : '<div class="alert alert-danger">Failed to upload medical certificate</div>';
+        if (response.ok) {
+            messageDiv.innerHTML = '<div class="alert alert-success">Medical certificate uploaded successfully</div>';
+            document.getElementById('medicalForm').reset(); // Resets form fields
+        } else {
+            messageDiv.innerHTML = '<div class="alert alert-danger">Failed to upload medical certificate</div>';
+        }
+        
     } catch (error) {
         messageDiv.innerHTML = '<div class="alert alert-danger">Error uploading medical certificate</div>';
     }
