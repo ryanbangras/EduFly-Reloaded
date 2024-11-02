@@ -127,8 +127,8 @@ http-server -p 5500
 
 4. Open your browser and navigate to:
 - Upload Homework: http://localhost:5500/upload_homework.html
-- Upload Medical Certificate: http://localhost:5500/upload_medical.html
 - View Homework: http://localhost:5500/view_homework.html
+- Upload Medical Certificate: http://localhost:5500/upload_medical.html
 - View Medical Certificates: http://localhost:5500/view_medical.html
 
 ## Usage
