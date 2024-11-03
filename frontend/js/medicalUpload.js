@@ -14,9 +14,6 @@ document.getElementById('medicalForm').addEventListener('submit', async (e) => {
             body: formData
         });
         
-        // messageDiv.innerHTML = response.ok
-        //     ? '<div class="alert alert-success">Medical certificate uploaded successfully</div>'
-        //     : '<div class="alert alert-danger">Failed to upload medical certificate</div>';
         if (response.ok) {
             messageDiv.innerHTML = '<div class="alert alert-success">Medical certificate uploaded successfully</div>';
             document.getElementById('medicalForm').reset(); // Resets form fields
