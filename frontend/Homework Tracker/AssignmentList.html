@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module" src="../update.js"></script>
 
     <title>EduFly Portal</title>
     <style>
@@ -26,7 +27,7 @@
             <img src="../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
             EduFly
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -36,14 +37,16 @@
                 <li class="nav-item"><a class="nav-link" href="#">&#128467;&#65039; Timetable</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">&#127891; Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">&#128226; Announcement</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#128100; {{name}}'s Profile</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
+                    <!-- Target for dynamic name -->
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="#">&#128682; Log Out</a></li>
             </ul>
         </div>
     </nav>
-
     <!-- Main container -->
     <div id="app" class="container mt-4">
         <label for="classSelect" class="form-label">Select Class:</label>
@@ -124,12 +127,13 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, collection, getDocs, setDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
-            
+            apiKey: "",
             authDomain: "edufly-61bfe.firebaseapp.com",
             projectId: "edufly-61bfe",
             storageBucket: "edufly-61bfe.appspot.com",
@@ -138,9 +142,11 @@
             measurementId: "G-NQN411353D"
         };
 
-        const app = initializeApp(firebaseConfig);
+        // Check if Firebase has already been initialized
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         const vueApp = Vue.createApp({
             data() {
@@ -155,14 +161,21 @@
                 };
             },
             async created() {
-                const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
-                const docSnap = await getDoc(docRef);
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        const userEmail = user.email; // Get the logged-in user's email
+                        const docRef = doc(db, 'Teachers', userEmail); // Use email as document ID
+                        const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    this.classes = docSnap.data().Classes;
-                } else {
-                    console.log("No such document!");
-                }
+                        if (docSnap.exists()) {
+                            this.classes = docSnap.data().Classes;
+                        } else {
+                            console.log("No such document!");
+                        }
+                    } else {
+                        console.log("User not logged in.");
+                    }
+                });
             },
             methods: {
                 async fetchAssignments() {

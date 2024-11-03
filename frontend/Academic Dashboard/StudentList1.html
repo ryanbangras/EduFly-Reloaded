@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module" src="../update.js"></script>
 
     <title>EduFly Portal</title>
     <style>
@@ -36,7 +37,10 @@
                 <li class="nav-item"><a class="nav-link" href="#">&#128467;&#65039; Timetable</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">&#127891; Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">&#128226; Announcement</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#128100; {{name}}'s Profile</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
+                    <!-- Target for dynamic name -->
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="#">&#128682; Log Out</a></li>
@@ -44,186 +48,198 @@
         </div>
     </nav>
 
- <!-- Main Container -->
-<div id="app" class="container mt-4">
-    <label for="classSelect" class="form-label">Select Class:</label>
-    <select v-model="selectedClass" @change="fetchStudents" id="classSelect" class="form-select mb-4">
-        <option value="" disabled>Select a class</option>
-        <option v-for="className in classes" :key="className" :value="className">
-            {{ className }}
-        </option>
-    </select>
+    <!-- Main Container -->
+    <div id="app" class="container mt-4">
+        <label for="classSelect" class="form-label">Select Class:</label>
+        <select v-model="selectedClass" @change="fetchStudents" id="classSelect" class="form-select mb-4">
+            <option value="" disabled>Select a class</option>
+            <option v-for="className in classes" :key="className" :value="className">
+                {{ className }}
+            </option>
+        </select>
 
-    <!-- Check Attendance and Check Assignment Grades Buttons -->
-    <div v-if="selectedClass" class="mb-3">
-        <button @click="goToAttendanceTracker" class="btn btn-primary">
-            Check Attendance
-        </button>
-        <button @click="goToGradesTracker" class="btn btn-secondary ms-2">
-            Check Assignment Grades
-        </button>
-    </div>
+        <!-- Check Attendance and Check Assignment Grades Buttons -->
+        <div v-if="selectedClass" class="mb-3">
+            <button @click="goToAttendanceTracker" class="btn btn-primary">
+                Check Attendance
+            </button>
+            <button @click="goToGradesTracker" class="btn btn-secondary ms-2">
+                Check Assignment Grades
+            </button>
+        </div>
 
-    <h2>Students in {{ selectedClass }}</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Student ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="student in students" :key="student.studentId" @click="viewStudentInfo(student)">
-                <td><a href="#" @click.prevent="viewStudentInfo(student)">{{ student.studentId }}</a></td>
-                <td>{{ student.Fname }}</td>
-                <td>{{ student.Lname }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <p v-if="students.length === 0 && selectedClass">No students available for {{ selectedClass }}</p>
+        <h2>Students in {{ selectedClass }}</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="student in students" :key="student.studentId" @click="viewStudentInfo(student)">
+                    <td><a href="#" @click.prevent="viewStudentInfo(student)">{{ student.studentId }}</a></td>
+                    <td>{{ student.Fname }}</td>
+                    <td>{{ student.Lname }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p v-if="students.length === 0 && selectedClass">No students available for {{ selectedClass }}</p>
 
-    <!-- Button to show add student form -->
-    <button class="btn btn-primary" @click="showAddStudentForm = true" v-if="selectedClass">Add Student</button>
+        <!-- Button to show add student form -->
+        <button class="btn btn-primary" @click="showAddStudentForm = true" v-if="selectedClass">Add Student</button>
 
-    <!-- Add Student Form -->
-    <div v-if="showAddStudentForm" class="mt-4">
-        <h3>Add New Student</h3>
-        <form @submit.prevent="addStudent">
-            <div class="mb-3">
-                <label for="studentId" class="form-label">Student ID</label>
-                <input type="text" v-model="newStudent.studentId" id="studentId" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="firstName" class="form-label">First Name</label>
-                <input type="text" v-model="newStudent.Fname" id="firstName" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="lastName" class="form-label">Last Name</label>
-                <input type="text" v-model="newStudent.Lname" id="lastName" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-success">Add Student</button>
-            <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
-        </form>
-    </div>
-
-    <!-- Student Info Modal -->
-    <div v-if="selectedStudent" class="modal fade show" tabindex="-1" aria-labelledby="studentInfoModalLabel"
-        style="display: block; background: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="studentInfoModalLabel">Student Information</h5>
-                    <button type="button" class="btn-close" @click="closeStudentInfoModal"
-                        aria-label="Close"></button>
+        <!-- Add Student Form -->
+        <div v-if="showAddStudentForm" class="mt-4">
+            <h3>Add New Student</h3>
+            <form @submit.prevent="addStudent">
+                <div class="mb-3">
+                    <label for="studentId" class="form-label">Student ID</label>
+                    <input type="text" v-model="newStudent.studentId" id="studentId" class="form-control" required>
                 </div>
-                <div class="modal-body">
-                    <p><strong>Student ID:</strong> {{ selectedStudent.studentId }}</p>
-                    <p><strong>First Name:</strong> {{ selectedStudent.Fname }}</p>
-                    <p><strong>Last Name:</strong> {{ selectedStudent.Lname }}</p>
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" v-model="newStudent.Fname" id="firstName" class="form-control" required>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @click="closeStudentInfoModal">Close</button>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" v-model="newStudent.Lname" id="lastName" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-success">Add Student</button>
+                <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Student Info Modal -->
+        <div v-if="selectedStudent" class="modal fade show" tabindex="-1" aria-labelledby="studentInfoModalLabel"
+            style="display: block; background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="studentInfoModalLabel">Student Information</h5>
+                        <button type="button" class="btn-close" @click="closeStudentInfoModal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Student ID:</strong> {{ selectedStudent.studentId }}</p>
+                        <p><strong>First Name:</strong> {{ selectedStudent.Fname }}</p>
+                        <p><strong>Last Name:</strong> {{ selectedStudent.Lname }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="closeStudentInfoModal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+    <script type="module">
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "",
-        authDomain: "edufly-61bfe.firebaseapp.com",
-        projectId: "edufly-61bfe",
-        storageBucket: "edufly-61bfe.appspot.com",
-        messagingSenderId: "467191151194",
-        appId: "1:467191151194:web:cac30fd47ebff5a7233663",
-        measurementId: "G-NQN411353D"
-    };
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "edufly-61bfe.firebaseapp.com",
+            projectId: "edufly-61bfe",
+            storageBucket: "edufly-61bfe.appspot.com",
+            messagingSenderId: "467191151194",
+            appId: "1:467191151194:web:cac30fd47ebff5a7233663",
+            measurementId: "G-NQN411353D"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const db = getFirestore(app);
+        // Check if Firebase has already been initialized
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-    const vueApp = Vue.createApp({
-        data() {
-            return {
-                classes: [],
-                selectedClass: "",
-                students: [],
-                showAddStudentForm: false,
-                newStudent: {
-                    studentId: "",
-                    Fname: "",
-                    Lname: ""
-                },
-                selectedStudent: null // set to null initially
-            };
-        },
-        async created() {
-            const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
-            const docSnap = await getDoc(docRef);
 
-            if (docSnap.exists()) {
-                this.classes = docSnap.data().Classes;
-            } else {
-                console.log("No such document!");
-            }
-        },
-        methods: {
-            async fetchStudents() {
-                this.students = [];
-                if (this.selectedClass) {
-                    const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'StudentList'));
+        const vueApp = Vue.createApp({
+            data() {
+                return {
+                    classes: [],
+                    selectedClass: "",
+                    students: [],
+                    showAddStudentForm: false,
+                    newStudent: {
+                        studentId: "",
+                        Fname: "",
+                        Lname: ""
+                    },
+                    selectedStudent: null // set to null initially
+                };
+            },
+            async created() {
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        const userEmail = user.email; // Get the logged-in user's email
+                        const docRef = doc(db, 'Teachers', userEmail); // Use email as document ID
+                        const docSnap = await getDoc(docRef);
 
-                    querySnapshot.forEach((doc) => {
-                        this.students.push({
-                            studentId: doc.data().StudentID,
-                            Fname: doc.data().FName,
-                            Lname: doc.data().LName,
+                        if (docSnap.exists()) {
+                            this.classes = docSnap.data().Classes;
+                        } else {
+                            console.log("No such document!");
+                        }
+                    } else {
+                        console.log("User not logged in.");
+                    }
+                });
+            },
+            methods: {
+                async fetchStudents() {
+                    this.students = [];
+                    if (this.selectedClass) {
+                        const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'StudentList'));
+
+                        querySnapshot.forEach((doc) => {
+                            this.students.push({
+                                studentId: doc.data().StudentID,
+                                Fname: doc.data().FName,
+                                Lname: doc.data().LName,
+                            });
                         });
-                    });
+                    }
+                },
+                async addStudent() {
+                    if (this.newStudent.studentId && this.newStudent.Fname && this.newStudent.Lname) {
+                        const studentRef = doc(db, 'Classes', this.selectedClass, 'StudentList', this.newStudent.studentId);
+                        await setDoc(studentRef, {
+                            StudentID: this.newStudent.studentId,
+                            FName: this.newStudent.Fname,
+                            LName: this.newStudent.lname
+                        });
+                        this.fetchStudents();
+                        this.cancelAddStudent();
+                    }
+                },
+                cancelAddStudent() {
+                    this.showAddStudentForm = false;
+                    this.newStudent = { studentId: "", Fname: "", Lname: "" };
+                },
+                viewStudentInfo(student) {
+                    this.selectedStudent = student;
+                },
+                closeStudentInfoModal() {
+                    this.selectedStudent = null; // Reset selectedStudent to close the modal
+                },
+                goToAttendanceTracker() {
+                    // Redirect to AttendanceTracker.html with the selected class as a query parameter
+                    window.location.href = `AttendanceTracker.html?class=${this.selectedClass}`;
+                },
+                goToGradesTracker() {
+                    // Redirect to GradesTracker.html with the selected class as a query parameter
+                    window.location.href = `GradesTracker.html?class=${this.selectedClass}`;
                 }
-            },
-            async addStudent() {
-                if (this.newStudent.studentId && this.newStudent.Fname && this.newStudent.Lname) {
-                    const studentRef = doc(db, 'Classes', this.selectedClass, 'StudentList', this.newStudent.studentId);
-                    await setDoc(studentRef, {
-                        StudentID: this.newStudent.studentId,
-                        FName: this.newStudent.Fname,
-                        LName: this.newStudent.Lname
-                    });
-                    this.fetchStudents();
-                    this.cancelAddStudent();
-                }
-            },
-            cancelAddStudent() {
-                this.showAddStudentForm = false;
-                this.newStudent = { studentId: "", Fname: "", Lname: "" };
-            },
-            viewStudentInfo(student) {
-                this.selectedStudent = student;
-            },
-            closeStudentInfoModal() {
-                this.selectedStudent = null; // Reset selectedStudent to close the modal
-            },
-            goToAttendanceTracker() {
-                // Redirect to AttendanceTracker.html with the selected class as a query parameter
-                window.location.href = `AttendanceTracker.html?class=${this.selectedClass}`;
-            },
-            goToGradesTracker() {
-                // Redirect to GradesTracker.html with the selected class as a query parameter
-                window.location.href = `GradesTracker.html?class=${this.selectedClass}`;
             }
-        }
-    });
+        });
 
-    vueApp.mount('#app');
-</script>
+        vueApp.mount('#app');
+    </script>
+
 
 </body>
 
