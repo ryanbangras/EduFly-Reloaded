@@ -35,7 +35,7 @@
             // Signed up 
             const user = userCredential.user;
             alert("Logging In")
-            window.location.href = "Homepage/home_teacher.html"
+            window.location.href = "../Homepage/home_teacher.html"
             // ...
         }).catch((error) => {
             const errorCode = error.code;
