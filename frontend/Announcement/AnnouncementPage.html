@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap JS bundle to be placed before the closing </body> tag -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -20,36 +20,28 @@
     </style>
 
 </head>
+
 <body>
-    
+
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
             <img src="../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
             EduFly
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">&#9997;&#65039; Homework</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">&#128467;&#65039; Timetable</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">&#127891; Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">&#128226; Announcement</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">&#128100; {{name}}'s Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">&#128682; Log Out</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="#">&#9997;&#65039; Homework</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">&#128467;&#65039; Timetable</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">&#127891; Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">&#128226; Announcement</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">&#128100; {{name}}'s Profile</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">&#128682; Log Out</a></li>
             </ul>
         </div>
     </nav>
@@ -66,10 +58,11 @@
                 {{ classItem }}
             </option>
         </select>
-    
+
         <!-- Add Announcement Button -->
-        <button v-if="selectedClass" @click="showAddAnnouncementForm = true" class="btn btn-primary mb-3">Add Announcement</button>
-    
+        <button v-if="selectedClass" @click="showAddAnnouncementForm = true" class="btn btn-primary mb-3">Add
+            Announcement</button>
+
         <!-- Form to Add New Announcement (Shows When Add Button is Clicked) -->
         <div v-if="showAddAnnouncementForm" class="card p-3 mb-3">
             <h5>Add New Announcement</h5>
@@ -79,12 +72,13 @@
             </div>
             <div class="mb-2">
                 <label for="newMessage" class="form-label">Message</label>
-                <textarea v-model="newAnnouncement.message" id="newMessage" class="form-control" placeholder="Enter message"></textarea>
+                <textarea v-model="newAnnouncement.message" id="newMessage" class="form-control"
+                    placeholder="Enter message"></textarea>
             </div>
             <button @click="addAnnouncement" class="btn btn-success btn-sm">Save</button>
             <button @click="cancelAddAnnouncement" class="btn btn-secondary btn-sm">Cancel</button>
         </div>
-    
+
         <!-- Announcements Table -->
         <table v-if="announcements.length > 0" class="table table-striped">
             <thead>
@@ -100,19 +94,20 @@
                     <td v-if="announcement.isEditing">
                         <input v-model="announcement.editTitle" class="form-control" placeholder="Edit title">
                     </td>
-    
+
                     <td v-if="!announcement.isEditing">{{ announcement.message }}</td>
                     <td v-if="announcement.isEditing">
                         <input v-model="announcement.editMessage" class="form-control" placeholder="Edit message">
                     </td>
-    
+
                     <td>
-                        <select v-if="!announcement.isEditing" v-model="selectedAction" @change="handleAction(selectedAction, announcement, index)" class="form-select">
+                        <select v-if="!announcement.isEditing" v-model="selectedAction"
+                            @change="handleAction(selectedAction, announcement, index)" class="form-select">
                             <option disabled value="">Select action</option>
                             <option value="edit">Edit</option>
                             <option value="delete">Delete</option>
                         </select>
-                        
+
                         <!-- Save/Cancel buttons during edit mode -->
                         <div v-if="announcement.isEditing" class="mt-2">
                             <button @click="saveEdit(announcement, index)" class="btn btn-success btn-sm">Save</button>
@@ -122,15 +117,15 @@
                 </tr>
             </tbody>
         </table>
-    
+
         <p v-else-if="selectedClass">No announcements available for {{ selectedClass }}</p>
     </div>
-    
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getFirestore, doc, getDoc, collection, getDocs, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-    
+
         const firebaseConfig = {
             apiKey: "",
             authDomain: "edufly-61bfe.firebaseapp.com",
@@ -140,11 +135,11 @@
             appId: "1:467191151194:web:cac30fd47ebff5a7233663",
             measurementId: "G-NQN411353D"
         };
-    
+
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
-    
+
         const vueApp = Vue.createApp({
             data() {
                 return {
@@ -162,7 +157,7 @@
             async created() {
                 const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
                 const docSnap = await getDoc(docRef);
-    
+
                 if (docSnap.exists()) {
                     this.classes = docSnap.data().Classes;
                 } else {
@@ -174,7 +169,7 @@
                     this.announcements = [];
                     if (this.selectedClass) {
                         const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AnnouncementList'));
-    
+
                         querySnapshot.forEach((doc) => {
                             this.announcements.push({
                                 id: doc.id,
@@ -197,12 +192,12 @@
                 },
                 async saveEdit(announcement, index) {
                     const docRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', announcement.id);
-    
+
                     await updateDoc(docRef, {
                         title: announcement.editTitle,
                         message: announcement.editMessage
                     });
-    
+
                     this.announcements[index].title = announcement.editTitle;
                     this.announcements[index].message = announcement.editMessage;
                     this.announcements[index].isEditing = false; // Exit edit mode
@@ -222,7 +217,7 @@
                             title: this.newAnnouncement.title,
                             message: this.newAnnouncement.message
                         });
-                        
+
                         // Refresh the announcements list and reset the form
                         this.fetchAnnouncements();
                         this.cancelAddAnnouncement();
@@ -234,13 +229,14 @@
                 }
             }
         });
-    
+
         vueApp.mount('#app');
     </script>
- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </body>
+
 </html>
