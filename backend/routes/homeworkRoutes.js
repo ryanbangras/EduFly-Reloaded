@@ -9,6 +9,7 @@ module.exports = function (homeworkConnection) {
 
     const homeworkSchema = new mongoose.Schema({
         studentId: { type: String, required: true },
+        sectionId: { type: String, required: true },
         homeworkFile: { type: Buffer, required: true },
         fileName: { type: String, required: true },
         uploadedAt: { type: Date, default: Date.now }
@@ -27,6 +28,7 @@ module.exports = function (homeworkConnection) {
         try {
             const newHomework = new Homework({
                 studentId: req.body.studentId,
+                sectionId: req.body.sectionId,
                 homeworkFile: req.file.buffer,
                 fileName: req.file.originalname,
             });
