@@ -44,15 +44,9 @@
         </div>
     </nav>
 
-<!-- Main Container -->
+    <!-- Main Container -->
 <div id="app" class="container mt-4">
-    <label for="classSelect" class="form-label">Select Class:</label>
-    <select v-model="selectedClass" @change="fetchAssignments" id="classSelect" class="form-select mb-4">
-        <option value="" disabled>Select a class</option>
-        <option v-for="className in classes" :key="className" :value="className">
-            {{ className }}
-        </option>
-    </select>
+    <h2>Scores for {{ selectedClass }} - {{ selectedAssignmentTitle }}</h2>
 
     <label for="assignmentSelect" class="form-label">Select Assignment:</label>
     <select v-model="selectedAssignment" @change="fetchScores" id="assignmentSelect" class="form-select mb-4">
@@ -61,8 +55,6 @@
             {{ assignment.title }}
         </option>
     </select>
-
-    <h2>Scores for {{ selectedClass }} - {{ selectedAssignmentTitle }}</h2>
 
     <table class="table table-striped">
         <thead>
@@ -96,7 +88,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyBkep4kR1KlxAHUQM8-dJo-b0cOjUA1tCc",
+        apiKey: "",
         authDomain: "edufly-61bfe.firebaseapp.com",
         projectId: "edufly-61bfe",
         storageBucket: "edufly-61bfe.appspot.com",
@@ -112,7 +104,6 @@
     const vueApp = Vue.createApp({
         data() {
             return {
-                classes: [],
                 assignments: [],
                 selectedClass: "",
                 selectedAssignment: "",
@@ -126,12 +117,15 @@
             }
         },
         async created() {
-            const docRef = doc(db, 'Teachers', 'Mr Ryan Ng');
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                this.classes = docSnap.data().Classes;
+            // Retrieve the selected class from the query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const classFromURL = urlParams.get('class');
+
+            if (classFromURL) {
+                this.selectedClass = classFromURL;
+                this.fetchAssignments(); // Automatically fetch assignments for this class
             } else {
-                console.log("No such document!");
+                console.log("No class specified in the URL.");
             }
         },
         methods: {
@@ -211,6 +205,7 @@
 
     vueApp.mount('#app');
 </script>
+
 
     
 
