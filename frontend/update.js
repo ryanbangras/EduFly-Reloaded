@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 
 // Firebase configuration
 const firebaseConfig = {
-   
+    
     authDomain: "edufly-61bfe.firebaseapp.com",
     projectId: "edufly-61bfe",
     storageBucket: "edufly-61bfe.firebasestorage.app",
@@ -75,5 +75,3 @@ if (logoutBtn) {
             });
     });
 }
-
-
