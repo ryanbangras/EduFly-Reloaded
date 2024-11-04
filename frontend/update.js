@@ -1,11 +1,11 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 // Firebase configuration
 const firebaseConfig = {
-
+   
     authDomain: "edufly-61bfe.firebaseapp.com",
     projectId: "edufly-61bfe",
     storageBucket: "edufly-61bfe.firebasestorage.app",
@@ -19,54 +19,32 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 auth.languageCode = "en";
-const provider = new GoogleAuthProvider();
-
-function updateUserProfile(user) {
-    const userName = user.displayName || "Anonymous"; // Fallback name
-    const profileLinkElement = document.getElementById('profileLink');
-    if (profileLinkElement) {
-        profileLinkElement.textContent = `${userName}'s profile`;
-        profileLinkElement.href = "#";
-    } else {
-        console.error("Profile link element not found in the DOM.");
-    }
-}
 
 // Monitor authentication state
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // User is signed in, update profile information
-        updateUserProfile(user);
-        console.log("User ID:", user.uid);
+        // User is signed in, set profile link text
+        const profileLink = document.getElementById('profileLink');
+        if (profileLink) {
+            profileLink.textContent = `${user.displayName || "Your"} Profile`;
+        }
     } else {
-        // Redirect to login page if user is not signed in
-        // alert("Please log in.");
-        window.location.href = "../Login Page/login_teacher.html";
-    }
-});
-
-// Wait until the DOM is fully loaded to attach the logout event listener
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutButton = document.getElementById("logout-btn");
-
-    // Check if the logout button exists in the DOM
-    if (logoutButton) {
-        logoutButton.addEventListener("click", () => {
-            signOut(auth)
-                .then(() => {
-                    // Sign-out successful
-                    alert("Logged out successfully");
-                    window.location.href = "../Login Page/login_teacher.html"; // Redirect to login page
-                })
-                .catch((error) => {
-                    // Handle errors
-                    alert("Error logging out: " + error.message);
-                });
+        // User is not signed in; ensure profile link redirects to login
+        document.getElementById('profileLink').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default action
+            window.location.href = "../Login Page/login_teacher.html"; // Redirect to login
         });
-    } else {
-        console.error("Logout button not found in the DOM.");
     }
 });
 
+// Logout functionality
+document.getElementById("logout-btn").addEventListener("click", () => {
+    signOut(auth).then(() => {
+        alert("Logged out successfully");
+        window.location.href = "../Login Page/login_teacher.html";
+    }).catch((error) => {
+        alert("Error logging out: " + error.message);
+    });
+});
 
 
