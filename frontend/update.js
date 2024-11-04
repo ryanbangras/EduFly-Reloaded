@@ -47,4 +47,33 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     });
 });
 
+// Redirect to login if user is not authenticated
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        // If the user is not logged in, redirect to login page
+        window.location.href = "../Login Page/login_teacher.html";
+    } else {
+        // If user is logged in, display user's profile name on profile link
+        const profileLink = document.getElementById('profileLink');
+        if (profileLink) {
+            profileLink.textContent = `${user.displayName || "Your"} Profile`;
+        }
+    }
+});
+
+// Logout functionality
+const logoutBtn = document.getElementById("logout-btn");
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        signOut(auth)
+            .then(() => {
+                alert("Logged out successfully");
+                window.location.href = "../Login Page/login_teacher.html";
+            })
+            .catch((error) => {
+                alert("Error logging out: " + error.message);
+            });
+    });
+}
+
 

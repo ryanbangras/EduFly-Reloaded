@@ -7,8 +7,9 @@ import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopu
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration
 const firebaseConfig = {
-
+  
   authDomain: "edufly-61bfe.firebaseapp.com",
   projectId: "edufly-61bfe",
   storageBucket: "edufly-61bfe.firebasestorage.app",
@@ -16,7 +17,6 @@ const firebaseConfig = {
   appId: "1:467191151194:web:cac30fd47ebff5a7233663",
   measurementId: "G-NQN411353D"
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
