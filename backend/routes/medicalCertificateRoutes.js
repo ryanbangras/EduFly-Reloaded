@@ -9,6 +9,7 @@ module.exports = function (medicalCertificateConnection) {
 
     const medicalCertificateSchema = new mongoose.Schema({
         studentId: { type: String, required: true },
+        sectionId: { type: String, required: true },
         certificateFile: { type: Buffer, required: true },
         fileName: { type: String, required: true },
         uploadedAt: { type: Date, default: Date.now }
@@ -27,6 +28,7 @@ module.exports = function (medicalCertificateConnection) {
         try {
             const newCertificate = new MedicalCertificate({
                 studentId: req.body.studentId,
+                sectionId: req.body.sectionId,
                 certificateFile: req.file.buffer,
                 fileName: req.file.originalname,
             });

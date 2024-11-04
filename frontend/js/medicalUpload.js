@@ -2,9 +2,11 @@ document.getElementById('medicalForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const studentId = document.getElementById('studentId').value;
+    const sectionId = document.getElementById('sectionId').value;
     const certificateFile = document.getElementById('certificateFile').files[0];
     const formData = new FormData();
     formData.append('studentId', studentId);
+    formData.append('sectionId', sectionId);
     formData.append('certificateFile', certificateFile);
 
     const messageDiv = document.getElementById('message');
