@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "",
+    
     authDomain: "edufly-61bfe.firebaseapp.com",
     projectId: "edufly-61bfe",
     storageBucket: "edufly-61bfe.firebasestorage.app",
@@ -75,3 +75,22 @@ if (logoutBtn) {
             });
     });
 }
+
+// linking user to account type
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        const email = user.email;
+        if (email == "ryxnng02@gmail.com"){
+            document.getElementById("account_type").innerText = "Student Account";
+        }
+        if (email == "jamietan888@gmail.com"){
+            document.getElementById("account_type").innerText = "Teacher Account";
+        }
+        if (email == "jamie.tan.2023@scis.smu.edu.sg"){
+            document.getElementById("account_type").innerText = "Parent Account";
+        }
+    }
+});
+
+
+
