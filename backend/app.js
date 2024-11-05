@@ -20,7 +20,7 @@ async function startServer() {
         app.use('/api', medicalCertificateRoutes(medicalCertificateConnection));
 
         // Start the server
-        const PORT = 5000;
+        const PORT = 3000;
         app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
     } catch (error) {
         console.error('Failed to connect to databases:', error);
