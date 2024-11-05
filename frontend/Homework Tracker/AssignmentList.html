@@ -97,20 +97,36 @@
             <tbody>
                 <tr v-for="assignment in assignments" :key="assignment.id">
                     <td>{{ assignment.id }}</td>
+
+                    <!-- Title Field -->
                     <td v-if="editingAssignmentId !== assignment.id">{{ assignment.title }}</td>
-                    <td v-if="editingAssignmentId === assignment.id">
+                    <td v-else>
                         <input type="text" v-model="editAssignmentData.title" class="form-control">
                     </td>
+
+                    <!-- Description Field -->
                     <td v-if="editingAssignmentId !== assignment.id">{{ assignment.description }}</td>
-                    <td v-if="editingAssignmentId === assignment.id">
+                    <td v-else>
                         <input type="text" v-model="editAssignmentData.description" class="form-control">
                     </td>
-                    <td>{{ assignment.deadlineDate }}</td>
-                    <td>{{ assignment.deadlineTime }}</td>
+
+                    <!-- Deadline Date Field -->
+                    <td v-if="editingAssignmentId !== assignment.id">{{ assignment.deadlineDate }}</td>
+                    <td v-else>
+                        <input type="date" v-model="editAssignmentData.deadlineDate" class="form-control">
+                    </td>
+
+                    <!-- Deadline Time Field -->
+                    <td v-if="editingAssignmentId !== assignment.id">{{ assignment.deadlineTime }}</td>
+                    <td v-else>
+                        <input type="time" v-model="editAssignmentData.deadlineTime" class="form-control">
+                    </td>
+
+                    <!-- Action Buttons -->
                     <td>
                         <button v-if="editingAssignmentId !== assignment.id" @click="editAssignment(assignment)"
                             class="btn btn-warning btn-sm">Edit</button>
-                        <button v-if="editingAssignmentId === assignment.id" @click="saveEdit(assignment)"
+                        <button v-if="editingAssignmentId === assignment.id" @click="saveEdit"
                             class="btn btn-success btn-sm">Save</button>
                         <button v-if="editingAssignmentId === assignment.id" @click="cancelEdit"
                             class="btn btn-secondary btn-sm">Cancel</button>
@@ -119,6 +135,7 @@
                 </tr>
             </tbody>
         </table>
+
 
         <p v-if="assignments.length === 0 && selectedClass">No assignments available for {{ selectedClass }}</p>
 
@@ -134,7 +151,7 @@
 
 
         const firebaseConfig = {
-            apiKey: "",
+
             authDomain: "edufly-61bfe.firebaseapp.com",
             projectId: "edufly-61bfe",
             storageBucket: "edufly-61bfe.appspot.com",
@@ -142,13 +159,13 @@
             appId: "1:467191151194:web:cac30fd47ebff5a7233663",
             measurementId: "G-NQN411353D"
         };
-
         // Check if Firebase has already been initialized
         const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // Vue component
         const vueApp = Vue.createApp({
             data() {
                 return {
@@ -158,14 +175,14 @@
                     showAddAssignmentForm: false,
                     newAssignment: { title: "", description: "", deadline: "" },
                     editingAssignmentId: null,
-                    editAssignmentData: { title: "", description: "" }
+                    editAssignmentData: { title: "", description: "", deadlineDate: "", deadlineTime: "" }
                 };
             },
             async created() {
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
-                        const userEmail = user.email; // Get the logged-in user's email
-                        const docRef = doc(db, 'Teachers', userEmail); // Use email as document ID
+                        const userEmail = user.email;
+                        const docRef = doc(db, 'Teachers', userEmail);
                         const docSnap = await getDoc(docRef);
 
                         if (docSnap.exists()) {
@@ -236,15 +253,30 @@
                 },
                 editAssignment(assignment) {
                     this.editingAssignmentId = assignment.id;
-                    this.editAssignmentData = { title: assignment.title, description: assignment.description };
+                    this.editAssignmentData = {
+                        title: assignment.title,
+                        description: assignment.description,
+                        deadlineDate: assignment.deadlineDate,
+                        deadlineTime: assignment.deadlineTime
+                    };
                 },
-                async saveEdit(assignment) {
+                async saveEdit() {
+                    if (!this.editAssignmentData.title || !this.editAssignmentData.description || !this.editAssignmentData.deadlineDate || !this.editAssignmentData.deadlineTime) {
+                        alert("Please fill out all fields before saving.");
+                        return;
+                    }
+
                     try {
-                        const assignmentRef = doc(db, 'Classes', this.selectedClass, 'AssignmentList', `assignment${assignment.id}`);
+                        const assignmentRef = doc(db, 'Classes', this.selectedClass, 'AssignmentList', `assignment${this.editingAssignmentId}`);
+
+                        // Convert date and time inputs to a Firestore Timestamp
+                        const deadlineDate = new Date(`${this.editAssignmentData.deadlineDate}T${this.editAssignmentData.deadlineTime}`);
+                        const deadlineTimestamp = new Timestamp(deadlineDate.getTime() / 1000, 0);
+
                         await setDoc(assignmentRef, {
-                            ...assignment,
                             title: this.editAssignmentData.title,
-                            description: this.editAssignmentData.description
+                            description: this.editAssignmentData.description,
+                            deadline: deadlineTimestamp
                         }, { merge: true });
 
                         this.fetchAssignments();
@@ -256,7 +288,7 @@
                 },
                 cancelEdit() {
                     this.editingAssignmentId = null;
-                    this.editAssignmentData = { title: "", description: "" };
+                    this.editAssignmentData = { title: "", description: "", deadlineDate: "", deadlineTime: "" };
                 },
                 async deleteAssignment(assignment) {
                     try {
@@ -273,10 +305,9 @@
         });
 
         vueApp.mount('#app');
+
+
     </script>
-
-
-
 
 
 </body>
