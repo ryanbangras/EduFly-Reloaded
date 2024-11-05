@@ -17,6 +17,20 @@
         .navbar {
             background-color: green;
         }
+
+        .text-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .text-danger {
+            color: red;
+            font-weight: bold;
+        }
+
+        .text-muted {
+            color: gray;
+        }
     </style>
 </head>
 
@@ -63,7 +77,8 @@
                     <th>Student ID</th>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Attendance</th>
+                    <th>Status</th> <!-- New column for attendance status -->
+                    <th>Actions</th> <!-- Column for buttons -->
                 </tr>
             </thead>
             <tbody>
@@ -72,18 +87,28 @@
                     <td>{{ student.Fname }}</td>
                     <td>{{ student.Lname }}</td>
                     <td>
-                        <button v-if="!student.attendanceStatus" class="btn btn-success btn-sm"
-                            @click="markAttendance(student, 'Present')">Present</button>
-                        <button v-if="student.attendanceStatus === 'Present'" class="btn btn-success btn-sm"
-                            disabled>Present</button>
-                        <button v-if="!student.attendanceStatus" class="btn btn-danger btn-sm"
-                            @click="markAttendance(student, 'Absent')">Absent</button>
-                        <button v-if="student.attendanceStatus === 'Absent'" class="btn btn-danger btn-sm"
-                            disabled>Absent</button>
+                        <!-- Display the current attendance status here -->
+                        <span :class="{
+                            'text-success': student.attendanceStatus === 'Present',
+                            'text-danger': student.attendanceStatus === 'Absent',
+                            'text-muted': !student.attendanceStatus
+                        }">
+                            {{ student.attendanceStatus || 'Not Marked' }}
+                        </span>
+                    </td>
+                    <td>
+                        <!-- Action buttons for marking attendance -->
+                        <button class="btn btn-success btn-sm" @click="markAttendance(student, 'Present')">
+                            Mark Present
+                        </button>
+                        <button class="btn btn-danger btn-sm" @click="markAttendance(student, 'Absent')">
+                            Mark Absent
+                        </button>
                     </td>
                 </tr>
             </tbody>
         </table>
+
 
         <p v-if="students.length === 0 && selectedClass">No students available for {{ selectedClass }}</p>
     </div>
@@ -95,7 +120,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "",
+            
             authDomain: "edufly-61bfe.firebaseapp.com",
             projectId: "edufly-61bfe",
             storageBucket: "edufly-61bfe.appspot.com",
@@ -197,12 +222,8 @@
                         console.error("Error marking attendance: ", error);
                     }
                 }
-            },
-            watch: {
-                attendanceDate() {
-                    this.fetchAttendance();
-                }
             }
+
         });
 
         vueApp.mount('#app');
