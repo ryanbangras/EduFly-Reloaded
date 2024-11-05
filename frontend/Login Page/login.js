@@ -52,21 +52,20 @@ const auth = getAuth(app);
 auth.languageCode = "en"
 const provider = new GoogleAuthProvider();
 
-const googleLogin = document.getElementById("google-login-btn")
+const googleLogin = document.getElementById("google-login-btn");
 googleLogin.addEventListener("click", function () {
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            // Access Token and user info
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const user = result.user;
+            console.log(user);
 
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      // The signed-in user info.
-      const user = result.user;
-      console.log(user);
-      window.location.href="../Homepage/home_teacher.html"
-    }).catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
-
-})
+            // Redirect to the teacher's homepage after successful login
+            window.location.href = "../Homepage/home_teacher.html";
+        })
+        .catch((error) => {
+            // Handle Errors here
+            console.error("Error during sign-in:", error.message);
+        });
+});
