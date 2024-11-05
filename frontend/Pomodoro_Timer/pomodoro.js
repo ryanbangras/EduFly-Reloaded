@@ -17,14 +17,15 @@ $(document).ready(function() {
         callbacks: {
             interval: function() {
                 // Switch between session and break when time reaches 0
-                
                 if (clock.getTime().time === 0) {
-                    if (pos === "session") {
+                    if (pos === "Session") {
                         pos = "Break";
                         clock.setTime(countB * 60); // Set to break length
+                        document.getElementById('alertSound').play();
                     } else {
                         pos = "Session";
                         clock.setTime(countS * 60); // Set to session length
+                        document.getElementById('alertSound').play();
                     }
                     $("#stats").html(pos);
                     clock.start(); // Start the new timer
