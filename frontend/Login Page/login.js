@@ -1,27 +1,5 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-
-  authDomain: "edufly-61bfe.firebaseapp.com",
-  projectId: "edufly-61bfe",
-  storageBucket: "edufly-61bfe.firebasestorage.app",
-  messagingSenderId: "467191151194",
-  appId: "1:467191151194:web:cac30fd47ebff5a7233663",
-  measurementId: "G-NQN411353D"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
 // when user manually keys in 
+import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '../js/database.js';
 
 const submit = document.getElementById('submit')
 submit.addEventListener("click", function (event) {
@@ -30,7 +8,7 @@ submit.addEventListener("click", function (event) {
   const email = document.getElementById('email').value
   const password = document.getElementById('password').value
 
-  const auth = getAuth();
+  // const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed up 
@@ -48,7 +26,7 @@ submit.addEventListener("click", function (event) {
 })
 
 // when user uses Google Sign-in method
-const auth = getAuth(app);
+// const auth = getAuth(app);
 auth.languageCode = "en"
 const provider = new GoogleAuthProvider();
 

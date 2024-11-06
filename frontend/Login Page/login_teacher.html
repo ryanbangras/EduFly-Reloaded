@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduFly</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
+    <script type="module" src="login.js" defer></script>
 
     <style>
         /* Navbar styling */
@@ -160,23 +160,8 @@
         <p>Don't Have an Account? Click <a href='../Create Account/register_teacher.html'>Here</a> to create one.</p>
     </div>
     <script type="module">
-        // Firebase configuration and login script
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "",
-            authDomain: "edufly-61bfe.firebaseapp.com",
-            projectId: "edufly-61bfe",
-            storageBucket: "edufly-61bfe.firebasestorage.app",
-            messagingSenderId: "467191151194",
-            appId: "1:467191151194:web:cac30fd47ebff5a7233663",
-            measurementId: "G-NQN411353D"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        import { db } from "../js/database.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "../js/database.js";
 
         const submit = document.getElementById('submit')
         submit.addEventListener("click", function (event) {
@@ -197,7 +182,7 @@
                 });
         })
 
-        const auth = getAuth(app);
+        // const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
         const googleLogin = document.getElementById("google-login-btn")
@@ -213,7 +198,6 @@
                 });
         })
 
-        console.log("hello world")
     </script>
 </body>
 
