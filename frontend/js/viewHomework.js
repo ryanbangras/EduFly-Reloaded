@@ -1,4 +1,4 @@
-import {auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
+import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
 
 // Create Vue application
 const vueApp = Vue.createApp({
@@ -33,7 +33,7 @@ const vueApp = Vue.createApp({
         },
         async loadHomework() {
             try {
-                const response = await fetch('http://localhost:5000/api/homeworks');
+                const response = await fetch('http://localhost:3000/api/homeworks');
                 const homeworks = await response.json();
 
                 const homeworkList = document.getElementById('homeworkList');

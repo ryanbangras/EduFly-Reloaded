@@ -33,7 +33,7 @@ const vueApp = Vue.createApp({
         },
         async loadMedicalCertificates() {
             try {
-                const response = await fetch('http://localhost:5000/api/medical-certificates');
+                const response = await fetch('http://localhost:3000/api/medical-certificates');
                 const certificates = await response.json();
                 
                 const medicalList = document.getElementById('medicalList');
