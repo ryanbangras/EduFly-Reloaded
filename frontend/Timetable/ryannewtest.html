@@ -4,48 +4,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <title>Google Calendar Viewer</title>
     <style>
+        /* General Styling */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 50px;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
         }
 
+        h1 {
+            font-size: 2rem;
+            color: #4285F4;
+            margin-top: 30px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin-top: 50px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* Buttons */
         #signin-button,
         #signout-button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: #4285F4;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            max-width: 250px;
+            display: block;
+            margin: 0 auto;
         }
 
+        #signin-button:hover,
+        #signout-button:hover {
+            background-color: #357ae8;
+        }
+
+        /* Event List Styling */
         #calendar-events {
             margin-top: 30px;
-            max-width: 600px;
-            text-align: left;
+            width: 100%;
         }
 
         #calendar-events h2 {
             color: #333;
-        }
-
-        .event {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .form-container {
-            margin-top: 20px;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h3 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+
+        .form-container label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .form-container button:hover {
+            background-color: #218838;
+        }
+
+        #delete-event-button {
+            background-color: #dc3545;
             display: none;
+        }
+
+        #delete-event-button:hover {
+            background-color: #c82333;
+        }
+
+        /* FullCalendar Styles */
+        .fc {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 100%;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .fc-toolbar {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            #signin-button,
+            #signout-button {
+                width: 100%;
+            }
+
+            .form-container {
+                margin-top: 20px;
+            }
+
+            .form-container input,
+            .form-container button {
+                font-size: 14px;
+            }
         }
     </style>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -55,32 +174,37 @@
 </head>
 
 <body>
-    <h1>Google Calendar Events</h1>
-    <div id="signin-button" style="display: block;">Sign in With Google</div>
-    <button id="signout-button" style="display:none;" onclick="handleSignOut()">Sign out</button>
+    <div class="container">
+        <h1>Google Calendar Events</h1>
 
-    <div id="calendar-events"></div>
+        <div id="signin-button" style="display: block;">Sign in With Google</div>
+        <button id="signout-button" style="display:none;" onclick="handleSignOut()">Sign out</button>
 
-    <!-- Event creation/edit form -->
-    <div id="event-form" class="form-container">
-        <h3>Create or Edit Event</h3>
-        <form id="event-form-content">
-            <input type="hidden" id="event-id" />
-            <label for="event-title">Event Title:</label>
-            <input type="text" id="event-title" required><br><br>
+        <div id="calendar-events"></div>
 
-            <label for="event-start">Start Time:</label>
-            <input type="datetime-local" id="event-start" required><br><br>
+        <!-- Event creation/edit form -->
+        <div id="event-form" class="form-container" style="display: none;">
+            <h3>Create or Edit Event</h3>
+            <form id="event-form-content">
+                <input type="hidden" id="event-id" />
+                <label for="event-title">Event Title:</label>
+                <input type="text" id="event-title" required><br><br>
 
-            <label for="event-end">End Time:</label>
-            <input type="datetime-local" id="event-end" required><br><br>
+                <label for="event-start">Start Time:</label>
+                <input type="datetime-local" id="event-start" required><br><br>
 
-            <button type="submit">Save Event</button>
-            <button type="button" id="delete-event-button" style="display:none;" onclick="deleteEvent()">Delete Event</button>
-        </form>
+                <label for="event-end">End Time:</label>
+                <input type="datetime-local" id="event-end" required><br><br>
+
+                <button type="submit">Save Event</button>
+                <!-- <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button> -->
+                <button id="signout-button" style="display:none;">Sign out</button>
+            </form>
+        </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc, Timestamp } from '../js/database.js';
         const CLIENT_ID = '253069344619-3irs1nn3r35c9cfrt1qepmhqqt2gclqc.apps.googleusercontent.com';
         const API_KEY = 'AIzaSyBG28vCzNwcnGuzntrefL_Qxe2CGGBe0lc';
         const SCOPES = 'https://www.googleapis.com/auth/calendar';
@@ -147,6 +271,7 @@
                 document.getElementById("event-form").style.display = "none";
             }
         }
+        document.getElementById("signout-button").addEventListener("click", handleSignOut);
 
         async function loadCalendarEvents() {
             const token = localStorage.getItem("googleAccessToken");
@@ -175,7 +300,7 @@
                 const calendar = new FullCalendar.Calendar(calendarDiv, {
                     initialView: 'dayGridMonth',
                     events: events,
-                    eventClick: function(info) {
+                    eventClick: function (info) {
                         openEventForm(info.event);
                     }
                 });
@@ -271,6 +396,10 @@
             gapiLoaded();
             gisLoaded();
         };
+
+
+        
+
     </script>
 </body>
 
