@@ -1,79 +1,32 @@
 import { auth, onAuthStateChanged, signOut } from './database.js';
 auth.languageCode = "en";
 
-// // Monitor authentication state
-// onAuthStateChanged(auth, (user) => {
-//     if (user) {
-//         // User is signed in, set profile link text
-//         const profileLink = document.getElementById('profileLink');
-//         if (profileLink) {
-//             profileLink.textContent = `${user.displayName || "Your"} Profile`;
-//         }
-//     } else {
-//         // User is not signed in; ensure profile link redirects to login
-//         document.getElementById('profileLink').addEventListener('click', (e) => {
-//             e.preventDefault(); // Prevent default action
-//             window.location.href = "../Login Page/login_teacher.html"; // Redirect to login
-//         });
-//     }
-// });
-
-// // Logout functionality
-// document.getElementById("logout-btn").addEventListener("click", () => {
-//     signOut(auth).then(() => {
-//         alert("Logged out successfully");
-//         window.location.href = "../Login Page/login_teacher.html";
-//     }).catch((error) => {
-//         alert("Error logging out: " + error.message);
-//     });
-// });
-
-import { auth, onAuthStateChanged, signOut } from './database.js';
-
 // Monitor authentication state
 onAuthStateChanged(auth, (user) => {
-    const profileLink = document.getElementById('profileLink');
-    const accountTypeSpan = document.getElementById('account_type');
-    const logoutBtn = document.getElementById('logout-btn');
-
     if (user) {
-        // User is signed in, update the profile link text
-        profileLink.textContent = `${user.displayName || "Your"} Profile`;
-        // Optional: Show account type based on the user's email
-        const email = user.email;
-        if (accountTypeSpan) {
-            if (email === "ryxnng02@gmail.com") {
-                accountTypeSpan.innerText = "Student Account";
-            } else if (email === "jamietan888@gmail.com") {
-                accountTypeSpan.innerText = "Teacher Account";
-            } else if (email === "jamie.tan.2023@scis.smu.edu.sg") {
-                accountTypeSpan.innerText = "Parent Account";
-            }
+        // User is signed in, set profile link text
+        const profileLink = document.getElementById('profileLink');
+        if (profileLink) {
+            profileLink.textContent = `${user.displayName || "Your"} Profile`;
         }
     } else {
-        // User is not signed in; redirect to login page when profile is clicked
-        profileLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = "../Login Page/login_teacher.html";
+        // User is not signed in; ensure profile link redirects to login
+        document.getElementById('profileLink').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default action
+            window.location.href = "../Login Page/login_teacher.html"; // Redirect to login
         });
-        // Redirect to login if the user is not signed in
-        window.location.href = "../Login Page/login_teacher.html";
     }
 });
 
 // Logout functionality
-const logoutBtn = document.getElementById("logout-btn");
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-        signOut(auth).then(() => {
-            alert("Logged out successfully");
-            window.location.href = "../Login Page/login_teacher.html"; // Redirect after logout
-        }).catch((error) => {
-            alert("Error logging out: " + error.message);
-        });
+document.getElementById("logout-btn").addEventListener("click", () => {
+    signOut(auth).then(() => {
+        alert("Logged out successfully");
+        window.location.href = "../Login Page/login_teacher.html";
+    }).catch((error) => {
+        alert("Error logging out: " + error.message);
     });
-}
-
+});
 
 // Redirect to login if user is not authenticated
 onAuthStateChanged(auth, (user) => {
