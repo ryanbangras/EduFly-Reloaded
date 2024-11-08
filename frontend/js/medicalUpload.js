@@ -17,8 +17,10 @@ const vueApp = Vue.createApp({
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
+                    console.log("vue data types will be populated");
                     this.loginEmail = docSnap.data().StudentID; // Populates StudentID
                     this.userClass = docSnap.data().Class;       // Populates Class
+                    console.log(this.loginEmail, this.userClass);
                 } else {
                     console.error("No such document!");
                 }
