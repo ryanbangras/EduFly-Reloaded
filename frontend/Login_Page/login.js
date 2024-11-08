@@ -1,5 +1,5 @@
 // Import necessary Firebase functions
-import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '../js/database.js';
+import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail} from '../js/database.js';
 import { db, doc, getDoc } from '../js/database.js';
 
 // Email and Password Login
@@ -67,3 +67,24 @@ googleLogin.addEventListener("click", async function () {
         alert("Failed to sign in. Please try again.");
     }
 });
+
+
+// when user forgets password and wants to reset
+const reset = document.getElementById('reset')
+reset.addEventListener("click", function (event) {
+    event.preventDefault()
+    const email = document.getElementById('email').value
+
+    sendPasswordResetEmail(auth, email)
+        .then(() => {
+            // Password reset email sent!
+            // ..
+            alert("Email sent")
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage)
+            // ..
+        });
+})
