@@ -21,21 +21,32 @@
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="../Homepage/home_teacher.html">
-            <img src="../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px;">
-            EduFly
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
-            </ul>
-        </div>
-    </nav>
+   <!-- Navbar -->
+   <nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="../Homepage/home_teacher.html">
+        <img src="../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
+        EduFly
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" href="#">&#9997;&#65039; Homework</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">&#128467;&#65039; Timetable</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">&#127891; Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">&#128226; Announcement</a></li>
+            <li class="nav-item">
+                <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
+                <!-- Target for dynamic name -->
+            </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+            <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+        </ul>
+    </div>
+</nav>
 
     <!-- Main Container -->
     <div id="app" class="container mt-4">
@@ -70,7 +81,7 @@
         </div>
 
         <!-- Announcements Table -->
-        <table v-if="announcements.length" class="table table-striped">
+        <table v-if="announcements.length > 0" class="table table-striped">
             <thead>
                 <tr>
                     <th>Title</th>
@@ -100,15 +111,16 @@
                     </td>
 
                     <td>
-                        <button v-if="announcement.isEditing" @click="saveEdit(announcement, index)"
-                            class="btn btn-success btn-sm">Save</button>
-                        <button v-if="announcement.isEditing" @click="cancelEdit(announcement)"
-                            class="btn btn-secondary btn-sm">Cancel</button>
+                        <!-- Show Edit/Delete buttons if not in edit mode -->
+                        <div v-if="!announcement.isEditing">
 
-                        <button v-else @click="editAnnouncement(announcement)"
-                            class="btn btn-warning btn-sm">Edit</button>
-                        <button v-else @click="deleteAnnouncement(announcement.id, index)"
-                            class="btn btn-danger btn-sm">Delete</button>
+                            <button @click="deleteAnnouncement(announcement.id, index)" class="btn btn-danger btn-sm">Delete</button>
+                        </div>
+                        <!-- Show Save/Cancel buttons if in edit mode -->
+                        <div v-else>
+                            <button @click="saveEdit(announcement, index)" class="btn btn-success btn-sm">Save</button>
+                            <button @click="cancelEdit(announcement)" class="btn btn-secondary btn-sm">Cancel</button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -191,18 +203,8 @@
                     await deleteDoc(doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id));
                     this.announcements.splice(index, 1);
                 },
-                editAnnouncement(announcement) {
-                    announcement.isEditing = true;
-                },
-                async saveEdit(announcement) {
-                    await updateDoc(doc(db, 'Classes', this.selectedClass, 'AnnouncementList', announcement.id), {
-                        title: announcement.editTitle,
-                        message: announcement.editMessage,
-                        deadline: Timestamp.fromDate(new Date(announcement.editDeadline))
-                    });
-                    this.fetchAnnouncements();
-                    announcement.isEditing = false;
-                },
+
+
                 cancelEdit(announcement) {
                     announcement.isEditing = false;
                 },
