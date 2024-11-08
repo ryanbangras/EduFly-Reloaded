@@ -6,9 +6,12 @@ const vueApp = Vue.createApp({
         return {
             classes: [],
             selectedClass: "",
+            homeworkList: [],
         };
     },
     async created() {
+        const urlParams = new URLSearchParams(window.location.search);
+        this.selectedClass = urlParams.get('class'); 
         // Check for user authentication and fetch classes
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -36,26 +39,29 @@ const vueApp = Vue.createApp({
                 const response = await fetch('http://localhost:3000/api/homeworks');
                 const homeworks = await response.json();
 
-                const homeworkList = document.getElementById('homeworkList');
-                homeworkList.innerHTML = '';
+                // Filter homework based on the selected class
+                this.homeworkList = homeworks.filter(hw => hw.sectionId === this.selectedClass);
 
-                if (homeworks.length === 0) {
-                    homeworkList.innerHTML = '<p class="text-center">No homework uploaded yet.</p>';
-                } else {
-                    homeworks.forEach(hw => {
-                        if (hw.sectionId === this.selectedClass) { // Use this.selectedClass
-                            const item = document.createElement('a');
-                            item.className = "list-group-item list-group-item-action";
-                            item.href = `http://localhost:5000/api/homeworks/${hw._id}`;
-                            item.target = "_blank";
-                            item.innerHTML = `
-                                <strong>${hw.fileName}</strong> <br>
-                                <small>Uploaded by: ${hw.studentId} form ${hw.sectionId} on ${new Date(hw.uploadedAt).toLocaleString()}</small>
-                            `;
-                            homeworkList.appendChild(item);
-                        }
-                    });
-                }
+                // const homeworkList = document.getElementById('homeworkList');
+                // homeworkList.innerHTML = '';
+
+                // if (homeworks.length === 0) {
+                //     homeworkList.innerHTML = '<p class="text-center">No homework uploaded yet.</p>';
+                // } else {
+                //     homeworks.forEach(hw => {
+                //         if (hw.sectionId === this.selectedClass) { // Use this.selectedClass
+                //             const item = document.createElement('a');
+                //             item.className = "list-group-item list-group-item-action";
+                //             item.href = `http://localhost:5000/api/homeworks/${hw._id}`;
+                //             item.target = "_blank";
+                //             item.innerHTML = `
+                //                 <strong>${hw.fileName}</strong> <br>
+                //                 <small>Uploaded by: ${hw.studentId} form ${hw.sectionId} on ${new Date(hw.uploadedAt).toLocaleString()}</small>
+                //             `;
+                //             homeworkList.appendChild(item);
+                //         }
+                //     });
+                // }
             } catch (error) {
                 console.error('Error loading homework:', error);
             }

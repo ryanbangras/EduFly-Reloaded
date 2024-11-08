@@ -42,20 +42,20 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Logout functionality
-const logoutBtn = document.getElementById("logout-btn");
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-        signOut(auth)
-            .then(() => {
-                alert("Logged out successfully");
-                window.location.href = "../Login Page/login_teacher.html";
-            })
-            .catch((error) => {
-                alert("Error logging out: " + error.message);
-            });
-    });
-}
+// // Logout functionality
+// const logoutBtn = document.getElementById("logout-btn");
+// if (logoutBtn) {
+//     logoutBtn.addEventListener("click", () => {
+//         signOut(auth)
+//             .then(() => {
+//                 alert("Logged out successfully");
+//                 window.location.href = "../Login Page/login_teacher.html";
+//             })
+//             .catch((error) => {
+//                 alert("Error logging out: " + error.message);
+//             });
+//     });
+// }
 
 // linking user to account type
 // onAuthStateChanged(auth, (user) => {
