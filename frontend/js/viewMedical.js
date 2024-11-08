@@ -46,7 +46,7 @@ const vueApp = Vue.createApp({
                         if (cert.sectionId === this.selectedClass) { // Filter by selected class if needed
                             const item = document.createElement('a');
                             item.className = "list-group-item list-group-item-action";
-                            item.href = `http://localhost:5000/api/medical-certificates/${cert._id}`;
+                            item.href = `http://localhost:3000/api/medical-certificates/${cert._id}`;
                             item.target = "_blank";
                             item.innerHTML = `
                                 <strong>${cert.fileName}</strong> <br>
