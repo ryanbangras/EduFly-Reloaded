@@ -22,7 +22,7 @@ onAuthStateChanged(auth, (user) => {
 document.getElementById("logout-btn").addEventListener("click", () => {
     signOut(auth).then(() => {
         alert("Logged out successfully");
-        window.location.href = "../Login Page/login_teacher.html";
+        window.location.href = "../Login_Page_Teacher/login_teacher.html";
     }).catch((error) => {
         alert("Error logging out: " + error.message);
     });
@@ -32,7 +32,7 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         // If the user is not logged in, redirect to login page
-        window.location.href = "../Login Page/login_teacher.html";
+        window.location.href = "../Login_Page_Teacher/login_teacher.html";
     } else {
         // If user is logged in, display user's profile name on profile link
         const profileLink = document.getElementById('profileLink');
