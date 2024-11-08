@@ -1,5 +1,5 @@
 // Import necessary Firebase functions
-import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '../js/database.js';
+import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail} from '../js/database.js';
 import { db, doc, getDoc } from '../js/database.js';
 
 // Email and Password Login
