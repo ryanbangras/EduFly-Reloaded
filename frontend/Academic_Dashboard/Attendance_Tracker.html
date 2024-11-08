@@ -69,7 +69,8 @@
         <!-- Date Selector for Attendance -->
         <div class="mb-3">
             <label for="attendanceDate" class="form-label">Select Date:</label>
-            <input type="date" v-model="attendanceDate" id="attendanceDate" class="form-control" style="display: inline-block; width: auto;">
+            <input type="date" v-model="attendanceDate" id="attendanceDate" class="form-control"
+                style="display: inline-block; width: auto;">
             <button class="btn btn-primary ms-2" @click="fetchAttendance">GO</button>
         </div>
 
@@ -115,7 +116,7 @@
     </div>
 
     <script type="module">
-        import {auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
+        import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, updateDoc, deleteDoc, increment } from '../js/database.js';
 
         const vueApp = Vue.createApp({
             data() {
@@ -143,7 +144,8 @@
                                 studentId: doc.data().StudentID,
                                 Fname: doc.data().FName,
                                 Lname: doc.data().LName,
-                                attendanceStatus: null
+                                attendanceStatus: null,
+                                absentCount: doc.data().absentCount || 0
                             });
                         });
                     }
@@ -186,6 +188,17 @@
                             }
                         }, { merge: true });
                         student.attendanceStatus = status;
+
+                        student.attendanceStatus = status;
+
+                        // Update the student's absent count if marked as absent
+                        const studentRef = doc(db, 'Classes', this.selectedClass, 'StudentList', student.studentId);
+                        if (status === 'Absent') {
+                            await updateDoc(studentRef, {
+                                AbsentCount: increment(1) // Increment the absent count by 1
+                            });
+                            student.absentCount += 1; // Update the UI for the absent count
+                        }
                     } catch (error) {
                         console.error("Error marking attendance: ", error);
                     }
@@ -196,4 +209,5 @@
         vueApp.mount('#app');
     </script>
 </body>
+
 </html>
