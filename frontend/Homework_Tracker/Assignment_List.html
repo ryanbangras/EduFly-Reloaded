@@ -323,3 +323,40 @@
 </body>
 
 </html>
+
+async addAnnouncement() {
+    if (!this.newAnnouncement.title || !this.newAnnouncement.message || !this.newAnnouncement.deadline) {
+        alert("Please fill out all fields.");
+        return;
+    }
+
+    const currentDate = new Date();
+    const deadlineDate = new Date(this.newAnnouncement.deadline);
+
+    if (deadlineDate < currentDate) {
+        alert("The deadline cannot be set in the past.");
+        return;
+    }
+
+    const announcementsRef = collection(db, 'Classes', this.selectedClass, 'AnnouncementList');
+    const announcementSnapshot = await getDocs(announcementsRef);
+    const nextId = announcementSnapshot.size + 1;
+
+    const newAnnouncementRef = doc(announcementsRef, `announcement${nextId}`);
+    await setDoc(newAnnouncementRef, {
+        id: nextId,
+        title: this.newAnnouncement.title,
+        message: this.newAnnouncement.message,
+        datePosted: Timestamp.fromDate(currentDate),
+        deadline: Timestamp.fromDate(deadlineDate)
+    });
+
+    this.fetchAnnouncements();
+    this.newAnnouncement = { title: "", message: "", deadline: "" };
+    this.showAddAnnouncementForm = false;
+    alert("Announcement added successfully!");
+},
+
+formatDate(timestamp) {
+    return new Date(timestamp.seconds * 1000).toLocaleString();
+},

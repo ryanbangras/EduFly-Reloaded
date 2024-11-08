@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap JS bundle to be placed before the closing </body> tag -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap CSS & JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Firebase Link -->
@@ -19,77 +18,65 @@
             background-color: green;
         }
     </style>
-
 </head>
 
 <body>
-     <!-- Navbar -->
-     <nav class="navbar navbar-expand-lg navbar-dark">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
-            <img src="../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
+            <img src="../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px;">
             EduFly
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="#">&#9997;&#65039; Homework</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#128467;&#65039; Timetable</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#127891; Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#128226; Announcement</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
-                    <!-- Target for dynamic name -->
-                </li>
-            </ul>
             <ul class="navbar-nav ms-auto">
                 <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
             </ul>
         </div>
     </nav>
-    <!-- Main Container -->
-    <div class="container-fluid">
-        <div class="row">
-            <h1 style="text-align: center; background-color: #8F8073; padding: 40px;">Select a Class</h1>
-        </div>
-    </div>
 
+    <!-- Main Container -->
     <div id="app" class="container mt-4">
+        <h1 class="text-center bg-light p-4">Select a Class</h1>
+
         <label for="classSelect" class="form-label">Select Class:</label>
         <select v-model="selectedClass" @change="fetchAnnouncements" id="classSelect" class="form-select mb-4">
-            <option v-for="classItem in classes" :key="classItem" :value="classItem">
-                {{ classItem }}
-            </option>
+            <option v-for="classItem in classes" :key="classItem" :value="classItem">{{ classItem }}</option>
         </select>
 
         <!-- Add Announcement Button -->
         <button v-if="selectedClass" @click="showAddAnnouncementForm = true" class="btn btn-primary mb-3">Add
             Announcement</button>
 
-        <!-- Form to Add New Announcement (Shows When Add Button is Clicked) -->
+        <!-- Add Announcement Form -->
         <div v-if="showAddAnnouncementForm" class="card p-3 mb-3">
             <h5>Add New Announcement</h5>
             <div class="mb-2">
-                <label for="newTitle" class="form-label">Title</label>
-                <input v-model="newAnnouncement.title" id="newTitle" class="form-control" placeholder="Enter title">
+                <label class="form-label">Title</label>
+                <input v-model="newAnnouncement.title" class="form-control">
             </div>
             <div class="mb-2">
-                <label for="newMessage" class="form-label">Message</label>
-                <textarea v-model="newAnnouncement.message" id="newMessage" class="form-control"
-                    placeholder="Enter message"></textarea>
+                <label class="form-label">Message</label>
+                <textarea v-model="newAnnouncement.message" class="form-control"></textarea>
             </div>
-            <button @click="addAnnouncement" class="btn btn-success btn-sm">Save</button>
-            <button @click="cancelAddAnnouncement" class="btn btn-secondary btn-sm">Cancel</button>
+            <div class="mb-2">
+                <label class="form-label">Deadline</label>
+                <input type="datetime-local" v-model="newAnnouncement.deadline" class="form-control">
+            </div>
+            <button @click="addAnnouncement" class="btn btn-success">Save</button>
+            <button @click="cancelAddAnnouncement" class="btn btn-secondary">Cancel</button>
         </div>
 
         <!-- Announcements Table -->
-        <table v-if="announcements.length > 0" class="table table-striped">
+        <table v-if="announcements.length" class="table table-striped">
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Message</th>
+                    <th>Date Posted</th>
+                    <th>Deadline</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -97,143 +84,140 @@
                 <tr v-for="(announcement, index) in announcements" :key="announcement.id">
                     <td v-if="!announcement.isEditing">{{ announcement.title }}</td>
                     <td v-if="announcement.isEditing">
-                        <input v-model="announcement.editTitle" class="form-control" placeholder="Edit title">
+                        <input v-model="announcement.editTitle" class="form-control">
                     </td>
 
                     <td v-if="!announcement.isEditing">{{ announcement.message }}</td>
                     <td v-if="announcement.isEditing">
-                        <input v-model="announcement.editMessage" class="form-control" placeholder="Edit message">
+                        <textarea v-model="announcement.editMessage" class="form-control"></textarea>
+                    </td>
+
+                    <td>{{ formatDate(announcement.datePosted) }}</td>
+
+                    <td v-if="!announcement.isEditing">{{ formatDate(announcement.deadline) }}</td>
+                    <td v-if="announcement.isEditing">
+                        <input type="datetime-local" v-model="announcement.editDeadline" class="form-control">
                     </td>
 
                     <td>
-                        <select v-if="!announcement.isEditing" v-model="selectedAction"
-                            @change="handleAction(selectedAction, announcement, index)" class="form-select">
-                            <option disabled value="">Select action</option>
-                            <option value="edit">Edit</option>
-                            <option value="delete">Delete</option>
-                        </select>
+                        <button v-if="announcement.isEditing" @click="saveEdit(announcement, index)"
+                            class="btn btn-success btn-sm">Save</button>
+                        <button v-if="announcement.isEditing" @click="cancelEdit(announcement)"
+                            class="btn btn-secondary btn-sm">Cancel</button>
 
-                        <!-- Save/Cancel buttons during edit mode -->
-                        <div v-if="announcement.isEditing" class="mt-2">
-                            <button @click="saveEdit(announcement, index)" class="btn btn-success btn-sm">Save</button>
-                            <button @click="cancelEdit(announcement)" class="btn btn-secondary btn-sm">Cancel</button>
-                        </div>
+                        <button v-else @click="editAnnouncement(announcement)"
+                            class="btn btn-warning btn-sm">Edit</button>
+                        <button v-else @click="deleteAnnouncement(announcement.id, index)"
+                            class="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-        <p v-else-if="selectedClass">No announcements available for {{ selectedClass }}</p>
+        <p v-else>No announcements available for {{ selectedClass }}</p>
     </div>
 
     <script type="module">
-
-        import {auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
+        import { auth, db, onAuthStateChanged, doc, getDoc, collection, getDocs, setDoc, deleteDoc, Timestamp, updateDoc } from '../js/database.js';
 
         const vueApp = Vue.createApp({
             data() {
                 return {
-                    classes: [],                // List of classes Mr. Ryan Ng teaches
-                    selectedClass: "",          // Currently selected class
-                    announcements: [],          // Announcements for the selected class
-                    selectedAction: "",         // Action selected in the dropdown (edit or delete)
-                    showAddAnnouncementForm: false, // Controls display of "Add Announcement" form
-                    newAnnouncement: {          // Data for the new announcement
-                        title: "",
-                        message: ""
-                    }
+                    classes: [],
+                    selectedClass: "",
+                    announcements: [],
+                    showAddAnnouncementForm: false,
+                    newAnnouncement: { title: "", message: "", deadline: "" }
                 };
             },
             async created() {
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
-                        const userEmail = user.email; // Get the logged-in user's email
-                        const docRef = doc(db, 'Teachers', userEmail); // Use email as document ID
+                        const docRef = doc(db, 'Teachers', user.email);
                         const docSnap = await getDoc(docRef);
-
-                        if (docSnap.exists()) {
-                            this.classes = docSnap.data().Classes;
-                        } else {
-                            console.log("No such document!");
-                        }
-                    } else {
-                        console.log("User not logged in.");
+                        if (docSnap.exists()) this.classes = docSnap.data().Classes;
                     }
                 });
             },
             methods: {
                 async fetchAnnouncements() {
-                    this.announcements = [];
-                    if (this.selectedClass) {
-                        const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AnnouncementList'));
-
-                        querySnapshot.forEach((doc) => {
-                            this.announcements.push({
-                                id: doc.id,
-                                title: doc.data().title,
-                                message: doc.data().message,
-                                isEditing: false,
-                                editTitle: doc.data().title,
-                                editMessage: doc.data().message
-                            });
-                        });
-                    }
-                },
-                handleAction(action, announcement, index) {
-                    if (action === "edit") {
-                        announcement.isEditing = true;
-                    } else if (action === "delete") {
-                        this.deleteAnnouncement(announcement.id, index);
-                    }
-                    this.selectedAction = ""; // Reset action after handling
-                },
-                async saveEdit(announcement, index) {
-                    const docRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', announcement.id);
-
-                    await updateDoc(docRef, {
-                        title: announcement.editTitle,
-                        message: announcement.editMessage
-                    });
-
-                    this.announcements[index].title = announcement.editTitle;
-                    this.announcements[index].message = announcement.editMessage;
-                    this.announcements[index].isEditing = false; // Exit edit mode
-                },
-                cancelEdit(announcement) {
-                    announcement.isEditing = false; // Cancel edit mode
-                },
-                async deleteAnnouncement(id, index) {
-                    const docRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id);
-                    await deleteDoc(docRef);
-                    this.announcements.splice(index, 1); // Remove from local array
+                    const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AnnouncementList'));
+                    this.announcements = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data(),
+                        editTitle: doc.data().title,
+                        editMessage: doc.data().message,
+                        editDeadline: doc.data().deadline,
+                        isEditing: false
+                    }));
                 },
                 async addAnnouncement() {
-                    if (this.newAnnouncement.title && this.newAnnouncement.message) {
-                        const announcementRef = collection(db, 'Classes', this.selectedClass, 'AnnouncementList');
-                        await addDoc(announcementRef, {
-                            title: this.newAnnouncement.title,
-                            message: this.newAnnouncement.message
-                        });
-
-                        // Refresh the announcements list and reset the form
-                        this.fetchAnnouncements();
-                        this.cancelAddAnnouncement();
+                    if (!this.newAnnouncement.title || !this.newAnnouncement.message || !this.newAnnouncement.deadline) {
+                        alert("Please fill out all fields.");
+                        return;
                     }
+
+                    const currentDate = new Date();
+                    const deadlineDate = new Date(this.newAnnouncement.deadline);
+
+                    if (deadlineDate < currentDate) {
+                        alert("The deadline cannot be set in the past.");
+                        return;
+                    }
+
+                    const announcementsRef = collection(db, 'Classes', this.selectedClass, 'AnnouncementList');
+                    const announcementSnapshot = await getDocs(announcementsRef);
+                    const nextId = announcementSnapshot.size + 1;
+
+                    const newAnnouncementRef = doc(announcementsRef, `announcement${nextId}`);
+                    await setDoc(newAnnouncementRef, {
+                        id: nextId,
+                        title: this.newAnnouncement.title,
+                        message: this.newAnnouncement.message,
+                        datePosted: Timestamp.fromDate(currentDate),
+                        deadline: Timestamp.fromDate(deadlineDate)
+                    });
+
+                    this.fetchAnnouncements();
+                    this.newAnnouncement = { title: "", message: "", deadline: "" };
+                    this.showAddAnnouncementForm = false;
+                    alert("Announcement added successfully!");
+                },
+
+                formatDate(timestamp) {
+                    return new Date(timestamp.seconds * 1000).toLocaleString();
+                },
+
+                async deleteAnnouncement(id, index) {
+                    await deleteDoc(doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id));
+                    this.announcements.splice(index, 1);
+                },
+                editAnnouncement(announcement) {
+                    announcement.isEditing = true;
+                },
+                async saveEdit(announcement) {
+                    await updateDoc(doc(db, 'Classes', this.selectedClass, 'AnnouncementList', announcement.id), {
+                        title: announcement.editTitle,
+                        message: announcement.editMessage,
+                        deadline: Timestamp.fromDate(new Date(announcement.editDeadline))
+                    });
+                    this.fetchAnnouncements();
+                    announcement.isEditing = false;
+                },
+                cancelEdit(announcement) {
+                    announcement.isEditing = false;
                 },
                 cancelAddAnnouncement() {
                     this.showAddAnnouncementForm = false;
-                    this.newAnnouncement = { title: "", message: "" }; // Reset new announcement data
+                    this.newAnnouncement = { title: "", message: "", deadline: "" };
+                },
+                formatDate(timestamp) {
+                    return new Date(timestamp.seconds * 1000).toLocaleString();
                 }
             }
         });
 
         vueApp.mount('#app');
     </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
 </body>
 
 </html>
