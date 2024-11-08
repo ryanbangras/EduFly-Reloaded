@@ -7,7 +7,7 @@
     <title>EduFly</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Firebase Link -->
-    <script type="module" src="login_teacher.js" defer></script>
+    <script type="module" src="login_student.js" defer></script>
 
     <style>
         /* Navbar styling */
@@ -162,7 +162,46 @@
 <!-- 
         <p>Don't Have an Account? Click <a href='../Create Account/register_teacher.html'>Here</a> to create one.</p> -->
     </div>
-    
+    <script type="module">
+        import { db } from "../js/database.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "../js/database.js";
+
+        const submit = document.getElementById('submit')
+        submit.addEventListener("click", function (event) {
+            event.preventDefault()
+
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+
+            const auth = getAuth();
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    alert("Logging In")
+                    window.location.href = "../Homepage/home_student.html"
+                }).catch((error) => {
+                    const errorMessage = error.message;
+                    alert(errorMessage)
+                });
+        })
+
+        // const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const googleLogin = document.getElementById("google-login-btn")
+        googleLogin.addEventListener("click", function () {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log(user);
+                    window.location.href = "../Homepage/home_student.html"
+                }).catch((error) => {
+                    const errorMessage = error.message;
+                    alert(errorMessage);
+                });
+        })
+
+    </script>
 </body>
 
 </html>
