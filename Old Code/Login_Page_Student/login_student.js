@@ -1,6 +1,6 @@
 // when user manually keys in 
-import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '../js/database.js';
-import { db, getFirestore, doc, getDoc, collection, getDocs } from '../js/database.js';
+import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '../../frontend/js/database.js';
+import { db, getFirestore, doc, getDoc, collection, getDocs } from '../../frontend/js/database.js';
 
 // Function to check user in different collections
 async function checkUserInCollections(db, email, collections) {
