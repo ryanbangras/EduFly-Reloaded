@@ -52,9 +52,11 @@ const vueApp = Vue.createApp({
 
                 if (response.ok) {
                     this.message = '<div class="alert alert-success">Homework uploaded successfully</div>';
-                    this.loginEmail = ""; // Clear form data if necessary
-                    this.userClass = "";
+                    // Clear form data if necessary
+                    // this.loginEmail = ""; 
+                    // this.userClass = "";
                     this.certificateFile = null;
+                    document.getElementById('homeworkFileInput').value = ""; // Clear file input in UI
                 } else {
                     this.message = '<div class="alert alert-danger">Failed to upload homework</div>';
                 }
