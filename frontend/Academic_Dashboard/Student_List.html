@@ -100,12 +100,20 @@
                     <input type="text" v-model="newStudent.studentId" id="studentId" class="form-control" required>
                 </div>
                 <div class="mb-3">
+                    <label for="studentNRIC" class="form-label">Student NRIC</label>
+                    <input type="text" v-model="newStudent.NRIC" id="NRIC" class="form-control" required>
+                </div>
+                <div class="mb-3">
                     <label for="firstName" class="form-label">First Name</label>
                     <input type="text" v-model="newStudent.Fname" id="firstName" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label for="lastName" class="form-label">Last Name</label>
                     <input type="text" v-model="newStudent.Lname" id="lastName" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="birthdate" class="form-label">Date of Birth (YYYY-MM-DD)</label>
+                    <input type="text" v-model="newStudent.BirthDate" id="birthDate" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-success">Add Student</button>
                 <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
@@ -126,6 +134,8 @@
                         <p><strong>Student ID:</strong> {{ selectedStudent.studentId }}</p>
                         <p><strong>First Name:</strong> {{ selectedStudent.Fname }}</p>
                         <p><strong>Last Name:</strong> {{ selectedStudent.Lname }}</p>
+                        <p><strong>NRIC:</strong>{{selectedStudent.NRIC}}</p>
+                        <p><strong>Date of Birth:</strong>{{selectedStudent.BirthDate}}</p>
                         <p><strong>AbsentCount:</strong> {{selectedStudent.AbsentCount }}</p>
                     </div>
                     <div class="modal-footer">
@@ -181,9 +191,11 @@
                         querySnapshot.forEach((doc) => {
                             this.students.push({
                                 studentId: doc.data().StudentID,
+                                NRIC: doc.data().NRIC,
                                 Fname: doc.data().FName,
                                 Lname: doc.data().LName,
-                                AbsentCount: doc.data().AbsentCount
+                                AbsentCount: doc.data().AbsentCount,
+                                BirthDate: doc.data().BirthDate
                             });
                         });
                     }
@@ -195,6 +207,8 @@
                             StudentID: this.newStudent.studentId,
                             FName: this.newStudent.Fname,
                             LName: this.newStudent.Lname,
+                            NRIC: this.newStudent.NRIC,
+                            BirthDate: this.newStudent.BirthDate,
                             AbsentCount: 0
                         });
                         this.fetchStudents();
