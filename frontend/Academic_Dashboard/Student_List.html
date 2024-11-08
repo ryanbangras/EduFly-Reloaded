@@ -126,6 +126,7 @@
                         <p><strong>Student ID:</strong> {{ selectedStudent.studentId }}</p>
                         <p><strong>First Name:</strong> {{ selectedStudent.Fname }}</p>
                         <p><strong>Last Name:</strong> {{ selectedStudent.Lname }}</p>
+                        <p><strong>AbsentCount:</strong> {{selectedStudent.AbsentCount }}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="closeStudentInfoModal">Close</button>
@@ -148,7 +149,8 @@
                     newStudent: {
                         studentId: "",
                         Fname: "",
-                        Lname: ""
+                        Lname: "",
+                        AbsentCount: 0
                     },
                     selectedStudent: null // set to null initially
                 };
@@ -181,6 +183,7 @@
                                 studentId: doc.data().StudentID,
                                 Fname: doc.data().FName,
                                 Lname: doc.data().LName,
+                                AbsentCount: doc.data().AbsentCount
                             });
                         });
                     }
@@ -191,7 +194,8 @@
                         await setDoc(studentRef, {
                             StudentID: this.newStudent.studentId,
                             FName: this.newStudent.Fname,
-                            LName: this.newStudent.lname
+                            LName: this.newStudent.Lname,
+                            AbsentCount: 0
                         });
                         this.fetchStudents();
                         this.cancelAddStudent();
