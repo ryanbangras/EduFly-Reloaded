@@ -3,7 +3,8 @@ import { auth, db, onAuthStateChanged, doc, getDoc } from '../js/database.js';
 const vueApp = Vue.createApp({
     data() {
         return {
-            loginEmail: "", // Holds StudentID after Firebase fetch
+            studentName: "",
+            userId: "", // Holds StudentID after Firebase fetch
             userClass: "",  // Holds Class after Firebase fetch
             certificateFile: null, // Stores the uploaded file
             message: "" // Stores the response message
@@ -18,9 +19,10 @@ const vueApp = Vue.createApp({
 
                 if (docSnap.exists()) {
                     console.log("vue data types will be populated");
-                    this.loginEmail = docSnap.data().StudentID; // Populates StudentID
-                    this.userClass = docSnap.data().Class;       // Populates Class
-                    console.log(this.loginEmail, this.userClass);
+                    this.studentName = docSnap.data().FName + " " + docSnap.data().LName; // Populates Student Full Name
+                    this.userId = docSnap.data().StudentID; // Populates StudentID
+                    this.userClass = docSnap.data().Class; // Populates Class
+                    console.log(this.studentName, this.userId, this.userClass);
                 } else {
                     console.error("No such document!");
                 }
@@ -40,7 +42,7 @@ const vueApp = Vue.createApp({
             }
 
             const formData = new FormData();
-            formData.append('studentId', this.loginEmail);
+            formData.append('studentId', this.userId);
             formData.append('sectionId', this.userClass);
             formData.append('certificateFile', this.certificateFile);
 
@@ -52,10 +54,7 @@ const vueApp = Vue.createApp({
 
                 if (response.ok) {
                     this.message = '<div class="alert alert-success">Medical certificate uploaded successfully</div>';
-                    // Clear form data if necessary
-                    // this.loginEmail = ""; 
-                    // this.userClass = "";
-                    this.certificateFile = null;
+                    this.certificateFile = null; // Clear file data
                     document.getElementById('certificateFileInput').value = ""; // Clear file input in UI
                 } else {
                     this.message = '<div class="alert alert-danger">Failed to upload medical certificate</div>';

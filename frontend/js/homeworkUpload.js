@@ -4,7 +4,7 @@ const vueApp = Vue.createApp({
     data() {
         return {
             title: "",
-            loginEmail: "", // Holds StudentID after Firebase fetch
+            userId: "", // Holds StudentID after Firebase fetch
             userClass: "",  // Holds Class after Firebase fetch
             homeworkFile: null, // Stores the uploaded file
             message: "" // Stores the response message
@@ -23,9 +23,9 @@ const vueApp = Vue.createApp({
 
                 if (docSnap.exists()) {
                     console.log("vue data types will be populated");
-                    this.loginEmail = docSnap.data().StudentID; // Populates StudentID
-                    this.userClass = docSnap.data().Class;       // Populates Class
-                    console.log(this.loginEmail, this.userClass);
+                    this.userId = docSnap.data().StudentID; // Populates StudentID
+                    this.userClass = docSnap.data().Class; // Populates Class
+                    console.log(this.userId, this.userClass);
                 } else {
                     console.error("No such document!");
                 }
@@ -45,8 +45,9 @@ const vueApp = Vue.createApp({
             }
 
             const formData = new FormData();
-            formData.append('studentId', this.loginEmail);
+            formData.append('studentId', this.userId);
             formData.append('sectionId', this.userClass);
+            formData.append('title', this.title);
             formData.append('homeworkFile', this.homeworkFile);
 
             try {
@@ -55,17 +56,19 @@ const vueApp = Vue.createApp({
                     body: formData
                 });
 
+                const responseText = await response.text(); // Get server response text for logging
+
                 if (response.ok) {
                     this.message = '<div class="alert alert-success">Homework uploaded successfully</div>';
-                    // Clear form data if necessary
-                    // this.loginEmail = ""; 
-                    // this.userClass = "";
-                    this.certificateFile = null;
+                    this.homeworkFile = null; // Clear file data
+                    this.title = "Untitled";
                     document.getElementById('homeworkFileInput').value = ""; // Clear file input in UI
                 } else {
+                    console.error('Server responded with error:', response.status, responseText);
                     this.message = '<div class="alert alert-danger">Failed to upload homework</div>';
                 }
             } catch (error) {
+                console.error('Error during upload:', error);
                 this.message = '<div class="alert alert-danger">Error uploading homework</div>';
             }
         }
