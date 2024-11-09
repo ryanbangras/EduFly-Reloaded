@@ -133,14 +133,17 @@ http-server -p 5500
 
 ## Usage (TO BE UPDATED)
 
+
 ### Login Credentials:
 1. Teacher Account:
 - Username: `chewhuile@gmail.com`
 - Password: `testing123$$`
+Teacher Hui Le oversees and teaches 2 classes: 3A and 4A.
 
 2. Student Gmail Account:
 - Username: `toddlee8888@gmail.com`
 - Password: `testing123$$`
+Todd Lee is a student in class 3A.
 
 ## Endpoints
 
