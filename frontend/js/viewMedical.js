@@ -9,6 +9,15 @@ const vueApp = Vue.createApp({
         };
     },
     async created() {
+        // Check if there's a 'class' parameter in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const classFromUrl = urlParams.get('class');
+
+        // Set selectedClass from URL if it exists
+        if (classFromUrl) {
+            this.selectedClass = classFromUrl;
+            await this.loadMedicalCertificates();
+        }
         // Check for user authentication and fetch classes
         onAuthStateChanged(auth, async (user) => {
             if (user) {
