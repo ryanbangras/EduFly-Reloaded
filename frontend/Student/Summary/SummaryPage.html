@@ -14,6 +14,10 @@
     <!-- Firebase Link -->
     <script type="module" src="../../js/update.js"></script>
 
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+
+
     <title>EduFly Portal</title>
     <style>
         .navbar {
@@ -82,7 +86,7 @@
                 placeholder="Student ID" disabled>
         </div>
 
-       <!-- Collapsible Attendance Section -->
+        <!-- Collapsible Attendance Section -->
         <div class="accordion" id="attendanceAccordion">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="attendanceHeading">
@@ -128,11 +132,16 @@
             </div>
         </div>
 
+        <!-- Generate PDF Button -->
+        <div class="mb-4">
+            <button id="generatePdf" class="btn btn-success">Generate PDF</button>
+        </div>
+
     </div>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, doc, getDoc, collection, query, where, getDocs } from '../../js/database.js';
-
+        import { auth, db, onAuthStateChanged, doc, getDoc, collection, getDocs } from '../../js/database.js';
+    
         const vueApp = Vue.createApp({
             data() {
                 return {
@@ -156,21 +165,16 @@
                         if (user) {
                             const email = user.email;
                             this.profile.email = email;
-
+    
                             // Fetch profile data from Firestore
                             const docRef = doc(db, "Students", email);
                             const docSnap = await getDoc(docRef);
                             if (docSnap.exists()) {
                                 this.profile = { ...this.profile, ...docSnap.data() };
-
-                                // Set selectedClass and selectedStudentID from the profile data
+    
                                 this.selectedClass = this.profile.Class;
                                 this.selectedStudentID = this.profile.StudentID.trim();
-
-                                console.log("Selected Class:", this.selectedClass); // Debugging
-                                console.log("Selected Student ID:", this.selectedStudentID); // Debugging
-
-                                // After profile is loaded, fetch attendance data
+    
                                 this.fetchAttendance();
                                 this.fetchScores();
                             } else {
@@ -182,40 +186,28 @@
                         }
                     });
                 },
-
+    
                 async fetchAttendance() {
-                    // Check if the selected class and student ID are defined
                     if (!this.selectedClass || !this.selectedStudentID) {
                         console.error("Selected class or student ID is not defined.");
                         return;
                     }
-
+    
                     try {
-                        // Reference to the Attendance collection for the selected class
                         const attendanceRef = collection(db, "Classes", this.selectedClass, "Attendance");
-
-                        // Fetch all date collections in Attendance
                         const querySnapshot = await getDocs(attendanceRef);
-
+    
                         if (!querySnapshot.empty) {
-                            this.attendanceData = {}; // Reset attendance data
-
-                            // Iterate through each date collection
+                            this.attendanceData = {}; 
+    
                             querySnapshot.forEach(async (dateDoc) => {
-                                const date = dateDoc.id; // The ID of each collection is the date
-                                // console.log("Processing attendance for date:", date); // Debugging
-                                
-                                // Check if the student ID exists as a map inside the date document
+                                const date = dateDoc.id;
                                 const studentAttendanceMap = dateDoc.data()[this.selectedStudentID];
-
+    
                                 if (studentAttendanceMap) {
-                                    // Retrieve the status from the student's map for this date
                                     const status = studentAttendanceMap.status;
-                                    // console.log(`Attendance status on ${date}:`, status); // Debugging
                                     this.attendanceData[date] = status;
                                 } else {
-                                    // // If no attendance data for this student on that date, store "No record"
-                                    // console.log(`No attendance record for ${this.selectedStudentID} on ${date}`);
                                     this.attendanceData[date] = "No record";
                                 }
                             });
@@ -226,57 +218,84 @@
                         console.error("Error fetching attendance data:", error);
                     }
                 },
-
+    
                 async fetchScores() {
-    // Check if the selected class and student ID are defined
-    if (!this.selectedClass || !this.selectedStudentID) {
-        console.error("Selected class or student ID is not defined.");
-        return;
-    }
-
-    try {
-        // Reference to the Scores collection for the selected class
-        const scoresRef = collection(db, "Classes", this.selectedClass, "Scores");
-
-        // Fetch all assignment collections in Scores
-        const querySnapshot = await getDocs(scoresRef);
-        console.log(querySnapshot);
-
-        if (!querySnapshot.empty) {
-            this.scoresData = {}; // Reset scores data
-
-            // Iterate through each assignment collection using a for...of loop
-            for (const assignmentDoc of querySnapshot.docs) {
-                const assignmentId = assignmentDoc.id; // The ID of each collection is "assignment${id}"
-                // console.log("Processing score for assignment:", assignmentId); // Debugging
-                
-                // Check if the student ID exists as a map inside the assignment document
-                const studentScoreMap = assignmentDoc.data()[this.selectedStudentID];
-
-                if (studentScoreMap) {
-                    // Retrieve the score from the student's map for this assignment
-                    const score = studentScoreMap.score;
-                    // console.log(`Assignment ID: ${assignmentId}, Score for the student: ${score}`); // Print assignment ID and score
-                    this.scoresData[assignmentId] = score;
-                } else {
-                    // If no score data for this student on that assignment, store "No record"
-                    // console.log(`No score record for ${this.selectedStudentID} in assignment ${assignmentId}`);
-                    this.scoresData[assignmentId] = "No record";
+                    if (!this.selectedClass || !this.selectedStudentID) {
+                        console.error("Selected class or student ID is not defined.");
+                        return;
+                    }
+    
+                    try {
+                        const scoresRef = collection(db, "Classes", this.selectedClass, "Scores");
+                        const querySnapshot = await getDocs(scoresRef);
+    
+                        if (!querySnapshot.empty) {
+                            this.scoresData = {};
+    
+                            for (const assignmentDoc of querySnapshot.docs) {
+                                const assignmentId = assignmentDoc.id;
+    
+                                const studentScoreMap = assignmentDoc.data()[this.selectedStudentID];
+    
+                                if (studentScoreMap) {
+                                    const score = studentScoreMap.score;
+                                    this.scoresData[assignmentId] = score;
+                                } else {
+                                    this.scoresData[assignmentId] = "No record";
+                                }
+                            }
+                        } else {
+                            console.log("No scores records found for this class.");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching scores data:", error);
+                    }
+                },
+    
+                generatePDF() {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+    
+                    // Add the title
+                    doc.setFontSize(18);
+                    doc.text('Student Summary', 14, 20);
+    
+                    // Add profile information
+                    doc.setFontSize(12);
+                    doc.text(`Name: ${this.profile.FName} ${this.profile.LName}`, 14, 30);
+                    doc.text(`Class: ${this.profile.Class}`, 14, 40);
+                    doc.text(`Student ID: ${this.profile.StudentID}`, 14, 50);
+    
+                    // Add attendance data
+                    doc.text('Attendance:', 14, 60);
+                    let yOffset = 70;
+                    for (const [date, status] of Object.entries(this.attendanceData)) {
+                        doc.text(`${date}: ${status}`, 14, yOffset);
+                        yOffset += 10;
+                    }
+    
+                    // Add scores data
+                    doc.text('Scores:', 14, yOffset);
+                    yOffset += 10;
+                    for (const [assignmentId, score] of Object.entries(this.scoresData)) {
+                        doc.text(`${assignmentId}: ${score}`, 14, yOffset);
+                        yOffset += 10;
+                    }
+    
+                    // Save the PDF
+                    doc.save('student_summary.pdf');
                 }
             }
-        } else {
-            console.log("No scores records found for this class.");
-        }
-    } catch (error) {
-        console.error("Error fetching scores data:", error);
-    }
-}
-            }
-
         });
-
+    
         vueApp.mount('#app');
+    
+        // Bind the PDF generation directly to the button click event
+    document.getElementById('generatePdf').addEventListener('click', () => {
+        vueApp.generatePDF();  // Directly call the generatePDF method from the vueApp instance
+        });
     </script>
+    
 </body>
 
 </html>
