@@ -113,8 +113,7 @@
                     <td>{{ consultation.preferredTime }}</td>
                     <td>
                         <button class="btn btn-success" @click="approveConsultation(consultation.id)">Approve</button>
-                        <button class="btn btn-warning" @click="requestTimeChange(consultation.id)">Request Time
-                            Change</button>
+                        <button class="btn btn-warning" @click="rejectConsultation(consultation.id)">Reject</button>
                     </td>
                 </tr>
             </tbody>
@@ -280,16 +279,21 @@
                 },
 
 
-                // Request a time change for a consultation
-                async requestTimeChange(consultationId) {
+                async rejectConsultation(consultationId) {
                     try {
+                        // Reference to the specific consultation document
                         const consultationRef = doc(db, 'Classes', this.selectedClass, 'RequestedConsultations', consultationId);
-                        await updateDoc(consultationRef, { status: 'Time Change Requested' });
-                        alert('Time change request sent!');
-                        this.fetchConsultations(); // Refresh the consultation list
+
+                        // Delete the consultation document
+                        await deleteDoc(consultationRef);
+
+                        alert('Consultation rejected successfully!');
+
+                        // Refresh the list of consultations after deletion
+                        this.fetchConsultations();
                     } catch (error) {
-                        console.error('Error requesting time change:', error);
-                        alert('Failed to request time change.');
+                        console.error('Error rejecting consultation:', error);
+                        alert('Failed to reject consultation.');
                     }
                 }
             }
