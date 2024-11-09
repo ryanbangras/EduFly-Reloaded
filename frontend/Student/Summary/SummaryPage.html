@@ -119,7 +119,7 @@
                     <div class="accordion-body">
                         <ul v-if="Object.keys(scoresData).length > 0">
                             <li v-for="(score, assignmentId) in scoresData" :key="assignmentId">
-                                <strong>Assignment {{ assignmentId }}:</strong> {{ score }}
+                                <strong> {{ assignmentId }}:</strong> {{ score }}
                             </li>
                         </ul>
                         <p v-else>No scores records found.</p>
@@ -172,6 +172,7 @@
 
                                 // After profile is loaded, fetch attendance data
                                 this.fetchAttendance();
+                                this.fetchScores();
                             } else {
                                 console.error("No such document!");
                             }
@@ -202,7 +203,7 @@
                             // Iterate through each date collection
                             querySnapshot.forEach(async (dateDoc) => {
                                 const date = dateDoc.id; // The ID of each collection is the date
-                                console.log("Processing attendance for date:", date); // Debugging
+                                // console.log("Processing attendance for date:", date); // Debugging
                                 
                                 // Check if the student ID exists as a map inside the date document
                                 const studentAttendanceMap = dateDoc.data()[this.selectedStudentID];
@@ -210,11 +211,11 @@
                                 if (studentAttendanceMap) {
                                     // Retrieve the status from the student's map for this date
                                     const status = studentAttendanceMap.status;
-                                    console.log(`Attendance status on ${date}:`, status); // Debugging
+                                    // console.log(`Attendance status on ${date}:`, status); // Debugging
                                     this.attendanceData[date] = status;
                                 } else {
-                                    // If no attendance data for this student on that date, store "No record"
-                                    console.log(`No attendance record for ${this.selectedStudentID} on ${date}`);
+                                    // // If no attendance data for this student on that date, store "No record"
+                                    // console.log(`No attendance record for ${this.selectedStudentID} on ${date}`);
                                     this.attendanceData[date] = "No record";
                                 }
                             });
@@ -227,50 +228,51 @@
                 },
 
                 async fetchScores() {
-                    // Check if the selected class and student ID are defined
-                    if (!this.selectedClass || !this.selectedStudentID) {
-                        console.error("Selected class or student ID is not defined.");
-                        return;
-                    }
+    // Check if the selected class and student ID are defined
+    if (!this.selectedClass || !this.selectedStudentID) {
+        console.error("Selected class or student ID is not defined.");
+        return;
+    }
 
-                    try {
-                        // Reference to the Scores collection for the selected class
-                        const scoresRef = collection(db, "Classes", this.selectedClass, "Scores");
+    try {
+        // Reference to the Scores collection for the selected class
+        const scoresRef = collection(db, "Classes", this.selectedClass, "Scores");
 
-                        // Fetch all assignment collections in Scores
-                        const querySnapshot = await getDocs(scoresRef);
-                        console.log(querySnapshot)
+        // Fetch all assignment collections in Scores
+        const querySnapshot = await getDocs(scoresRef);
+        console.log(querySnapshot);
 
-                        if (!querySnapshot.empty) {
-                            this.scoresData = {}; // Reset scores data
+        if (!querySnapshot.empty) {
+            this.scoresData = {}; // Reset scores data
 
-                            // Iterate through each assignment collection
-                            querySnapshot.forEach(async (assignmentDoc) => {
-                                const assignmentId = assignmentDoc.id; // The ID of each collection is the assignment ID
-                                console.log("Processing score for assignment:", assignmentId); // Debugging
-                                
-                                // Check if the student ID exists as a map inside the assignment document
-                                const studentScoreMap = assignmentDoc.data()[this.selectedStudentID];
+            // Iterate through each assignment collection using a for...of loop
+            for (const assignmentDoc of querySnapshot.docs) {
+                const assignmentId = assignmentDoc.id; // The ID of each collection is "assignment${id}"
+                // console.log("Processing score for assignment:", assignmentId); // Debugging
+                
+                // Check if the student ID exists as a map inside the assignment document
+                const studentScoreMap = assignmentDoc.data()[this.selectedStudentID];
 
-                                if (studentScoreMap) {
-                                    // Retrieve the score from the student's map for this assignment
-                                    const score = studentScoreMap.score;
-                                    console.log(`Score for assignment ${assignmentId}:`, score); // Debugging
-                                    this.scoresData[assignmentId] = score;
-                                } else {
-                                    // If no score data for this student on that assignment, store "No record"
-                                    console.log(`No score record for ${this.selectedStudentID} in assignment ${assignmentId}`);
-                                    this.scoresData[assignmentId] = "No record";
-                                }
-                            });
-                        } else {
-                            console.log("No scores records found for this class.");
-                        }
-                    } catch (error) {
-                        console.error("Error fetching scores data:", error);
-                    }
+                if (studentScoreMap) {
+                    // Retrieve the score from the student's map for this assignment
+                    const score = studentScoreMap.score;
+                    // console.log(`Assignment ID: ${assignmentId}, Score for the student: ${score}`); // Print assignment ID and score
+                    this.scoresData[assignmentId] = score;
+                } else {
+                    // If no score data for this student on that assignment, store "No record"
+                    // console.log(`No score record for ${this.selectedStudentID} in assignment ${assignmentId}`);
+                    this.scoresData[assignmentId] = "No record";
                 }
             }
+        } else {
+            console.log("No scores records found for this class.");
+        }
+    } catch (error) {
+        console.error("Error fetching scores data:", error);
+    }
+}
+            }
+
         });
 
         vueApp.mount('#app');
