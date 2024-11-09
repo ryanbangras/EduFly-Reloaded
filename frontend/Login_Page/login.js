@@ -27,7 +27,7 @@ submit.addEventListener("click", async function (event) {
                 window.location.href = "../Homepage/home_student.html";
             } else {
                 alert("Welcome, Teacher!");
-                window.location.href = "../Homepage/home_teacher.html";
+                window.location.href = "../Teacher/Homepage/home_teacher.html";
             }
         }
     } catch (error) {
@@ -59,7 +59,7 @@ googleLogin.addEventListener("click", async function () {
                 window.location.href = "../Homepage/home_student.html";
             } else {
                 alert("Welcome, Teacher!");
-                window.location.href = "../Homepage/home_teacher.html";
+                window.location.href = "../Teacher/Homepage/home_teacher.html";
             }
         }
     } catch (error) {

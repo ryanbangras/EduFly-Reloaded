@@ -11,7 +11,7 @@
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Firebase Link -->
-    <script type="module" src="../js/update.js"></script>
+    <script type="module" src="../../js/update.js"></script>
 
     <title>EduFly Portal</title>
     <style>
@@ -39,7 +39,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
-            <img src="../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
+            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
             EduFly
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -116,7 +116,7 @@
     </div>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, updateDoc, deleteDoc, increment } from '../js/database.js';
+        import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, updateDoc, deleteDoc, increment } from '../../js/database.js';
 
         const vueApp = Vue.createApp({
             data() {
