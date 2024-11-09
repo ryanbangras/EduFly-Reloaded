@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Consultation</title>
+
+    <!-- Bootstrap for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- Firebase Link -->
+    <script type="module" src="../../js/update.js"></script>
+
+    <style>
+        .navbar {
+            background-color: green;
+        }
+
+        .calendar-grid {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .calendar-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .calendar-nav button {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .calendar-nav button:hover {
+        background-color: #45a049;
+    }
+
+    .calendar-row {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .calendar-day {
+        padding: 15px;
+        background-color: #f9f9f9;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 14px;
+        position: relative;
+        min-height: 50px;
+    }
+
+    .calendar-day.empty {
+        background-color: transparent;
+    }
+
+    .calendar-day:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+    }
+
+    .calendar-day .consultation {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        right: 5px;
+        font-size: 12px;
+        background-color: #ffcc00;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .calendar-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 0;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .calendar-header div {
+        font-size: 16px;
+    }
+
+    @media screen and (max-width: 600px) {
+        .calendar-row {
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-day {
+            font-size: 12px;
+            padding: 10px;
+        }
+
+        .calendar-nav button {
+            font-size: 14px;
+            padding: 8px;
+        }
+    }
+    </style>
+</head>
+
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="../Homepage/home_student.html">
+            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top"
+                style="height: 30px; width: auto;">
+            EduFly
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#">&#9997;&#65039; Homework</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">&#128467;&#65039; Timetable</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">&#127891; Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">&#128226; Announcement</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="mt-5">
+        <h3>Approved Consultations Calendar</h3>
+        <div id="calendar" class="calendar-grid">
+            <!-- Calendar will be generated here dynamically -->
+        </div>
+    </div>
+
+
+
+
+    <!-- Consultation Form -->
+    <div id="app" class="container mt-5">
+        <h2>Request a Consultation</h2>
+        <form @submit.prevent="submitForm">
+            <section>
+                <label for="student-name">Your Name:</label>
+                <input type="text" id="student-name" v-model="student.name" class="form-control" required disabled>
+
+                <label for="student-id">Student ID:</label>
+                <input type="text" id="student-id" v-model="student.id" class="form-control" required disabled>
+
+                <label for="student-class">Class:</label>
+                <input type="text" id="student-class" v-model="student.class" class="form-control" required disabled>
+            </section>
+
+            <section>
+                <label for="subject">Subject/Topic for Consultation:</label>
+                <input type="text" id="subject" v-model="consultation.subject" class="form-control" required>
+
+                <label for="consultation-reason">Reason for Consultation:</label>
+                <textarea id="consultation-reason" v-model="consultation.reason" class="form-control" rows="4"
+                    required></textarea>
+            </section>
+
+            <section>
+                <label for="preferred-time">Preferred Date & Time for Consultation:</label>
+                <input type="datetime-local" id="preferred-time" v-model="consultation.preferredTime"
+                    class="form-control" required>
+            </section>
+
+            <button type="submit" class="btn btn-primary mt-3">Submit Request</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, doc, getDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from '../../js/database.js';
+
+        const vueApp = Vue.createApp({
+            data() {
+                return {
+                    student: {
+                        name: '',
+                        id: '',
+                        class: ''
+                    },
+                    consultation: {
+                        subject: '',
+                        reason: '',
+                        preferredTime: '',
+                        teacher: ''  // To hold the selected teacher's email
+                    },
+                    approvedConsultations: [],  // To hold the list of approved consultations
+                    currentMonth: new Date(), // Current month and year
+                };
+            },
+            async created() {
+                await this.fetchUserData();  // Fetch user data first
+                await this.fetchApprovedConsultations();  // Fetch approved consultations after user data is fetched
+            },
+            methods: {
+                // Fetch user data and resolve once it's done
+                async fetchUserData() {
+                    return new Promise((resolve, reject) => {
+                        onAuthStateChanged(auth, async (user) => {
+                            if (user) {
+                                const userEmail = user.email;
+                                const docRef = doc(db, 'Students', userEmail);
+                                const docSnap = await getDoc(docRef);
+
+                                if (docSnap.exists()) {
+                                    const studentData = docSnap.data();
+                                    this.student.name = studentData.FName + " " + studentData.LName;
+                                    this.student.id = studentData.StudentID;
+                                    this.student.class = studentData.Class;
+                                    console.log(this.student.class); // Logging class for debugging
+                                    resolve();  // Resolve the promise once the data is fetched
+                                } else {
+                                    console.error("No such student document!");
+                                    reject(new Error('No such student document'));
+                                }
+                            } else {
+                                console.error("User not logged in.");
+                                window.location.href = "../Login_Page/login.html";  // Redirect if user is not logged in
+                            }
+                        });
+                    });
+                },
+
+                async fetchApprovedConsultations() {
+                    try {
+                        if (!this.student.class) {
+                            console.error('Student class is undefined or missing.');
+                            return;
+                        }
+
+                        const approvedConsultationsRef = collection(db, 'Classes', this.student.class, 'ApprovedConsultations');
+                        const q = query(approvedConsultationsRef, where('studentID', '==', this.student.id));
+
+                        const querySnapshot = await getDocs(q);
+                        if (querySnapshot.empty) {
+                            console.log('No approved consultations found.');
+                            this.approvedConsultations = [];
+                        } else {
+                            this.approvedConsultations = querySnapshot.docs.map(doc => {
+                                const consultation = doc.data();
+                                let formattedTime;
+
+                                // Check if preferredTime is a Firestore Timestamp
+                                if (consultation.preferredTime && consultation.preferredTime.toDate) {
+                                    formattedTime = consultation.preferredTime.toDate();
+                                } else if (consultation.preferredTime instanceof Date) {
+                                    // If it's already a Date object, just use it directly
+                                    formattedTime = consultation.preferredTime;
+                                } else if (typeof consultation.preferredTime === 'string') {
+                                    // If it's a string, convert it to a Date object
+                                    formattedTime = new Date(consultation.preferredTime);
+                                } else {
+                                    // Handle cases where it's neither a Firestore Timestamp nor a Date nor a valid string
+                                    console.error('preferredTime is not a valid Timestamp, Date, or string:', consultation.preferredTime);
+                                    formattedTime = new Date(); // Default to current date if invalid
+                                }
+
+                                return {
+                                    id: doc.id,
+                                    ...consultation,
+                                    formattedPreferredTime: formattedTime,
+                                    title: consultation.subject,
+                                    start: formattedTime
+                                };
+                            });
+
+                            console.log('Approved consultations:', this.approvedConsultations);
+                        }
+
+                        // Generate the mock calendar after fetching the consultations
+                        this.generateMockCalendar();
+                    } catch (error) {
+                        console.error('Error fetching approved consultations:', error);
+                    }
+                }
+                ,
+                  // Generate the calendar grid for the current month
+    generateMockCalendar() {
+        const calendarElement = document.getElementById('calendar');
+        if (!calendarElement) {
+            console.error('Calendar element not found');
+            return;
+        }
+
+        // Get the first day of the current month
+        const firstDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
+
+        // Get the last day of the current month
+        const lastDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 0);
+
+        // Get the total number of days in the current month
+        const daysInMonth = lastDay.getDate();
+
+        // Get the starting day of the week for the first day of the month
+        const startDay = firstDay.getDay();
+
+        // Clear previous calendar content
+        calendarElement.innerHTML = '';
+
+        // Add navigation for previous and next month
+        const nav = document.createElement('div');
+        nav.classList.add('calendar-nav');
+        const prevMonthBtn = document.createElement('button');
+        prevMonthBtn.textContent = 'Previous Month';
+        prevMonthBtn.addEventListener('click', () => this.changeMonth(-1));
+        const nextMonthBtn = document.createElement('button');
+        nextMonthBtn.textContent = 'Next Month';
+        nextMonthBtn.addEventListener('click', () => this.changeMonth(1));
+        nav.appendChild(prevMonthBtn);
+        nav.appendChild(nextMonthBtn);
+        calendarElement.appendChild(nav);
+         // Display the current month and year
+         const monthYearHeader = document.createElement('div');
+        monthYearHeader.classList.add('month-year-header');
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const monthName = monthNames[this.currentMonth.getMonth()];
+        const year = this.currentMonth.getFullYear();
+        monthYearHeader.textContent = `${monthName} ${year}`;
+        calendarElement.appendChild(monthYearHeader);
+
+        // Create header row with day names
+        const headerRow = document.createElement('div');
+        headerRow.classList.add('calendar-header');
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        daysOfWeek.forEach(day => {
+            const dayCell = document.createElement('div');
+            dayCell.textContent = day;
+            headerRow.appendChild(dayCell);
+        });
+        calendarElement.appendChild(headerRow);
+
+        // Create the rows of the calendar
+        let dayCounter = 1;
+        let currentRow;
+        for (let i = 0; i < 6; i++) {
+            currentRow = document.createElement('div');
+            currentRow.classList.add('calendar-row');
+            for (let j = 0; j < 7; j++) {
+                const dayCell = document.createElement('div');
+                dayCell.classList.add('calendar-day');
+
+                if (i === 0 && j < startDay) {
+                    // Empty cells before the start of the month
+                    dayCell.classList.add('empty');
+                } else if (dayCounter <= daysInMonth) {
+                    // Actual day cells
+                    dayCell.textContent = dayCounter;
+                    this.addConsultationsToDay(dayCell, dayCounter);
+                    dayCounter++;
+                }
+                currentRow.appendChild(dayCell);
+            }
+            calendarElement.appendChild(currentRow);
+            if (dayCounter > daysInMonth) break; // Stop once all days are added
+        }
+    },
+
+    // Add consultations to the corresponding day cell
+    addConsultationsToDay(dayCell, day) {
+        const consultationsForDay = this.approvedConsultations.filter(consultation => {
+            const consultationDate = new Date(consultation.start);
+            return consultationDate.getDate() === day &&
+                   consultationDate.getMonth() === this.currentMonth.getMonth() &&
+                   consultationDate.getFullYear() === this.currentMonth.getFullYear();
+        });
+
+        if (consultationsForDay.length > 0) {
+            consultationsForDay.forEach(consultation => {
+                const consultationInfo = document.createElement('div');
+                consultationInfo.classList.add('consultation');
+                consultationInfo.textContent = `${consultation.title}: ${consultation.formattedPreferredTime.toLocaleTimeString()}`;
+                dayCell.appendChild(consultationInfo);
+            });
+        }
+    },
+
+    // Handle changing the month (previous or next)
+    changeMonth(direction) {
+        // Update the currentMonth by adding/subtracting one month
+        this.currentMonth.setMonth(this.currentMonth.getMonth() + direction);
+
+        // Re-generate the calendar after updating the month
+        this.generateMockCalendar();
+    },
+
+                // Submit consultation form
+                async submitForm() {
+                    if (this.consultation.subject && this.consultation.reason && this.consultation.preferredTime) {
+                        // Convert preferred time to Date object
+                        const preferredDate = new Date(this.consultation.preferredTime);
+
+                        // Get the current date and time
+                        const currentDate = new Date();
+
+                        // Check if the preferred time is in the past
+                        if (preferredDate < currentDate) {
+                            alert('The preferred time cannot be in the past. Please select a valid future time.');
+                            return;  // Prevent form submission if the time is in the past
+                        }
+
+                        const requestData = {
+                            studentName: this.student.name,
+                            studentID: this.student.id,
+                            studentClass: this.student.class,
+                            subject: this.consultation.subject,
+                            reason: this.consultation.reason,
+                            preferredTime: this.consultation.preferredTime,
+                            createdAt: serverTimestamp(),
+                            status: 'Requested'  // Initial status set to Requested
+                        };
+
+                        try {
+                            // Path: Classes/{className}/RequestedConsultations
+                            const classRef = collection(db, 'Classes', this.student.class, 'RequestedConsultations');
+                            await addDoc(classRef, requestData);
+                            alert('Consultation request submitted successfully!');
+                            // Clear consultation fields (except for name, ID, and class)
+                            this.consultation.subject = '';
+                            this.consultation.reason = '';
+                            this.consultation.preferredTime = '';
+                        } catch (error) {
+                            console.error('Error submitting consultation request: ', error);
+                            alert('Failed to submit request.');
+                        }
+                    } else {
+                        alert('Please fill in all the fields.');
+                    }
+                }
+            }
+        });
+        
+        vueApp.mount('#app');
+    </script>
+
+
+</body>
+
+</html>
