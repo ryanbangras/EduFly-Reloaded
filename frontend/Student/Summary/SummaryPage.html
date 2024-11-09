@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Firebase Link -->
@@ -57,7 +58,6 @@
                         Consults</a></li>
                 <li class="nav-item">
                     <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
-                    <!-- Target for dynamic name -->
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
@@ -66,6 +66,215 @@
         </div>
     </nav>
 
+    <div id="app" class="container mt-4">
+        <h2>Student Info</h2>
+
+        <!-- Form to input class and student ID -->
+        <div class="mb-4">
+            <label for="classInput" class="form-label">Class Name:</label>
+            <input type="text" id="classInput" v-model="profile.Class" class="form-control" placeholder="Class Name"
+                disabled>
+        </div>
+
+        <div class="mb-4">
+            <label for="studentIdInput" class="form-label">Student ID:</label>
+            <input type="text" id="studentIdInput" v-model="profile.StudentID" class="form-control"
+                placeholder="Student ID" disabled>
+        </div>
+
+       <!-- Collapsible Attendance Section -->
+        <div class="accordion" id="attendanceAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="attendanceHeading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#attendanceCollapse" aria-expanded="true" aria-controls="attendanceCollapse">
+                        Attendance
+                    </button>
+                </h2>
+                <div id="attendanceCollapse" class="accordion-collapse collapse" aria-labelledby="attendanceHeading"
+                    data-bs-parent="#attendanceAccordion">
+                    <div class="accordion-body">
+                        <ul v-if="Object.keys(attendanceData).length > 0">
+                            <li v-for="(attendance, date) in attendanceData" :key="date">
+                                <strong>{{ date }}:</strong> {{ attendance }}
+                            </li>
+                        </ul>
+                        <p v-else>No attendance records found.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collapsible Scores Section -->
+        <div class="accordion" id="scoresAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="scoresHeading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#scoresCollapse" aria-expanded="true" aria-controls="scoresCollapse">
+                        Scores
+                    </button>
+                </h2>
+                <div id="scoresCollapse" class="accordion-collapse collapse" aria-labelledby="scoresHeading"
+                    data-bs-parent="#scoresAccordion">
+                    <div class="accordion-body">
+                        <ul v-if="Object.keys(scoresData).length > 0">
+                            <li v-for="(score, assignmentId) in scoresData" :key="assignmentId">
+                                <strong>Assignment {{ assignmentId }}:</strong> {{ score }}
+                            </li>
+                        </ul>
+                        <p v-else>No scores records found.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, doc, getDoc, collection, query, where, getDocs } from '../../js/database.js';
+
+        const vueApp = Vue.createApp({
+            data() {
+                return {
+                    profile: {
+                        email: "",
+                        FName: "",
+                        LName: "",
+                        StudentID: "",
+                        Class: ""
+                    },
+                    attendanceData: {},
+                    scoresData: {}
+                };
+            },
+            created() {
+                this.fetchProfile();
+            },
+            methods: {
+                async fetchProfile() {
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            const email = user.email;
+                            this.profile.email = email;
+
+                            // Fetch profile data from Firestore
+                            const docRef = doc(db, "Students", email);
+                            const docSnap = await getDoc(docRef);
+                            if (docSnap.exists()) {
+                                this.profile = { ...this.profile, ...docSnap.data() };
+
+                                // Set selectedClass and selectedStudentID from the profile data
+                                this.selectedClass = this.profile.Class;
+                                this.selectedStudentID = this.profile.StudentID.trim();
+
+                                console.log("Selected Class:", this.selectedClass); // Debugging
+                                console.log("Selected Student ID:", this.selectedStudentID); // Debugging
+
+                                // After profile is loaded, fetch attendance data
+                                this.fetchAttendance();
+                            } else {
+                                console.error("No such document!");
+                            }
+                        } else {
+                            alert("User not signed in");
+                            window.location.href = "../../Login_Page/login.html";
+                        }
+                    });
+                },
+
+                async fetchAttendance() {
+                    // Check if the selected class and student ID are defined
+                    if (!this.selectedClass || !this.selectedStudentID) {
+                        console.error("Selected class or student ID is not defined.");
+                        return;
+                    }
+
+                    try {
+                        // Reference to the Attendance collection for the selected class
+                        const attendanceRef = collection(db, "Classes", this.selectedClass, "Attendance");
+
+                        // Fetch all date collections in Attendance
+                        const querySnapshot = await getDocs(attendanceRef);
+
+                        if (!querySnapshot.empty) {
+                            this.attendanceData = {}; // Reset attendance data
+
+                            // Iterate through each date collection
+                            querySnapshot.forEach(async (dateDoc) => {
+                                const date = dateDoc.id; // The ID of each collection is the date
+                                console.log("Processing attendance for date:", date); // Debugging
+                                
+                                // Check if the student ID exists as a map inside the date document
+                                const studentAttendanceMap = dateDoc.data()[this.selectedStudentID];
+
+                                if (studentAttendanceMap) {
+                                    // Retrieve the status from the student's map for this date
+                                    const status = studentAttendanceMap.status;
+                                    console.log(`Attendance status on ${date}:`, status); // Debugging
+                                    this.attendanceData[date] = status;
+                                } else {
+                                    // If no attendance data for this student on that date, store "No record"
+                                    console.log(`No attendance record for ${this.selectedStudentID} on ${date}`);
+                                    this.attendanceData[date] = "No record";
+                                }
+                            });
+                        } else {
+                            console.log("No attendance records found for this class.");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching attendance data:", error);
+                    }
+                },
+
+                async fetchScores() {
+                    // Check if the selected class and student ID are defined
+                    if (!this.selectedClass || !this.selectedStudentID) {
+                        console.error("Selected class or student ID is not defined.");
+                        return;
+                    }
+
+                    try {
+                        // Reference to the Scores collection for the selected class
+                        const scoresRef = collection(db, "Classes", this.selectedClass, "Scores");
+
+                        // Fetch all assignment collections in Scores
+                        const querySnapshot = await getDocs(scoresRef);
+                        console.log(querySnapshot)
+
+                        if (!querySnapshot.empty) {
+                            this.scoresData = {}; // Reset scores data
+
+                            // Iterate through each assignment collection
+                            querySnapshot.forEach(async (assignmentDoc) => {
+                                const assignmentId = assignmentDoc.id; // The ID of each collection is the assignment ID
+                                console.log("Processing score for assignment:", assignmentId); // Debugging
+                                
+                                // Check if the student ID exists as a map inside the assignment document
+                                const studentScoreMap = assignmentDoc.data()[this.selectedStudentID];
+
+                                if (studentScoreMap) {
+                                    // Retrieve the score from the student's map for this assignment
+                                    const score = studentScoreMap.score;
+                                    console.log(`Score for assignment ${assignmentId}:`, score); // Debugging
+                                    this.scoresData[assignmentId] = score;
+                                } else {
+                                    // If no score data for this student on that assignment, store "No record"
+                                    console.log(`No score record for ${this.selectedStudentID} in assignment ${assignmentId}`);
+                                    this.scoresData[assignmentId] = "No record";
+                                }
+                            });
+                        } else {
+                            console.log("No scores records found for this class.");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching scores data:", error);
+                    }
+                }
+            }
+        });
+
+        vueApp.mount('#app');
+    </script>
 </body>
 
 </html>
