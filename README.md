@@ -27,7 +27,7 @@ This project provides a full-stack application for uploading and viewing documen
 ## Tech Stack
 - **Frontend**: HTML, JavaScript, Bootstrap
 - **Backend**: Node.js, Express, Multer for file handling
-- **Database**: MongoDB Atlas for storing files and metadata
+- **Database**: Firebase for storing of user data, MongoDB Atlas for storing files and metadata
 
 ## Setup
 
@@ -38,7 +38,7 @@ This project provides a full-stack application for uploading and viewing documen
   - `medical_certificate_db` for medical certificate uploads
 - **MongoDB Database Access**: Create a user with readWrite permissions.
 
-### Folder Structure
+### Folder Structure (TO BE UPDATED)
 ```
 project_root/
 ├── backend/
@@ -131,7 +131,16 @@ http-server -p 5500
 - Upload Medical Certificate: http://localhost:5500/upload_medical.html
 - View Medical Certificates: http://localhost:5500/view_medical.html
 
-## Usage
+## Usage (TO BE UPDATED)
+
+### Login Credentials:
+1. Teacher Account:
+- Username: chewhuile@gmail.com
+- Password: testing123$$
+
+2. Student Account:
+- Username: toddlee8888@gmail.com
+- Password: testing123$$
 
 ### Upload Homework or Medical Certificate
 1. Go to the relevant upload page.
