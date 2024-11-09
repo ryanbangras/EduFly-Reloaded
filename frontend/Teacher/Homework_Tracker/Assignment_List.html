@@ -25,7 +25,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
-            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
+            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top"
+                style="height: 30px; width: auto;">
             EduFly
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -86,6 +87,11 @@
                 <input type="datetime-local" v-model="newAssignment.deadline" id="deadline" class="form-control"
                     :min="new Date().toISOString().slice(0, 16)">
             </div>
+            <div class="mb-3">
+                <label for="maxGrade" class="form-label">Maximum Grade</label>
+                <input type="number" v-model="newAssignment.maxGrade" id="maxGrade" class="form-control" min="1"
+                    max="100" placeholder="30">
+            </div>
             <button @click="addAssignment" class="btn btn-success">Submit Assignment</button>
         </div>
 
@@ -98,6 +104,7 @@
                     <th>Description</th>
                     <th>Deadline (Date)</th>
                     <th>Deadline (Time)</th>
+                    <th>Max Grade</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -129,6 +136,8 @@
                         <input type="time" v-model="editAssignmentData.deadlineTime" class="form-control">
                     </td>
 
+                    <td>{{ assignment.maxGrade }}</td>
+
                     <!-- Action Buttons -->
                     <td>
                         <button v-if="editingAssignmentId !== assignment.id" @click="editAssignment(assignment)"
@@ -156,9 +165,9 @@
                     selectedClass: "",
                     assignments: [],
                     showAddAssignmentForm: false,
-                    newAssignment: { title: "", description: "", deadline: "" },
+                    newAssignment: { title: "", description: "", deadline: "", maxGrade: null },
                     editingAssignmentId: null,
-                    editAssignmentData: { title: "", description: "", deadlineDate: "", deadlineTime: "" }
+                    editAssignmentData: { title: "", description: "", deadlineDate: "", deadlineTime: "", maxGrade: null }
                 };
             },
             async created() {
@@ -206,7 +215,8 @@
                                 title: data.title,
                                 description: data.description,
                                 deadlineDate: date,
-                                deadlineTime: time
+                                deadlineTime: time,
+                                maxGrade: data.maxGrade // Retrieve maxGrade
                             });
                         });
                     }
@@ -218,23 +228,20 @@
                     return { date: formattedDate, time: formattedTime };
                 },
                 async addAssignment() {
-                    if (!this.selectedClass || !this.newAssignment.title || !this.newAssignment.description || !this.newAssignment.deadline) {
+                    if (!this.selectedClass || !this.newAssignment.title || !this.newAssignment.description || !this.newAssignment.deadline || !this.newAssignment.maxGrade) {
                         alert("Please fill out all assignment fields.");
                         return;
                     }
 
                     try {
-                        // Convert the user input deadline to a Date object
                         const deadlineDate = new Date(this.newAssignment.deadline);
                         const currentDate = new Date();
 
-                        // Check if the deadline is set before the current date and time
                         if (deadlineDate < currentDate) {
                             alert("The deadline cannot be set in the past. Please select a valid future date.");
                             return;
                         }
 
-                        // Proceed to add the assignment if the date is valid
                         const assignmentsRef = collection(db, 'Classes', this.selectedClass, 'AssignmentList');
                         const assignmentSnapshot = await getDocs(assignmentsRef);
                         const nextId = assignmentSnapshot.size + 1;
@@ -246,12 +253,12 @@
                             id: nextId,
                             title: this.newAssignment.title,
                             description: this.newAssignment.description,
-                            deadline: deadlineTimestamp
+                            deadline: deadlineTimestamp,
+                            maxGrade: this.newAssignment.maxGrade // Save maxGrade in Firestore
                         });
 
-                        // Refresh the assignments list and reset the form
                         this.fetchAssignments();
-                        this.newAssignment = { title: "", description: "", deadline: "" };
+                        this.newAssignment = { title: "", description: "", deadline: "", maxGrade: null };
                         this.showAddAssignmentForm = false;
                         alert("Assignment added successfully!");
                     } catch (error) {
@@ -267,7 +274,7 @@
                         title: assignment.title,
                         description: assignment.description,
                         deadlineDate: assignment.deadlineDate,
-                        deadlineTime: assignment.deadlineTime
+                        deadlineTime: assignment.deadlineTime,
                     };
                 },
                 async saveEdit() {
@@ -323,4 +330,3 @@
 </body>
 
 </html>
-
