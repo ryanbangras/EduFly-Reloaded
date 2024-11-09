@@ -135,22 +135,12 @@ http-server -p 5500
 
 ### Login Credentials:
 1. Teacher Account:
-- Username: chewhuile@gmail.com
-- Password: testing123$$
+- Username: `chewhuile@gmail.com`
+- Password: `testing123$$`
 
-2. Student Account:
-- Username: toddlee8888@gmail.com
-- Password: testing123$$
-
-### Upload Homework or Medical Certificate
-1. Go to the relevant upload page.
-2. Select a file with a valid extension.
-3. Enter your Student ID and submit.
-4. If successful, a message will display confirming the upload.
-
-### View and Download Files
-1. Go to the view page for either homework or medical certificates.
-2. Click a file to view or download. Supported files (PDF) open directly in the browser; other types prompt for download.
+2. Student Gmail Account:
+- Username: `toddlee8888@gmail.com`
+- Password: `testing123$$`
 
 ## Endpoints
 
@@ -158,7 +148,7 @@ The backend provides the following API endpoints:
 
 ### Homework Endpoints
 - **Upload Homework**: `POST /api/upload-homework`
-  - Body: Form-data with `studentId` and `homeworkFile` (PDF, DOC, DOCX).
+  - Body: Form-data with `studentId`, `sectionId`, `title` and `homeworkFile` (PDF, DOC, DOCX).
 - **Get All Homework**: `GET /api/homeworks`
 - **View Homework by ID**: `GET /api/homeworks/:id`
   - Responds with a PDF or downloadable file.
