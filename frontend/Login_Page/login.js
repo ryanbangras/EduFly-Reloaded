@@ -24,7 +24,7 @@ submit.addEventListener("click", async function (event) {
             if (studentDocSnap.exists()) {
                 console.log('User found in Students collection:', studentDocSnap.data());
                 alert("Welcome, Student!");
-                window.location.href = "../Homepage/home_student.html";
+                window.location.href = "../Student/Homepage/home_student.html";
             } else {
                 alert("Welcome, Teacher!");
                 window.location.href = "../Teacher/Homepage/home_teacher.html";
@@ -56,7 +56,7 @@ googleLogin.addEventListener("click", async function () {
             if (studentDocSnap.exists()) {
                 console.log('User found in Students collection:', studentDocSnap.data());
                 alert("Welcome, Student!");
-                window.location.href = "../Homepage/home_student.html";
+                window.location.href = "../Student/Homepage/home_student.html";
             } else {
                 alert("Welcome, Teacher!");
                 window.location.href = "../Teacher/Homepage/home_teacher.html";

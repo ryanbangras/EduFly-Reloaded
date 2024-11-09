@@ -3,6 +3,7 @@ import { auth, db, onAuthStateChanged, doc, getDoc } from '../js/database.js';
 const vueApp = Vue.createApp({
     data() {
         return {
+            title: "",
             loginEmail: "", // Holds StudentID after Firebase fetch
             userClass: "",  // Holds Class after Firebase fetch
             homeworkFile: null, // Stores the uploaded file
@@ -10,6 +11,10 @@ const vueApp = Vue.createApp({
         };
     },
     async created() {
+         // Extract assignment title from the URL query parameters
+         const urlParams = new URLSearchParams(window.location.search);
+         const assignmentTitle = urlParams.get('title');
+         this.title = assignmentTitle || 'Untitled'; // Set default if not found
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const userEmail = user.email;
