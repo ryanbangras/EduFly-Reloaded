@@ -14,6 +14,10 @@
 
     <script type="module" src="../../js/update.js"></script>
 
+    <!-- FullCalendar for displaying the calendar -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
     <style>
         .navbar {
             background-color: green;
@@ -62,11 +66,33 @@
             </select>
         </div>
 
-        <!-- Display Consultation Requests -->
-        <div v-if="consultations.length === 0 && selectedClass">
-            <p>No consultation requests available for this class.</p>
+        <h3 v-if="approvedConsultations.length > 0">Calendar View</h3>
+        <div id="calendar" class="my-4"></div>
+
+        <!-- Event Information Modal -->
+        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" v-if="selectedEvent.studentName">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventModalLabel">Consultation Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Student Name:</strong> {{ selectedEvent.studentName }}</p>
+                        <p><strong>Student ID:</strong> {{ selectedEvent.studentID }}</p>
+                        <p><strong>Subject:</strong> {{ selectedEvent.subject }}</p>
+                        <p><strong>Description:</strong> {{ selectedEvent.reason }}</p>
+                        <p><strong>Preferred Time:</strong> {{ selectedEvent.formattedPreferredTime }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- Display Consultation Requests -->
+        <h3 v-if="consultations.length > 0">Pending Consultation Requests</h3>
         <table v-if="consultations.length > 0" class="table table-striped">
             <thead>
                 <tr>
@@ -87,7 +113,8 @@
                     <td>{{ consultation.preferredTime }}</td>
                     <td>
                         <button class="btn btn-success" @click="approveConsultation(consultation.id)">Approve</button>
-                        <button class="btn btn-warning" @click="requestTimeChange(consultation.id)">Request Time Change</button>
+                        <button class="btn btn-warning" @click="requestTimeChange(consultation.id)">Request Time
+                            Change</button>
                     </td>
                 </tr>
             </tbody>
@@ -95,7 +122,7 @@
     </div>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, doc, getDoc, collection, query, getDocs, updateDoc , setDoc, deleteDoc} from '../../js/database.js';
+        import { auth, db, onAuthStateChanged, doc, getDoc, collection, query, getDocs, updateDoc, setDoc, deleteDoc } from '../../js/database.js';
 
         const vueApp = Vue.createApp({
             data() {
@@ -104,9 +131,17 @@
                         email: '',
                         class: ''
                     },
-                    classes: [], // List of classes the teacher teaches
-                    selectedClass: '', // Selected class from the dropdown
-                    consultations: [] // List of consultation requests
+                    classes: [],
+                    selectedClass: '',
+                    consultations: [],
+                    approvedConsultations: [],
+                    selectedEvent: {
+                        studentName: '',
+                        studentID: '',
+                        subject: '',
+                        reason: '',
+                        formattedPreferredTime: ''
+                    } // Initialize with default properties
                 };
             },
             async created() {
@@ -128,58 +163,121 @@
                         }
                     });
                 },
-
-                // Fetch consultations for the selected class
                 async fetchConsultations() {
                     if (this.selectedClass) {
                         const classRef = collection(db, 'Classes', this.selectedClass, 'RequestedConsultations');
-                        const q = query(classRef); // Query to fetch all consultations for the selected class
+                        const q = query(classRef);
                         const querySnapshot = await getDocs(q);
-                        
+
                         this.consultations = querySnapshot.docs.map(doc => ({
                             id: doc.id,
                             ...doc.data()
                         }));
-                        console.log(this.consultations); // Debug log to check the fetched consultations
+
+                        await this.fetchApprovedConsultations();
                     }
                 },
 
+                async fetchApprovedConsultations() {
+                    if (this.selectedClass) {
+                        const approvedConsultationsRef = collection(db, 'Classes', this.selectedClass, 'ApprovedConsultations');
+                        const querySnapshot = await getDocs(approvedConsultationsRef);
+
+                        this.approvedConsultations = querySnapshot.docs.map(doc => {
+                            const consultation = doc.data();
+                            let formattedTime = consultation.preferredTime?.toDate ? consultation.preferredTime.toDate() : new Date(consultation.preferredTime);
+
+                            return {
+                                id: doc.id,
+                                studentName: consultation.studentName,
+                                studentID: consultation.studentID,
+                                subject: consultation.subject,
+                                reason: consultation.reason,
+                                formattedPreferredTime: formattedTime
+                            };
+                        });
+
+                        this.renderCalendar();
+                    }
+                },
+
+                // Render FullCalendar with event click functionality
+                renderCalendar() {
+                    const calendarEl = document.getElementById('calendar');
+                    const calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        },
+                        events: this.approvedConsultations.map(consultation => ({
+                            title: consultation.studentName,
+                            start: consultation.formattedPreferredTime,
+                            allDay: true,
+                            extendedProps: {
+                                studentID: consultation.studentID,
+                                subject: consultation.subject,
+                                reason: consultation.reason,
+                                formattedPreferredTime: consultation.formattedPreferredTime
+                            }
+                        })),
+                        eventClick: (info) => {
+                            // Ensure that all fields are defined before showing the modal
+                            this.selectedEvent = {
+                                studentName: info.event.title || 'N/A',
+                                studentID: info.event.extendedProps.studentID || 'N/A',
+                                subject: info.event.extendedProps.subject || 'N/A',
+                                reason: info.event.extendedProps.reason || 'N/A',
+                                formattedPreferredTime: info.event.extendedProps.formattedPreferredTime || 'N/A'
+                            };
+
+                            // Show the modal using Bootstrap's modal method
+                            const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                            modal.show();
+                        }
+                    });
+
+                    calendar.render();
+                },
+
+
                 // Approve a consultation and move it to the ApprovedConsultations collection
-async approveConsultation(consultationId) {
-    try {
-        // Reference to the consultation in RequestedConsultations
-        const consultationRef = doc(db, 'Classes', this.selectedClass, 'RequestedConsultations', consultationId);
+                async approveConsultation(consultationId) {
+                    try {
+                        // Reference to the consultation in RequestedConsultations
+                        const consultationRef = doc(db, 'Classes', this.selectedClass, 'RequestedConsultations', consultationId);
 
-        // Fetch the consultation document
-        const consultationSnap = await getDoc(consultationRef);
+                        // Fetch the consultation document
+                        const consultationSnap = await getDoc(consultationRef);
 
-        if (consultationSnap.exists()) {
-            // Get the consultation data
-            const consultationData = consultationSnap.data();
+                        if (consultationSnap.exists()) {
+                            // Get the consultation data
+                            const consultationData = consultationSnap.data();
 
-            // Add the status as 'Approved'
-            consultationData.status = 'Approved';
+                            // Add the status as 'Approved'
+                            consultationData.status = 'Approved';
 
-            // Reference to the ApprovedConsultations collection
-            const approvedConsultationsRef = doc(db, 'Classes', this.selectedClass, 'ApprovedConsultations', consultationId);
+                            // Reference to the ApprovedConsultations collection
+                            const approvedConsultationsRef = doc(db, 'Classes', this.selectedClass, 'ApprovedConsultations', consultationId);
 
-            // Move the consultation to the ApprovedConsultations collection
-            await setDoc(approvedConsultationsRef, consultationData);
+                            // Move the consultation to the ApprovedConsultations collection
+                            await setDoc(approvedConsultationsRef, consultationData);
 
-            // Now, delete the consultation from the RequestedConsultations
-            await deleteDoc(consultationRef);
+                            // Now, delete the consultation from the RequestedConsultations
+                            await deleteDoc(consultationRef);
 
-            alert('Consultation request approved and moved to ApprovedConsultations!');
-            this.fetchConsultations(); // Refresh the consultation list
-        } else {
-            console.error('Consultation document does not exist');
-            alert('Consultation not found.');
-        }
-    } catch (error) {
-        console.error('Error approving consultation:', error);
-        alert('Failed to approve request.');
-    }
-},
+                            alert('Consultation request approved and moved to ApprovedConsultations!');
+                            this.fetchConsultations(); // Refresh the consultation list
+                        } else {
+                            console.error('Consultation document does not exist');
+                            alert('Consultation not found.');
+                        }
+                    } catch (error) {
+                        console.error('Error approving consultation:', error);
+                        alert('Failed to approve request.');
+                    }
+                },
 
 
                 // Request a time change for a consultation
