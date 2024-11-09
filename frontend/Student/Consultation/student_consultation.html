@@ -15,9 +15,9 @@
     <!-- Firebase Link -->
     <script type="module" src="../../js/update.js"></script>
 
-   <!-- FullCalendar for displaying the calendar -->
-   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <!-- FullCalendar for displaying the calendar -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
     <style>
         .navbar {
@@ -25,137 +25,145 @@
         }
 
         .calendar-grid {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        margin-top: 20px;
-        font-family: Arial, sans-serif;
-    }
-
-    .calendar-nav {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-
-    .calendar-nav button {
-        padding: 10px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .calendar-nav button:hover {
-        background-color: #45a049;
-    }
-
-    .calendar-row {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .calendar-day {
-        padding: 15px;
-        background-color: #f9f9f9;
-        text-align: center;
-        border-radius: 5px;
-        font-size: 14px;
-        position: relative;
-        min-height: 50px;
-    }
-
-    .calendar-day.empty {
-        background-color: transparent;
-    }
-
-    .calendar-day:hover {
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
-
-    .calendar-day .consultation {
-        position: absolute;
-        bottom: 5px;
-        left: 5px;
-        right: 5px;
-        font-size: 12px;
-        background-color: #ffcc00;
-        color: white;
-        padding: 5px;
-        border-radius: 5px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    .calendar-header {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 0;
-        font-weight: bold;
-        text-align: center;
-        border-radius: 5px 5px 0 0;
-    }
-
-    .calendar-header div {
-        font-size: 16px;
-    }
-
-    @media screen and (max-width: 600px) {
-        .calendar-row {
-            grid-template-columns: repeat(7, 1fr);
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
         }
 
-        .calendar-day {
-            font-size: 12px;
-            padding: 10px;
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
 
         .calendar-nav button {
-            font-size: 14px;
-            padding: 8px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
         }
-    }
+
+        .calendar-nav button:hover {
+            background-color: #45a049;
+        }
+
+        .calendar-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .calendar-day {
+            padding: 15px;
+            background-color: #f9f9f9;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 14px;
+            position: relative;
+            min-height: 50px;
+        }
+
+        .calendar-day.empty {
+            background-color: transparent;
+        }
+
+        .calendar-day:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        .calendar-day .consultation {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            right: 5px;
+            font-size: 12px;
+            background-color: #ffcc00;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .calendar-header div {
+            font-size: 16px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .calendar-row {
+                grid-template-columns: repeat(7, 1fr);
+            }
+
+            .calendar-day {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            .calendar-nav button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 
 <body class="bg-light">
-   <!-- Navbar -->
-   <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="../Homepage/home_student.html">
-        <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
-        EduFly
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item"><a class="nav-link" href="../Homework_Tracker/Assignment_List.html">&#9997;&#65039; Homework</a></li>
-            <li class="nav-item"><a class="nav-link" href="../Timetable/timetable.html">&#128467;&#65039; Timetable</a></li>
-            <li class="nav-item"><a class="nav-link" href="../Summary/SummaryPage.html">&#127891; Progress Tracker</a></li>
-            <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226; Announcement</a></li>
-            <li class="nav-item"><a class="nav-link" href="../Medical/upload_medical.html">&#128221; Form Submission</a></li>
-            <li class="nav-item"><a class="nav-link" href="../Pomodoro_Timer/pomodoro.html">&#128338; Pomodoro Timer</a></li>
-            <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172; Book Consults</a></li>
-            <li class="nav-item">
-                <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
-                <!-- Target for dynamic name -->
-            </li>
-        </ul>
-        <ul class="navbar-nav ms-auto">
-            <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
-        </ul>
-    </div>
-</nav>
-<!-- Main Container -->
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="../Homepage/home_student.html">
+            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top"
+                style="height: 30px; width: auto;">
+            EduFly
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="../Homework_Tracker/Assignment_List.html">&#9997;&#65039;
+                        Homework</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Timetable/timetable.html">&#128467;&#65039;
+                        Timetable</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Summary/SummaryPage.html">&#127891; Progress
+                        Tracker</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226;
+                        Announcement</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Medical/upload_medical.html">&#128221; Form
+                        Submission</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Pomodoro_Timer/pomodoro.html">&#128338; Pomodoro
+                        Timer</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172; Book
+                        Consults</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
+                    <!-- Target for dynamic name -->
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+            </ul>
+        </div>
+    </nav>
+    <!-- Main Container -->
     <div class="container mt-5">
         <h3>Approved Consultations Calendar</h3>
         <div id="calendar"></div>
@@ -250,67 +258,67 @@
                 },
 
                 async fetchApprovedConsultations() {
-            try {
-                const approvedConsultationsRef = collection(db, 'Classes', this.student.class, 'ApprovedConsultations');
-                const q = query(approvedConsultationsRef, where('studentID', '==', this.student.id));
-                const querySnapshot = await getDocs(q);
+                    try {
+                        const approvedConsultationsRef = collection(db, 'Classes', this.student.class, 'ApprovedConsultations');
+                        const q = query(approvedConsultationsRef, where('studentID', '==', this.student.id));
+                        const querySnapshot = await getDocs(q);
 
-                this.approvedConsultations = querySnapshot.docs.map(doc => {
-                    const data = doc.data();
-                     // Check the type of `preferredTime` and convert accordingly
-            let consultationDate;
-            if (data.preferredTime && typeof data.preferredTime.toDate === 'function') {
-                // Case 1: Firestore Timestamp
-                consultationDate = data.preferredTime.toDate();
-            } else if (data.preferredTime instanceof Date) {
-                // Case 2: JavaScript Date object
-                consultationDate = data.preferredTime;
-            } else if (typeof data.preferredTime === 'string') {
-                // Case 3: String format
-                consultationDate = new Date(data.preferredTime);
-            } else {
-                console.error('Invalid preferredTime format:', data.preferredTime);
-                consultationDate = null;
-            }
-                    return {
-                        id: doc.id,
-                        title: data.subject,
-                        start: consultationDate,
-                        extendedProps: {
-                            reason: data.reason,
-                            studentName: data.studentName
+                        this.approvedConsultations = querySnapshot.docs.map(doc => {
+                            const data = doc.data();
+                            // Check the type of `preferredTime` and convert accordingly
+                            let consultationDate;
+                            if (data.preferredTime && typeof data.preferredTime.toDate === 'function') {
+                                // Case 1: Firestore Timestamp
+                                consultationDate = data.preferredTime.toDate();
+                            } else if (data.preferredTime instanceof Date) {
+                                // Case 2: JavaScript Date object
+                                consultationDate = data.preferredTime;
+                            } else if (typeof data.preferredTime === 'string') {
+                                // Case 3: String format
+                                consultationDate = new Date(data.preferredTime);
+                            } else {
+                                console.error('Invalid preferredTime format:', data.preferredTime);
+                                consultationDate = null;
+                            }
+                            return {
+                                id: doc.id,
+                                title: data.subject,
+                                start: consultationDate,
+                                extendedProps: {
+                                    reason: data.reason,
+                                    studentName: data.studentName
+                                }
+                            };
+                        });
+
+                        this.renderCalendar(); // Render FullCalendar after fetching consultations
+                    } catch (error) {
+                        console.error('Error fetching approved consultations:', error);
+                    }
+                },
+
+                renderCalendar() {
+                    const calendarEl = document.getElementById('calendar');
+                    if (!calendarEl) return; // Ensure the element exists
+
+                    const calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        },
+                        events: this.approvedConsultations,
+                        eventClick: function (info) {
+                            const event = info.event;
+                            const { studentName, reason } = event.extendedProps;
+
+                            alert(`Consultation Details:\nSubject: ${event.title}\nStudent: ${studentName}\nReason: ${reason}`);
                         }
-                    };
-                });
+                    });
 
-                this.renderCalendar(); // Render FullCalendar after fetching consultations
-            } catch (error) {
-                console.error('Error fetching approved consultations:', error);
-            }
-        },
-
-        renderCalendar() {
-    const calendarEl = document.getElementById('calendar');
-    if (!calendarEl) return; // Ensure the element exists
-
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: this.approvedConsultations,
-        eventClick: function (info) {
-            const event = info.event;
-            const { studentName, reason } = event.extendedProps;
-
-            alert(`Consultation Details:\nSubject: ${event.title}\nStudent: ${studentName}\nReason: ${reason}`);
-        }
-    });
-
-    calendar.render();
-},
+                    calendar.render();
+                },
                 // Submit consultation form
                 async submitForm() {
                     if (this.consultation.subject && this.consultation.reason && this.consultation.preferredTime) {
@@ -356,7 +364,7 @@
                 }
             }
         });
-        
+
         vueApp.mount('#app');
     </script>
 
