@@ -18,6 +18,12 @@
         .navbar {
             background-color: green;
         }
+
+        /* Highlight row with high absence count */
+        .absent-warning {
+            background-color: #ffdddd !important;
+            /* Light red background */
+        }
     </style>
 </head>
 
@@ -79,7 +85,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="student in students" :key="student.studentId" @click="viewStudentInfo(student)">
+                <tr 
+                    v-for="student in students" 
+                    :key="student.studentId" 
+                    @click="viewStudentInfo(student)" 
+                    :class="{'absent-warning': student.AbsentCount >= Number(0)}"
+                >
                     <td><a href="#" @click.prevent="viewStudentInfo(student)">{{ student.studentId }}</a></td>
                     <td>{{ student.Fname }}</td>
                     <td>{{ student.Lname }}</td>
@@ -147,7 +158,7 @@
     </div>
 
     <script type="module">
-        import {auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
+        import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
 
         const vueApp = Vue.createApp({
             data() {
@@ -201,7 +212,7 @@
                     }
                 },
                 async addStudent() {
-                    if (this.newStudent.studentId && this.newStudent.Fname && this.newStudent.Lname) {
+                    if (this.newStudent.studentId && this.newStudent.Fname && this.newStudent.Lname && this.newStudent.NRIC) {
                         const studentRef = doc(db, 'Classes', this.selectedClass, 'StudentList', this.newStudent.studentId);
                         await setDoc(studentRef, {
                             StudentID: this.newStudent.studentId,
