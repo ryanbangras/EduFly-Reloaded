@@ -256,47 +256,65 @@
                 },
 
                 generatePDF() {
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-                    // Add the title
-                    doc.setFontSize(18);
-                    doc.text('Student Summary', 14, 20);
+    // Add the title
+    doc.setFontSize(18);
+    doc.text('Student Summary', 14, 20);
 
-                    // Add profile information
-                    doc.setFontSize(12);
-                    doc.text(`Name: ${this.profile.FName} ${this.profile.LName}`, 14, 30);
-                    doc.text(`Class: ${this.profile.Class}`, 14, 40);
-                    doc.text(`Student ID: ${this.profile.StudentID}`, 14, 50);
+    // Add profile information
+    doc.setFontSize(12);
+    doc.text(`Name: ${this.profile.FName} ${this.profile.LName}`, 14, 30);
+    doc.text(`Class: ${this.profile.Class}`, 14, 40);
+    doc.text(`Student ID: ${this.profile.StudentID}`, 14, 50);
 
-                    // Add attendance data
-                    doc.text('Attendance:', 14, 60);
-                    let yOffset = 70;
-                    for (const [date, status] of Object.entries(this.attendanceData)) {
-                        doc.text(`${date}: ${status}`, 14, yOffset);
-                        yOffset += 10;
-                    }
+    // Define tables for attendance and scores
+    const attendanceRows = Object.entries(this.attendanceData).map(([date, status]) => {
+        return [date, status];
+    });
 
-                    // Add scores data
-                    doc.text('Scores:', 14, yOffset);
-                    yOffset += 10;
-                    for (const [assignmentId, score] of Object.entries(this.scoresData)) {
-                        doc.text(`${assignmentId}: ${score}`, 14, yOffset);
-                        yOffset += 10;
-                    }
+    const scoresRows = Object.entries(this.scoresData).map(([assignmentId, score]) => {
+        return [assignmentId, score];
+    });
 
-                    // Save the PDF
-                    doc.save('student_summary.pdf');
-                }
+    // Add Attendance Table
+    doc.setFontSize(14);
+    doc.text('Attendance', 14, 70);
+    doc.autoTable({
+        startY: 75,
+        head: [['Date', 'Status']],
+        body: attendanceRows,
+        theme: 'striped',
+        headStyles: { fillColor: [41, 128, 185] },
+        margin: { left: 14, right: 14 },
+    });
+
+    // Calculate the Y offset after the attendance table
+    const attendanceTableEndY = doc.previousAutoTable.finalY + 10;
+
+    // Add Scores Table
+    doc.setFontSize(14);
+    doc.text('Scores', 14, attendanceTableEndY);
+    doc.autoTable({
+        startY: attendanceTableEndY + 5,
+        head: [['Assignment', 'Score']],
+        body: scoresRows,
+        theme: 'striped',
+        headStyles: { fillColor: [39, 174, 96] },
+        margin: { left: 14, right: 14 },
+    });
+
+    // Save the PDF
+    doc.save('student_summary.pdf');
+}
+
 
             }
         });
 
         vueApp.mount('#app');
-        // document.getElementById('generatePdf').addEventListener('click', function () {
-        //     const element = document.getElementById('app');
-        //     html2pdf().from(element).save();
-        // });
+      
 
     </script>
 
