@@ -25,7 +25,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
-            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
+            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top"
+                style="height: 30px; width: auto;">
             EduFly
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -34,12 +35,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="#">&#9997;&#65039; Homework</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#128467;&#65039; Timetable</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#127891; Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">&#128226; Announcement</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Homework_Tracker/Assignment_List.html">&#9997;&#65039;
+                        Homework</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Timetable/timetable.html">&#128467;&#65039;
+                        Timetable</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Academic_Dashboard/Student_List.html">&#127891;
+                        Progress Monitor</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226;
+                        Announcement</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172;
+                        Consultations</a></li>
                 <li class="nav-item">
-                    <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
+                    <a class="nav-link" id="profileLink" href="../Homepage/profile.html">&#128100; User's Profile</a>
                     <!-- Target for dynamic name -->
                 </li>
             </ul>
@@ -48,156 +55,156 @@
             </ul>
         </div>
     </nav>
-
     <div id="app" class="container mt-4">
         <h2>Scores for {{ selectedClass }} - {{ selectedAssignmentTitle }} (Max: {{ maxGrade }})</h2>
 
-<label for="assignmentSelect" class="form-label">Select Assignment:</label>
-<select v-model="selectedAssignment" @change="fetchScores" id="assignmentSelect" class="form-select mb-4">
-    <option value="" disabled>Select an assignment</option>
-    <option v-for="assignment in assignments" :key="assignment.id" :value="assignment.id">
-        {{ assignment.title }}
-    </option>
-</select>
+        <label for="assignmentSelect" class="form-label">Select Assignment:</label>
+        <select v-model="selectedAssignment" @change="fetchScores" id="assignmentSelect" class="form-select mb-4">
+            <option value="" disabled>Select an assignment</option>
+            <option v-for="assignment in assignments" :key="assignment.id" :value="assignment.id">
+                {{ assignment.title }}
+            </option>
+        </select>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Student ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Score (out of {{ maxGrade }})</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr v-for="student in students" :key="student.studentId">
-            <td>{{ student.studentId }}</td>
-            <td>{{ student.Fname }}</td>
-            <td>{{ student.Lname }}</td>
-            <td>
-                <input type="number" v-model.number="student.score" min="0" :max="maxGrade" class="form-control"
-                    @input="validateScore(student)" />
-            </td>
-        </tr>
-        <tr>
-            <button v-if="students.length > 0 && selectedClass" class="btn btn-primary mt-3" @click="saveAllScores">
-                Save Grades
-            </button>
-        </tr>
-    </tbody>
-</table>
-</div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Score (out of {{ maxGrade }})</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="student in students" :key="student.studentId">
+                    <td>{{ student.studentId }}</td>
+                    <td>{{ student.Fname }}</td>
+                    <td>{{ student.Lname }}</td>
+                    <td>
+                        <input type="number" v-model.number="student.score" min="0" :max="maxGrade" class="form-control"
+                            @input="validateScore(student)" />
+                    </td>
+                </tr>
+                <tr>
+                    <button v-if="students.length > 0 && selectedClass" class="btn btn-primary mt-3"
+                        @click="saveAllScores">
+                        Save Grades
+                    </button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<script type="module">
-    import { auth, db, getDocs, getDoc, doc, collection, setDoc } from '../../js/database.js';
+    <script type="module">
+        import { auth, db, getDocs, getDoc, doc, collection, setDoc } from '../../js/database.js';
 
-    const vueApp = Vue.createApp({
-        data() {
-            return {
-                assignments: [],
-                selectedClass: "",
-                selectedAssignment: "",
-                maxGrade: 100, // Default maxGrade
-                students: []
-            };
-        },
-        computed: {
-            selectedAssignmentTitle() {
-                const assignment = this.assignments.find(a => a.id === this.selectedAssignment);
-                return assignment ? assignment.title : "No Assignment Selected";
-            }
-        },
-        async created() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const classFromURL = urlParams.get('class');
-            if (classFromURL) {
-                this.selectedClass = classFromURL;
-                await this.fetchAssignments();
-            }
-        },
-        methods: {
-            async fetchAssignments() {
-                this.assignments = [];
-                if (this.selectedClass) {
-                    const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AssignmentList'));
-                    querySnapshot.forEach((doc) => {
-                        this.assignments.push({
-                            id: doc.id,
-                            title: doc.data().title,
-                            maxGrade: doc.data().maxGrade || 100
-                        });
-                    });
+        const vueApp = Vue.createApp({
+            data() {
+                return {
+                    assignments: [],
+                    selectedClass: "",
+                    selectedAssignment: "",
+                    maxGrade: 100, // Default maxGrade
+                    students: []
+                };
+            },
+            computed: {
+                selectedAssignmentTitle() {
+                    const assignment = this.assignments.find(a => a.id === this.selectedAssignment);
+                    return assignment ? assignment.title : "No Assignment Selected";
                 }
             },
-            async fetchScores() {
-                const selectedAssignmentObj = this.assignments.find(a => a.id === this.selectedAssignment);
-                this.maxGrade = selectedAssignmentObj ? selectedAssignmentObj.maxGrade : 100;
-
-                this.students = [];
-                if (this.selectedClass && this.selectedAssignment) {
-                    const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'StudentList'));
-                    querySnapshot.forEach((doc) => {
-                        this.students.push({
-                            studentId: doc.data().StudentID,
-                            Fname: doc.data().FName,
-                            Lname: doc.data().LName,
-                            score: null
-                        });
-                    });
-                    await this.fetchStudentScores();
+            async created() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const classFromURL = urlParams.get('class');
+                if (classFromURL) {
+                    this.selectedClass = classFromURL;
+                    await this.fetchAssignments();
                 }
             },
-            async fetchStudentScores() {
-                try {
-                    const scoresRef = doc(db, 'Classes', this.selectedClass, 'Scores', this.selectedAssignment);
-                    const scoresSnap = await getDoc(scoresRef);
-                    if (scoresSnap.exists()) {
-                        const scoresData = scoresSnap.data();
-                        this.students.forEach(student => {
-                            if (scoresData[student.studentId]) {
-                                student.score = scoresData[student.studentId].score;
-                            }
+            methods: {
+                async fetchAssignments() {
+                    this.assignments = [];
+                    if (this.selectedClass) {
+                        const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AssignmentList'));
+                        querySnapshot.forEach((doc) => {
+                            this.assignments.push({
+                                id: doc.id,
+                                title: doc.data().title,
+                                maxGrade: doc.data().maxGrade || 100
+                            });
                         });
                     }
-                } catch (error) {
-                    console.error("Error fetching scores data:", error);
-                }
-            },
-            validateScore(student) {
-                if (student.score > this.maxGrade) {
-                    alert(`The score for ${student.Fname} ${student.Lname} exceeds the maximum allowed score of ${this.maxGrade}.`);
-                    student.score = this.maxGrade;
-                }
-            },
-            async saveAllScores() {
-                if (!this.selectedAssignment) {
-                    alert("Please select an assignment to record scores.");
-                    return;
-                }
+                },
+                async fetchScores() {
+                    const selectedAssignmentObj = this.assignments.find(a => a.id === this.selectedAssignment);
+                    this.maxGrade = selectedAssignmentObj ? selectedAssignmentObj.maxGrade : 100;
 
-                try {
-                    const scoresRef = doc(db, 'Classes', this.selectedClass, 'Scores', this.selectedAssignment);
-                    const scoresData = {};
+                    this.students = [];
+                    if (this.selectedClass && this.selectedAssignment) {
+                        const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'StudentList'));
+                        querySnapshot.forEach((doc) => {
+                            this.students.push({
+                                studentId: doc.data().StudentID,
+                                Fname: doc.data().FName,
+                                Lname: doc.data().LName,
+                                score: null
+                            });
+                        });
+                        await this.fetchStudentScores();
+                    }
+                },
+                async fetchStudentScores() {
+                    try {
+                        const scoresRef = doc(db, 'Classes', this.selectedClass, 'Scores', this.selectedAssignment);
+                        const scoresSnap = await getDoc(scoresRef);
+                        if (scoresSnap.exists()) {
+                            const scoresData = scoresSnap.data();
+                            this.students.forEach(student => {
+                                if (scoresData[student.studentId]) {
+                                    student.score = scoresData[student.studentId].score;
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Error fetching scores data:", error);
+                    }
+                },
+                validateScore(student) {
+                    if (student.score > this.maxGrade) {
+                        alert(`The score for ${student.Fname} ${student.Lname} exceeds the maximum allowed score of ${this.maxGrade}.`);
+                        student.score = this.maxGrade;
+                    }
+                },
+                async saveAllScores() {
+                    if (!this.selectedAssignment) {
+                        alert("Please select an assignment to record scores.");
+                        return;
+                    }
 
-                    this.students.forEach(student => {
-                        scoresData[student.studentId] = {
-                            Fname: student.Fname,
-                            Lname: student.Lname,
-                            score: student.score
-                        };
-                    });
+                    try {
+                        const scoresRef = doc(db, 'Classes', this.selectedClass, 'Scores', this.selectedAssignment);
+                        const scoresData = {};
 
-                    await setDoc(scoresRef, scoresData, { merge: true });
-                    alert("All scores saved successfully!");
-                } catch (error) {
-                    console.error("Error saving scores:", error);
+                        this.students.forEach(student => {
+                            scoresData[student.studentId] = {
+                                Fname: student.Fname,
+                                Lname: student.Lname,
+                                score: student.score
+                            };
+                        });
+
+                        await setDoc(scoresRef, scoresData, { merge: true });
+                        alert("All scores saved successfully!");
+                    } catch (error) {
+                        console.error("Error saving scores:", error);
+                    }
                 }
             }
-        }
-    });
+        });
 
-    vueApp.mount('#app');
-</script>
+        vueApp.mount('#app');
+    </script>
 
 
 </body>
