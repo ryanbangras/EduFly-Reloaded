@@ -314,7 +314,7 @@
                 <input type="datetime-local" id="event-end" required><br><br>
 
                 <button type="submit">Save Event</button>
-                <!-- <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button> -->
+                <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button>
                 <button id="signout-button" style="display:none;">Sign out</button>
             </form>
         </div>
@@ -529,10 +529,6 @@
         let tokenClient;
 
         // Load GAPI client for Google Calendar API
-        function gapiLoaded() {
-            gapi.load('client', initializeGapiClient);
-        }
-
         async function initializeGapiClient() {
             await gapi.client.init({
                 apiKey: API_KEY,
@@ -674,7 +670,79 @@
                 alert("Error: " + error.message);
             }
         });
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
+        }
+        window.onload = () => {
+            gapiLoaded();
+            gisLoaded();
+        };
 
+       
+    </script>
+
+    <script>
+         async function deleteEvent() {
+            const eventId = document.getElementById('event-id').value;
+            const token = localStorage.getItem("googleAccessToken");
+            if (!token) {
+                alert("Please sign in to Google.");
+                return;
+            }
+
+            try {
+                await gapi.client.calendar.events.delete({
+                    calendarId: 'primary',
+                    eventId: eventId
+                });
+                alert("Event deleted successfully!");
+                loadCalendarEvents();
+            } catch (error) {
+                console.error("Error deleting event:", error);
+                alert("Error: " + error.message);
+            }
+        }
+
+        async function loadCalendarEvents() {
+            const token = localStorage.getItem("googleAccessToken");
+            if (!token) {
+                console.log("No access token found.");
+                return;
+            }
+
+            try {
+                const response = await gapi.client.calendar.events.list({
+                    'calendarId': 'primary',
+                    'showDeleted': false,
+                    'singleEvents': true,
+                    'orderBy': 'startTime'
+                });
+
+                const events = response.result.items.map(event => ({
+                    id: event.id,
+                    title: event.summary,
+                    start: event.start.dateTime || event.start.date,
+                    end: event.end.dateTime || event.end.date
+                }));
+
+                const calendarDiv = document.getElementById("calendar-events");
+                calendarDiv.innerHTML = '';
+                const calendar = new FullCalendar.Calendar(calendarDiv, {
+                    initialView: 'dayGridMonth',
+                    events: events,
+                    eventClick: function (info) {
+                        openEventForm(info.event);
+                    }
+                });
+                calendar.render();
+            } catch (error) {
+                console.error("Error fetching calendar events:", error);
+            }
+        }
+
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
+        }
         window.onload = () => {
             gapiLoaded();
             gisLoaded();
