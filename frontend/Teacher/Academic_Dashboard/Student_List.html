@@ -13,6 +13,11 @@
     <!-- Firebase Link -->
     <script type="module" src="../../js/update.js"></script>
 
+    <!-- jsPDF -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+
     <title>EduFly Portal</title>
     <style>
         .navbar {
@@ -79,6 +84,9 @@
             </button>
             <button @click="goToGradesTracker" class="btn btn-secondary ms-2">
                 Check Assignment Grades
+            </button>
+            <button @click="generatePDF" class="btn btn-success ms-2">
+                Download Student List
             </button>
         </div>
 
@@ -246,6 +254,41 @@
                 goToGradesTracker() {
                     // Redirect to GradesTracker.html with the selected class as a query parameter
                     window.location.href = `Grades_Tracker.html?class=${this.selectedClass}`;
+                },
+                generatePDF() {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    // Add title
+                    doc.setFontSize(18);
+                    doc.text('Student List', 14, 20);
+
+                    // Add class information
+                    doc.setFontSize(12);
+                    doc.text(`Class: ${this.selectedClass}`, 14, 30);
+
+                    // Prepare student data for the table
+                    const studentRows = this.students.map(student => [
+                        student.studentId,
+                        student.NRIC,
+                        student.Fname,
+                        student.Lname,
+                        student.BirthDate,
+                        student.AbsentCount
+                    ]);
+
+                    // Add table with student data
+                    doc.autoTable({
+                        startY: 40,
+                        head: [['Student ID', 'NRIC', 'First Name', 'Last Name', 'Birth Date', 'Absences']],
+                        body: studentRows,
+                        theme: 'striped',
+                        headStyles: { fillColor: [0, 102, 204] },
+                        margin: { left: 14, right: 14 }
+                    });
+
+                    // Save the PDF
+                    doc.save(`${this.selectedClass}_Student_List.pdf`);
                 }
             }
         });
