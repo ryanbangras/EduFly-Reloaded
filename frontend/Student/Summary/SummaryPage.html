@@ -15,8 +15,9 @@
     <script type="module" src="../../js/update.js"></script>
 
     <!-- jsPDF -->
-    <script src="<https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js>"></script>
-    <script src="<https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
 
 
     <title>EduFly Portal</title>
@@ -135,14 +136,15 @@
 
         <!-- Generate PDF Button -->
         <div class="mb-4">
-            <button id="generatePdf" class="btn btn-success">Generate PDF</button>
+            <button @click="generatePDF" class="btn btn-success">Generate PDF</button>
+
         </div>
 
     </div>
 
     <script type="module">
         import { auth, db, onAuthStateChanged, doc, getDoc, collection, getDocs } from '../../js/database.js';
-    
+
         const vueApp = Vue.createApp({
             data() {
                 return {
@@ -166,16 +168,16 @@
                         if (user) {
                             const email = user.email;
                             this.profile.email = email;
-    
+
                             // Fetch profile data from Firestore
                             const docRef = doc(db, "Students", email);
                             const docSnap = await getDoc(docRef);
                             if (docSnap.exists()) {
                                 this.profile = { ...this.profile, ...docSnap.data() };
-    
+
                                 this.selectedClass = this.profile.Class;
                                 this.selectedStudentID = this.profile.StudentID.trim();
-    
+
                                 this.fetchAttendance();
                                 this.fetchScores();
                             } else {
@@ -187,24 +189,24 @@
                         }
                     });
                 },
-    
+
                 async fetchAttendance() {
                     if (!this.selectedClass || !this.selectedStudentID) {
                         console.error("Selected class or student ID is not defined.");
                         return;
                     }
-    
+
                     try {
                         const attendanceRef = collection(db, "Classes", this.selectedClass, "Attendance");
                         const querySnapshot = await getDocs(attendanceRef);
-    
+
                         if (!querySnapshot.empty) {
-                            this.attendanceData = {}; 
-    
+                            this.attendanceData = {};
+
                             querySnapshot.forEach(async (dateDoc) => {
                                 const date = dateDoc.id;
                                 const studentAttendanceMap = dateDoc.data()[this.selectedStudentID];
-    
+
                                 if (studentAttendanceMap) {
                                     const status = studentAttendanceMap.status;
                                     this.attendanceData[date] = status;
@@ -219,25 +221,25 @@
                         console.error("Error fetching attendance data:", error);
                     }
                 },
-    
+
                 async fetchScores() {
                     if (!this.selectedClass || !this.selectedStudentID) {
                         console.error("Selected class or student ID is not defined.");
                         return;
                     }
-    
+
                     try {
                         const scoresRef = collection(db, "Classes", this.selectedClass, "Scores");
                         const querySnapshot = await getDocs(scoresRef);
-    
+
                         if (!querySnapshot.empty) {
                             this.scoresData = {};
-    
+
                             for (const assignmentDoc of querySnapshot.docs) {
                                 const assignmentId = assignmentDoc.id;
-    
+
                                 const studentScoreMap = assignmentDoc.data()[this.selectedStudentID];
-    
+
                                 if (studentScoreMap) {
                                     const score = studentScoreMap.score;
                                     this.scoresData[assignmentId] = score;
@@ -252,21 +254,21 @@
                         console.error("Error fetching scores data:", error);
                     }
                 },
-    
+
                 generatePDF() {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
-    
+
                     // Add the title
                     doc.setFontSize(18);
                     doc.text('Student Summary', 14, 20);
-    
+
                     // Add profile information
                     doc.setFontSize(12);
                     doc.text(`Name: ${this.profile.FName} ${this.profile.LName}`, 14, 30);
                     doc.text(`Class: ${this.profile.Class}`, 14, 40);
                     doc.text(`Student ID: ${this.profile.StudentID}`, 14, 50);
-    
+
                     // Add attendance data
                     doc.text('Attendance:', 14, 60);
                     let yOffset = 70;
@@ -274,7 +276,7 @@
                         doc.text(`${date}: ${status}`, 14, yOffset);
                         yOffset += 10;
                     }
-    
+
                     // Add scores data
                     doc.text('Scores:', 14, yOffset);
                     yOffset += 10;
@@ -282,21 +284,22 @@
                         doc.text(`${assignmentId}: ${score}`, 14, yOffset);
                         yOffset += 10;
                     }
-    
+
                     // Save the PDF
                     doc.save('student_summary.pdf');
                 }
+
             }
         });
-    
+
         vueApp.mount('#app');
-    
-        // Bind the PDF generation directly to the button click event
-    document.getElementById('generatePdf').addEventListener('click', () => {
-        vueApp.generatePDF();  // Directly call the generatePDF method from the vueApp instance
-        });
+        // document.getElementById('generatePdf').addEventListener('click', function () {
+        //     const element = document.getElementById('app');
+        //     html2pdf().from(element).save();
+        // });
+
     </script>
-    
+
 </body>
 
 </html>
