@@ -17,7 +17,8 @@
             <!-- Only show the homework list if there are any items -->
             <div v-if="homeworkList.length > 0" class="list-group shadow-sm">
                 <a v-for="homework in homeworkList" :key="homework.id" href="#" class="list-group-item list-group-item-action">
-                    <h5 class="mb-1">{{ homework.fileName }}</h5>
+                    <h4 class="mb-1">{{ homework.title }}</h4>
+                    <h6 class="mb-1">{{ homework.fileName }}</h6>
                     <p class="mb-1">Uploaded by: {{ homework.studentId }} from {{ homework.sectionId }} on {{ new Date(homework.uploadedAt).toLocaleString() }}</p>
                 </a>
             </div>
