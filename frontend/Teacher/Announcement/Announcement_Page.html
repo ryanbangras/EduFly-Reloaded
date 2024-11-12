@@ -42,7 +42,7 @@
                         Progress Monitor</a></li>
                 <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226;
                         Announcement</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Consultations/teacher_consultation.html">&#128172;
+                <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172;
                         Consultations</a></li>
                 <li class="nav-item">
                     <a class="nav-link" id="profileLink" href="../Homepage/profile.html">&#128100; User's Profile</a>
@@ -100,36 +100,19 @@
             </thead>
             <tbody>
                 <tr v-for="(announcement, index) in announcements" :key="announcement.id">
-                    <td v-if="!announcement.isEditing">{{ announcement.title }}</td>
-                    <td v-if="announcement.isEditing">
-                        <input v-model="announcement.editTitle" class="form-control">
-                    </td>
+                    <td>{{ announcement.title }}</td>
 
-                    <td v-if="!announcement.isEditing">{{ announcement.message }}</td>
-                    <td v-if="announcement.isEditing">
-                        <textarea v-model="announcement.editMessage" class="form-control"></textarea>
-                    </td>
+                    <td>{{ announcement.message }}</td>
+
 
                     <td>{{ formatDate(announcement.datePosted) }}</td>
 
-                    <td v-if="!announcement.isEditing">{{ formatDate(announcement.deadline) }}</td>
-                    <td v-if="announcement.isEditing">
-                        <input type="datetime-local" v-model="announcement.editDeadline" class="form-control">
-                    </td>
-
+                    <td>{{ formatDate(announcement.deadline) }}</td>
                     <td>
-                        <!-- Show Edit/Delete buttons if not in edit mode -->
-                        <div v-if="!announcement.isEditing">
-
-                            <button @click="deleteAnnouncement(announcement.id, index)"
-                                class="btn btn-danger btn-sm">Delete</button>
-                        </div>
-                        <!-- Show Save/Cancel buttons if in edit mode -->
-                        <div v-else>
-                            <button @click="saveEdit(announcement, index)" class="btn btn-success btn-sm">Save</button>
-                            <button @click="cancelEdit(announcement)" class="btn btn-secondary btn-sm">Cancel</button>
-                        </div>
+                        <button @click="deleteAnnouncement(announcement.id, index)"
+                            class="btn btn-danger">Delete</button>
                     </td>
+
                 </tr>
             </tbody>
         </table>
@@ -162,7 +145,7 @@
                 async fetchAnnouncements() {
                     const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AnnouncementList'));
                     this.announcements = querySnapshot.docs.map(doc => ({
-                        id: doc.id,
+                        id: doc.id.toString(),
                         ...doc.data(),
                         editTitle: doc.data().title,
                         editMessage: doc.data().message,
@@ -202,40 +185,38 @@
                     this.showAddAnnouncementForm = false;
                     alert("Announcement added successfully!");
                 },
-
-                formatDate(timestamp) {
-                    return new Date(timestamp.seconds * 1000).toLocaleString();
-                },
+                // async deleteAnnouncement(id, index) {
+                //     const stringId = id.toString(); // Convert id to string
+                //     console.log('Deleting announcement with ID:', stringId, 'Type:', typeof stringId);
+                //     await deleteDoc(doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id));
+                //     this.announcements.splice(index, 1);
+                // },
 
                 async deleteAnnouncement(id, index) {
-                    console.log("Deleting announcement with id:", id);  // Log to verify the id
-                    console.log("Selected class:", this.selectedClass);  // Log to verify the selected class
+    const stringId = id.toString(); // Convert id to string
+    const classId = this.selectedClass.toString(); // Ensure selectedClass is a string
 
-                    // Ensure selectedClass and id are valid strings
-                    if (typeof this.selectedClass !== 'string' || !this.selectedClass.trim()) {
-                        alert('Invalid class selected.');
-                        return;
-                    }
+    console.log('Deleting announcement with ID:', stringId, 'Type:', typeof stringId);
+    console.log('Selected class:', classId, 'Type:', typeof classId);
 
-                    if (typeof id !== 'string' || !id.trim()) {
-                        alert('Invalid announcement ID.');
-                        return;
-                    }
+    if (typeof stringId !== 'string' || typeof classId !== 'string') {
+        console.error('Invalid ID or class:', stringId, classId);
+        return;
+    }
 
-                    try {
-                        const announcementRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id);
-                        await deleteDoc(announcementRef);
-                        this.announcements.splice(index, 1);
-                        alert("Announcement deleted successfully.");
-                    } catch (error) {
-                        console.error("Error deleting announcement:", error);
-                        alert("Failed to delete the announcement.");
-                    }
-                },
+    try {
+        await deleteDoc(doc(db, 'Classes', classId, 'AnnouncementList', stringId));
+        this.announcements.splice(index, 1);
+    } catch (error) {
+        console.error('Error deleting document:', error);
+    }
+},
 
-                cancelEdit(announcement) {
-                    announcement.isEditing = false;
-                },
+                // formatDate(timestamp) {
+                //     return new Date(timestamp.seconds * 1000).toLocaleString();
+                // },
+
+
                 cancelAddAnnouncement() {
                     this.showAddAnnouncementForm = false;
                     this.newAnnouncement = { title: "", message: "", deadline: "" };
