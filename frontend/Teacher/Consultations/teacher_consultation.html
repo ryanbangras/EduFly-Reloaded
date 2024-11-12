@@ -60,7 +60,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
-                <button id="logout-btn" class="btn btn-primary"style="margin-right: 15px;">&#128682; Log Out</button>
+                <button id="logout-btn" class="btn btn-primary" style="margin-right: 15px;">&#128682; Log Out</button>
             </ul>
         </div>
     </nav>
@@ -129,6 +129,21 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Snackbar for Notifications -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="noConsultationsToast" class="toast align-items-center text-bg-warning" role="alert"
+                aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        No pending consultations.
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
@@ -185,7 +200,17 @@
                         }));
 
                         await this.fetchApprovedConsultations();
+
+                        if (this.consultations.length === 0) {
+                            this.showNoConsultationsToast()
+                        }
                     }
+                },
+                // Function to show the snackbar notification
+                showNoConsultationsToast() {
+                    const toastEl = document.getElementById('noConsultationsToast');
+                    const toast = new bootstrap.Toast(toastEl);
+                    toast.show();
                 },
 
                 async fetchApprovedConsultations() {
