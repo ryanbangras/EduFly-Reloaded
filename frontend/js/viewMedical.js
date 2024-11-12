@@ -1,4 +1,4 @@
-import {auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
+import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../js/database.js';
 
 // Create Vue application
 const vueApp = Vue.createApp({
@@ -6,6 +6,7 @@ const vueApp = Vue.createApp({
         return {
             classes: [],
             selectedClass: "",
+
         };
     },
     async created() {
@@ -41,10 +42,11 @@ const vueApp = Vue.createApp({
             console.log(this.selectedClass); // Log the selected class to the console
         },
         async loadMedicalCertificates() {
+
             try {
                 const response = await fetch('http://localhost:3000/api/medical-certificates');
                 const certificates = await response.json();
-                
+
                 const medicalList = document.getElementById('medicalList');
                 medicalList.innerHTML = '';
 
@@ -74,6 +76,7 @@ const vueApp = Vue.createApp({
         selectedClass(newClass) {
             this.logSelectedClass(); // Log the selected class whenever it changes
             this.loadMedicalCertificates(); // Call loadMedicalCertificates when selectedClass changes
+
         }
     }
 });
