@@ -61,17 +61,26 @@
                 <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172; Book
                         Consults</a></li>
                 <li class="nav-item">
-                    <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
+                    <a class="nav-link" id="profileLink" href="#">&#128100; Profile</a>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+                <!-- Snackbar Notification -->
+                <div id="snackbar" class="snackbar">Logged out successfully!</div>
             </ul>
         </div>
     </nav>
 
     <div id="app" class="container mt-4">
         <h2>Student Info</h2>
+
+        <!-- Loading Spinner -->
+        <div v-if="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
 
         <!-- Form to input class and student ID -->
         <div class="mb-4">
@@ -154,7 +163,8 @@
                         Class: ""
                     },
                     attendanceData: {},
-                    scoresData: {}
+                    scoresData: {},
+                    loading: false,
                 };
             },
             created() {
@@ -194,6 +204,8 @@
                         return;
                     }
 
+                    this.loading = true;
+
                     try {
                         const attendanceRef = collection(db, "Classes", this.selectedClass, "Attendance");
                         const querySnapshot = await getDocs(attendanceRef);
@@ -217,6 +229,8 @@
                         }
                     } catch (error) {
                         console.error("Error fetching attendance data:", error);
+                    } finally {
+                        this.loading = false;
                     }
                 },
 
@@ -225,6 +239,7 @@
                         console.error("Selected class or student ID is not defined.");
                         return;
                     }
+                    this.loading = true;
 
                     try {
                         const scoresRef = collection(db, "Classes", this.selectedClass, "Scores");
@@ -250,6 +265,8 @@
                         }
                     } catch (error) {
                         console.error("Error fetching scores data:", error);
+                    } finally {
+                        this.loading = false;
                     }
                 },
 

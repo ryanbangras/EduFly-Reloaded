@@ -12,7 +12,7 @@
     <!-- Firebase Link -->
     <script type="module" src="../../js/update.js"></script>
     <title>Assignment List</title>
-    
+
     <link rel="stylesheet" href="../student_navbar.css">
     <style>
         .card-header {
@@ -62,6 +62,8 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+                <!-- Snackbar Notification -->
+                <div id="snackbar" class="snackbar">Logged out successfully!</div>
             </ul>
         </div>
     </nav>
@@ -69,10 +71,17 @@
     <!-- Assignment Cards -->
     <div id="app" class="container mt-5">
         <h2>Your Assignments</h2>
-        <p v-if="!studentClass">Fetching your class information...</p>
-        <p v-else-if="assignments.length === 0">No assignments available for your class.</p>
 
-        <div v-if="assignments.length > 0" class="row">
+        <!-- Loading Spinner -->
+        <div v-if="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <p v-if="!loading && assignments.length === 0">No assignments available for your class.</p>
+
+        <div v-if="!loading && assignments.length > 0" class="row">
             <div v-for="assignment in assignments" :key="assignment.id" class="col-md-4">
                 <div class="card assignment-card">
                     <div class="card-header">
@@ -104,7 +113,8 @@
                     userId: "",
                     studentClass: null,
                     assignments: [],
-                    submissionCounts: {}
+                    submissionCounts: {},
+                    loading: false
                 };
             },
             async created() {
@@ -135,6 +145,7 @@
                     });
                 },
                 async fetchSubmissionCounts(title) {
+                    this.loading = true;
                     try {
                         const response = await fetch('http://localhost:3000/api/homeworks');
                         const homeworks = await response.json();
@@ -146,32 +157,42 @@
 
                     } catch (error) {
                         console.error('Error loading homework:', error);
+                    } finally {
+                        this.loading = false;
                     }
                 },
+
                 async fetchAssignments() {
                     if (this.studentClass) {
+                        this.loading = true;
                         this.assignments = [];
-                        const assignmentsRef = collection(db, 'Classes', this.studentClass, 'AssignmentList');
-                        const querySnapshot = await getDocs(assignmentsRef);
+                        try {
+                            const assignmentsRef = collection(db, 'Classes', this.studentClass, 'AssignmentList');
+                            const querySnapshot = await getDocs(assignmentsRef);
 
-                        querySnapshot.forEach((doc) => {
-                            const data = doc.data();
-                            const { date, time } = this.formatFirestoreTimestamp(data.deadline);
+                            querySnapshot.forEach((doc) => {
+                                const data = doc.data();
+                                const { date, time } = this.formatFirestoreTimestamp(data.deadline);
 
-                            this.assignments.push({
-                                id: doc.id,
-                                title: data.title,
-                                description: data.description,
-                                deadlineDate: date,
-                                deadlineTime: time
+                                this.assignments.push({
+                                    id: doc.id,
+                                    title: data.title,
+                                    description: data.description,
+                                    deadlineDate: date,
+                                    deadlineTime: time
+                                });
                             });
-                        });
-                        console.log("Assignments fetched:", this.assignments);
+                            console.log("Assignments fetched:", this.assignments);
 
-                        // Fetch submission counts for each assignment
-                        this.assignments.forEach(assignment => {
-                            this.fetchSubmissionCounts(assignment.title);
-                        });
+                            // Fetch submission counts for each assignment
+                            this.assignments.forEach(assignment => {
+                                this.fetchSubmissionCounts(assignment.title);
+                            });
+                        } catch (error) {
+                            console.error('Error fetching assignments:', error);
+                        } finally {
+                            this.loading = false; // Stop the loading spinner
+                        }
                     }
                 },
                 formatFirestoreTimestamp(timestamp) {
