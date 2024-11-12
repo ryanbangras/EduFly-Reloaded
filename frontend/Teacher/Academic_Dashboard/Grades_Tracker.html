@@ -60,7 +60,7 @@
         </div>
     </nav>
     <div id="app" class="container mt-4">
-        <h2>Scores for {{ selectedClass }} - {{ selectedAssignmentTitle }} (Max: {{ maxGrade }})</h2>
+        <h2>Scores for {{ selectedClass }} - {{ selectedAssignmentTitle }} </h2>
 
         <label for="assignmentSelect" class="form-label">Select Assignment:</label>
         <select v-model="selectedAssignment" @change="fetchScores" id="assignmentSelect" class="form-select mb-4">
@@ -78,8 +78,8 @@
                         <h5 class="card-title">{{ student.Fname }} {{ student.Lname }}</h5>
                         <p class="card-text">Student ID: {{ student.studentId }}</p>
                         <p class="card-text">
-                            Score: 
-                            <input type="number" v-model.number="student.score" min="0" :max="maxGrade" class="form-control"
+                            Score (out of {{ maxGrade}}): 
+                            <input type="number" v-model.number="student.score" min="0" :max="maxGrade" class="form-control mt-1"
                                 @input="validateScore(student)" />
                         </p>
                     </div>

@@ -89,9 +89,10 @@
                 Download Student List
             </button>
         </div>
+        <div v-else>No class selected.</div>
 
-        <h2>Students in {{ selectedClass }}</h2>
-        <table class="table table-striped">
+        <h2 v-if="selectedClass">Students in {{ selectedClass }}</h2>
+        <table v-if="selectedClass" class="table table-striped">
             <thead>
                 <tr>
                     <th>Student ID</th>

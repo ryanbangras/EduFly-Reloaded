@@ -67,6 +67,7 @@
         </select>
 
         <h2 v-if="selectedClass">Assignments for {{ selectedClass }}</h2>
+        <p v-else>No class selected.</p>
 
         <!-- Add Assignment Button and Form -->
         <button v-if="selectedClass" @click="showAddAssignmentForm = !showAddAssignmentForm"
@@ -147,15 +148,25 @@
 
                     <!-- Action Buttons -->
                     <td>
-                        <button v-if="editingAssignmentId !== assignment.id" @click="editAssignment(assignment)"
-                            class="btn btn-warning btn-sm">Edit</button>
-                        <button v-if="editingAssignmentId === assignment.id" @click="saveEdit"
-                            class="btn btn-success btn-sm">Save</button>
-                        <button v-if="editingAssignmentId === assignment.id" @click="cancelEdit"
-                            class="btn btn-secondary btn-sm">Cancel</button>
-                        <button @click="deleteAssignment(assignment)" class="btn btn-danger btn-sm">Delete</button>
-                    </td>
+                        <div v-if="editingAssignmentId !== assignment.id" class="action-buttons d-flex">
+                            <button @click="editAssignment(assignment)" class="btn btn-warning btn-sm me-2">
+                                Edit
+                            </button>
+                            <button @click="deleteAssignment(assignment)" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </div>
                     
+                        <div v-if="editingAssignmentId === assignment.id" class="mt-2">
+                            <button @click="saveEdit" class="btn btn-success btn-sm me-2">
+                                Save
+                            </button>
+                            <button @click="cancelEdit" class="btn btn-secondary btn-sm">
+                                Cancel
+                            </button>
+                        </div>
+                    </td>
+                
                 </tr>
             </tbody>
         </table>

@@ -7,7 +7,7 @@ onAuthStateChanged(auth, (user) => {
         // User is signed in, set profile link text
         const profileLink = document.getElementById('profileLink');
         if (profileLink) {
-            profileLink.textContent =  `&#128100;` `Profile`;
+            profileLink.textContent = `👤 Profile`;
         }
     } else {
         // User is not signed in; ensure profile link redirects to login
