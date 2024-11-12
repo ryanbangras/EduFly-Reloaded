@@ -60,14 +60,14 @@ const vueApp = Vue.createApp({
                 const responseText = await response.text(); // Get server response text for logging
 
                 if (response.ok) {
-                    this.message = '<div class="alert alert-success">Homework uploaded successfully</div>';
+                    // this.message = '<div class="alert alert-success">Homework uploaded successfully</div>';
 
                     this.submissionSummary = {
                         title: this.title,
                         fileName: this.homeworkFile.name,
                         uploadTime: new Date().toLocaleString()
                     };
-
+                    
                     this.title = "Untitled";
                     this.homeworkFile = null; // Clear file data
                     document.getElementById('homeworkFileInput').value = ""; // Clear file input in UI
