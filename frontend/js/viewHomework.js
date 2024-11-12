@@ -41,27 +41,7 @@ const vueApp = Vue.createApp({
 
                 // Filter homework based on the selected class
                 this.homeworkList = homeworks.filter(hw => hw.sectionId === this.selectedClass);
-
-                // const homeworkList = document.getElementById('homeworkList');
-                // homeworkList.innerHTML = '';
-
-                // if (homeworks.length === 0) {
-                //     homeworkList.innerHTML = '<p class="text-center">No homework uploaded yet.</p>';
-                // } else {
-                //     homeworks.forEach(hw => {
-                //         if (hw.sectionId === this.selectedClass) { // Use this.selectedClass
-                //             const item = document.createElement('a');
-                //             item.className = "list-group-item list-group-item-action";
-                //             item.href = `http://localhost:5000/api/homeworks/${hw._id}`;
-                //             item.target = "_blank";
-                //             item.innerHTML = `
-                //                 <strong>${hw.fileName}</strong> <br>
-                //                 <small>Uploaded by: ${hw.studentId} form ${hw.sectionId} on ${new Date(hw.uploadedAt).toLocaleString()}</small>
-                //             `;
-                //             homeworkList.appendChild(item);
-                //         }
-                //     });
-                // }
+                
             } catch (error) {
                 console.error('Error loading homework:', error);
             }

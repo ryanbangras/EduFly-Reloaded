@@ -16,11 +16,13 @@
         .navbar {
             background-color: green;
         }
+
         .card-header {
             background-color: #28a745;
             color: white;
             font-weight: bold;
         }
+
         .assignment-card {
             margin-bottom: 20px;
         }
@@ -82,10 +84,13 @@
                         <p><strong>Description:</strong> {{ assignment.description }}</p>
                         <p><strong>Deadline (Date):</strong> {{ assignment.deadlineDate }}</p>
                         <p><strong>Deadline (Time):</strong> {{ assignment.deadlineTime }}</p>
-                        <a :href="`./upload_homework.html?title=${encodeURIComponent(assignment.title)}`" class="btn btn-success"
-                            target="_blank">
+                        <a :href="`./upload_homework.html?title=${encodeURIComponent(assignment.title)}`"
+                            class="btn btn-success" target="_blank">
                             View Homework
                         </a>
+                        <span v-if="submissionCounts[assignment.title] >= 1">
+                            ({{ submissionCounts[assignment.title] }} submissions)
+                        </span>
                     </div>
                 </div>
             </div>
@@ -98,12 +103,15 @@
         const vueApp = Vue.createApp({
             data() {
                 return {
+                    userId: "",
                     studentClass: null,
-                    assignments: []
+                    assignments: [],
+                    submissionCounts: {}
                 };
             },
             async created() {
                 await this.fetchUserClass();
+                await this.fetchSubmissionCounts();
             },
             methods: {
                 async fetchUserClass() {
@@ -115,6 +123,7 @@
                             const docSnap = await getDoc(docRef);
 
                             if (docSnap.exists()) {
+                                this.userId = docSnap.data().StudentID;
                                 this.studentClass = docSnap.data().Class;
                                 console.log("Student's class:", this.studentClass);
                                 await this.fetchAssignments();
@@ -126,6 +135,20 @@
                             window.location.href = "../Login_Page/login.html";
                         }
                     });
+                },
+                async fetchSubmissionCounts(title) {
+                    try {
+                        const response = await fetch('http://localhost:3000/api/homeworks');
+                        const homeworks = await response.json();
+
+                        // Filter homework based on the selected class and assignment title
+                        const filteredHomeworks = homeworks.filter(hw => hw.studentId === this.userId && hw.title === title);
+                        // Store the submission count in the submissionCounts object
+                        this.submissionCounts[title] = filteredHomeworks.length;
+
+                    } catch (error) {
+                        console.error('Error loading homework:', error);
+                    }
                 },
                 async fetchAssignments() {
                     if (this.studentClass) {
@@ -145,8 +168,12 @@
                                 deadlineTime: time
                             });
                         });
-
                         console.log("Assignments fetched:", this.assignments);
+
+                        // Fetch submission counts for each assignment
+                        this.assignments.forEach(assignment => {
+                            this.fetchSubmissionCounts(assignment.title);
+                        });
                     }
                 },
                 formatFirestoreTimestamp(timestamp) {
