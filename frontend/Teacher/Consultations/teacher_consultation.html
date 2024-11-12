@@ -60,7 +60,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
-                <button id="logout-btn" class="btn btn-primary"style="margin-right: 15px;">&#128682; Log Out</button>
+                <button id="logout-btn" class="btn btn-primary" style="margin-right: 15px;">&#128682; Log Out</button>
             </ul>
         </div>
     </nav>
@@ -73,11 +73,14 @@
         <div v-if="classes.length > 0">
             <label for="class-select">Select a Class:</label>
             <select id="class-select" class="form-select" v-model="selectedClass" @change="fetchConsultations">
-                <option v-for="className in classes" :key="className" :value="className">{{ className }}</option>
+                <option v-for="className in classes" :key="className" :value="className">
+                    {{ className }}
+                </option>
             </select>
         </div>
-
-        <h3 v-if="approvedConsultations.length > 0">Calendar View</h3>
+        
+        <h3 v-if="selectedClass">Calendar View</h3>
+        <p v-else>No class selected.</p>
         <div id="calendar" class="my-4"></div>
 
         <!-- Event Information Modal -->
@@ -124,7 +127,7 @@
                     <td>{{ consultation.preferredTime }}</td>
                     <td>
                         <button class="btn btn-success" @click="approveConsultation(consultation.id)">Approve</button>
-                        <button class="btn btn-warning" @click="rejectConsultation(consultation.id)">Reject</button>
+                        <button class="btn btn-danger" @click="rejectConsultation(consultation.id)">Reject</button>
                     </td>
                 </tr>
             </tbody>
