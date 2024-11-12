@@ -68,7 +68,6 @@ googleLogin.addEventListener("click", async function () {
     }
 });
 
-
 // when user forgets password and wants to reset
 const reset = document.getElementById('reset')
 reset.addEventListener("click", function (event) {
