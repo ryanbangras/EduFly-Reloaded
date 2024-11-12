@@ -14,11 +14,8 @@
     <script type="module" src="../../js/update.js"></script>
 
     <title>EduFly Portal</title>
-    <style>
-        .navbar {
-            background-color: green;
-        }
-    </style>
+
+    <link rel="stylesheet" href="../teacher_navbar.css">
 </head>
 
 <body>
@@ -58,6 +55,7 @@
 
     <!-- Main container -->
     <div id="app" class="container mt-4">
+        <h2>Assignment List</h2>
         <label for="classSelect" class="form-label">Select Class:</label>
         <select v-model="selectedClass" @change="fetchAssignments" id="classSelect" class="form-select mb-4">
             <option value="" disabled>Select a class</option>
