@@ -29,18 +29,20 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 });
 
 // Redirect to login if user is not authenticated
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        // If the user is not logged in, redirect to login page
-        window.location.href = "../../Login_Page/login.html";
-    } else {
-        // If user is logged in, display user's profile name on profile link
-        const profileLink = document.getElementById('profileLink');
-        if (profileLink) {
-            profileLink.textContent = `${user.displayName || "Your"} Profile`;
-        }
-    }
-});
+// onAuthStateChanged(auth, (user) => {
+//     if (!user) {
+//         // If the user is not logged in, redirect to login page
+//         window.location.href = "../../Login_Page/login.html";
+//     } else {
+//         // If user is logged in, display user's profile name on profile link
+//         const profileLink = document.getElementById('profileLink');
+//         if (profileLink) {
+//             profileLink.textContent = `${user.displayName || "Your"} Profile`;
+//         }
+//     }
+// });
+
+export {onAuthStateChanged as Profile}
 
 // // Logout functionality
 // const logoutBtn = document.getElementById("logout-btn");

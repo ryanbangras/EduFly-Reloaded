@@ -296,7 +296,7 @@
         <h1>Google Calendar Events</h1>
 
         <div id="signin-button" style="display: block;">Sign in With Google</div>
-        <button id="signout-button" style="display:none; background-color:white"  onclick="handleSignOut()">Exit Calendar</button>
+        <button id="signout-button" style="display:none; background-color:white"  onclick="handleSignOut()" disabled aria-disabled="true">Exit Calendar</button>
 
         <div id="calendar-events"></div>
 
@@ -316,7 +316,7 @@
 
                 <button type="submit">Save Event</button>
                 <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button>
-                <!-- <button id="signout-button" style="display:none;">Sign out</button> -->
+                <!-- <button id="i-button" style="display:none;">Sign out</button> -->
             </form>
         </div>
     </div>

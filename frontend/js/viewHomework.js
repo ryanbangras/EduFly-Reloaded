@@ -7,9 +7,15 @@ const vueApp = Vue.createApp({
             classes: [],
             selectedClass: "",
             homeworkList: [],
+            // insert loading flag
         };
     },
     async created() {
+
+        // start with a loading gif here, but hide it when it is done loading
+        // if flag state true display laoding fig
+        // if not hide
+
         const urlParams = new URLSearchParams(window.location.search);
         this.selectedClass = urlParams.get('class'); 
         // Check for user authentication and fetch classes
