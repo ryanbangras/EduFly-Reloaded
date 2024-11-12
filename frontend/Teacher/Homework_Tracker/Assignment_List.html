@@ -16,6 +16,118 @@
     <title>EduFly Portal</title>
 
     <link rel="stylesheet" href="../teacher_navbar.css">
+    <style>
+        table.table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 12px; /* Rounded corners */
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            background: linear-gradient(135deg, #f0f7ff, #e6f1ff); /* Soft gradient background */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        table.table:hover {
+            transform: scale(1.02); /* Slight scale on hover */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+        }
+
+        table.table thead {
+            background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient header */
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+
+        table.table th,
+        table.table td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        table.table th:first-child,
+        table.table td:first-child {
+            border-left: 5px solid green;
+        }
+
+        table.table th:last-child,
+        table.table td:last-child {
+            border-right: 5px solid green;
+        }
+
+        table.table tbody tr:hover {
+            background: linear-gradient(135deg, #e6f1ff, #d0e4ff); /* Light gradient on row hover */
+            transition: background-color 0.3s ease;
+        }
+
+        table.table tbody tr:nth-child(even) {
+            background-color: #f9fbff;
+        }
+
+        /* Hover Effects on Cells */
+        table.table td:hover {
+            background: rgba(0, 123, 255, 0.1); /* Subtle background change on cell hover */
+            cursor: pointer;
+        }
+
+        /* Styling for Buttons in Action Column */
+        .action-buttons button {
+            margin-right: 6px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            font-weight: bold;
+            transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
+        }
+
+        .action-buttons button:hover {
+            transform: scale(1.1); /* Slightly enlarge button on hover */
+            background-color: #0056b3; /* Blue background on hover */
+            color: white;
+        }
+
+        /* Specific Button Colors */
+        table.table .btn-warning {
+            color: white;
+            background-color: #ffc107;
+            border: none;
+        }
+
+        table.table .btn-danger {
+            color: white;
+            background-color: #e74c3c;
+            border: none;
+        }
+
+        table.table .btn-success {
+            color: white;
+            background-color: #28b487;
+            border: none;
+        }
+
+        table.table .btn-secondary {
+            color: white;
+            background-color: #6c757d;
+            border: none;
+        }
+
+        /* Footer Row for Total or Summary */
+        table.table tfoot {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: right;
+        }
+
+
+    </style>
 </head>
 
 <body>
