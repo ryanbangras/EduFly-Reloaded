@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Uploaded Homework</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module" src="../../js/update.js"></script>
+
+    <style>
+        .navbar {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="../Homepage/home_teacher.html">
+            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top"
+                style="height: 30px; width: auto;">
+            EduFly
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="../Homework_Tracker/Assignment_List.html">&#9997;&#65039;
+                        Homework</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Timetable/timetable.html">&#128467;&#65039;
+                        Timetable</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Academic_Dashboard/Student_List.html">&#127891;
+                        Progress Monitor</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226;
+                        Announcement</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172;
+                        Consultations</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profileLink" href="../Homepage/profile.html">&#128100; User's Profile</a>
+                    <!-- Target for dynamic name -->
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h3 class="text-center mb-4">Uploaded Homework</h3>
+        <div id="app">
+            <p v-if="selectedClass" class="text-center"> Class: {{ selectedClass }}</p>
+            <!-- Only show the homework list if there are any items -->
+            <div v-if="homeworkList.length > 0" class="list-group shadow-sm">
+                <a v-for="homework in homeworkList" :key="homework.id" href="#"
+                    class="list-group-item list-group-item-action">
+                    <h4 class="mb-1">{{ homework.title }}</h4>
+                    <h6 class="mb-1">{{ homework.fileName }}</h6>
+                    <p class="mb-1">Uploaded by: {{ homework.studentId }} from {{ homework.sectionId }} on {{ new
+                        Date(homework.uploadedAt).toLocaleString() }}</p>
+                </a>
+            </div>
+            <!-- Message when no homework is found -->
+            <p v-else class="text-center">No homework uploaded for {{ selectedClass }}</p>
+        </div>
+    </div>
+    <script type="module" src="../../js/viewHomework.js"></script>
+</body>
+
+</html>
