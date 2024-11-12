@@ -248,6 +248,7 @@
             .form-container button {
                 font-size: 14px;
             }
+
         }
     </style>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -295,7 +296,7 @@
         <h1>Google Calendar Events</h1>
 
         <div id="signin-button" style="display: block;">Sign in With Google</div>
-        <button id="signout-button" style="display:none;" onclick="handleSignOut()">Sign out</button>
+        <button id="signout-button" style="display:none; background-color:white"  onclick="handleSignOut()">Exit Calendar</button>
 
         <div id="calendar-events"></div>
 
@@ -315,7 +316,7 @@
 
                 <button type="submit">Save Event</button>
                 <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button>
-                <button id="signout-button" style="display:none;">Sign out</button>
+                <!-- <button id="signout-button" style="display:none;">Sign out</button> -->
             </form>
         </div>
     </div>
