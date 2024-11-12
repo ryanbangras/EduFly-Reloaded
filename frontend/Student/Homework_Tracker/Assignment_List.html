@@ -16,6 +16,14 @@
         .navbar {
             background-color: green;
         }
+        .card-header {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+        .assignment-card {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -58,38 +66,31 @@
         </div>
     </nav>
 
-    <!-- Assignment Table -->
+    <!-- Assignment Cards -->
     <div id="app" class="container mt-5">
         <h2>Your Assignments</h2>
         <p v-if="!studentClass">Fetching your class information...</p>
         <p v-else-if="assignments.length === 0">No assignments available for your class.</p>
 
-        <table v-if="assignments.length > 0" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Deadline (Date)</th>
-                    <th>Deadline (Time)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="assignment in assignments" :key="assignment.id">
-                    <!-- Make the title clickable and redirect to upload_homework.html -->
-                    <td>
-                        <a :href="`./upload_homework.html?title=${encodeURIComponent(assignment.title)}`"
+        <div v-if="assignments.length > 0" class="row">
+            <div v-for="assignment in assignments" :key="assignment.id" class="col-md-4">
+                <div class="card assignment-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ assignment.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Description:</strong> {{ assignment.description }}</p>
+                        <p><strong>Deadline (Date):</strong> {{ assignment.deadlineDate }}</p>
+                        <p><strong>Deadline (Time):</strong> {{ assignment.deadlineTime }}</p>
+                        <a :href="`./upload_homework.html?title=${encodeURIComponent(assignment.title)}`" class="btn btn-success"
                             target="_blank">
-                            {{ assignment.title }}
+                            View Homework
                         </a>
-                    </td>
-                    <td>{{ assignment.description }}</td>
-                    <td>{{ assignment.deadlineDate }}</td>
-                    <td>{{ assignment.deadlineTime }}</td>
-                </tr>
-            </tbody>
-        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
 
     <script type="module">
         import { auth, db, onAuthStateChanged, doc, getDoc, collection, getDocs } from '../../js/database.js';
