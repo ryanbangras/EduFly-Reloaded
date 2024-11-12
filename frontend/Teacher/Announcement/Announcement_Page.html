@@ -42,7 +42,7 @@
                         Progress Monitor</a></li>
                 <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226;
                         Announcement</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172;
+                <li class="nav-item"><a class="nav-link" href="../Consultations/teacher_consultation.html">&#128172;
                         Consultations</a></li>
                 <li class="nav-item">
                     <a class="nav-link" id="profileLink" href="../Homepage/profile.html">&#128100; User's Profile</a>
@@ -208,10 +208,30 @@
                 },
 
                 async deleteAnnouncement(id, index) {
-                    await deleteDoc(doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id));
-                    this.announcements.splice(index, 1);
-                },
+                    console.log("Deleting announcement with id:", id);  // Log to verify the id
+                    console.log("Selected class:", this.selectedClass);  // Log to verify the selected class
 
+                    // Ensure selectedClass and id are valid strings
+                    if (typeof this.selectedClass !== 'string' || !this.selectedClass.trim()) {
+                        alert('Invalid class selected.');
+                        return;
+                    }
+
+                    if (typeof id !== 'string' || !id.trim()) {
+                        alert('Invalid announcement ID.');
+                        return;
+                    }
+
+                    try {
+                        const announcementRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id);
+                        await deleteDoc(announcementRef);
+                        this.announcements.splice(index, 1);
+                        alert("Announcement deleted successfully.");
+                    } catch (error) {
+                        console.error("Error deleting announcement:", error);
+                        alert("Failed to delete the announcement.");
+                    }
+                },
 
                 cancelEdit(announcement) {
                     announcement.isEditing = false;
