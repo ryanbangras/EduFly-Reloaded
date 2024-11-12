@@ -115,7 +115,7 @@
                     <th>Subject</th>
                     <th>Description</th>
                     <th>Preferred Time</th>
-                    <th>Actions</th>
+                    <th  style="text-align: center;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -125,8 +125,8 @@
                     <td>{{ consultation.subject }}</td>
                     <td>{{ consultation.reason }}</td>
                     <td>{{ consultation.preferredTime }}</td>
-                    <td>
-                        <button class="btn btn-success" @click="approveConsultation(consultation.id)">Approve</button>
+                    <td style="text-align: center">
+                        <button class="btn btn-success me-2" @click="approveConsultation(consultation.id)">Approve</button>
                         <button class="btn btn-danger" @click="rejectConsultation(consultation.id)">Reject</button>
                     </td>
                 </tr>
