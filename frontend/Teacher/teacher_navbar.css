@@ -1,16 +1,18 @@
 /* Navbar styling */
 .navbar {
-    background-color: green;
+    background-color: green !important;
 }
 
 .navbar .nav-link {
-    color: white; /* Makes the text white */
-    font-size: 18px; /* Sets font size */
+    color: white !important; /* Makes the text white */
+    font-size: 18px !important; /* Sets font size */
 }
 
-.navbar .navbar-brand, .navbar .navbar-toggler-icon {
-    color: white 
+.navbar .navbar-brand,
+.navbar .navbar-toggler-icon {
+    color: white !important;
 }
+
 
 #logout-btn {
     color: white;
