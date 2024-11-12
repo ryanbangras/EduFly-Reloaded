@@ -1,6 +1,14 @@
 // Import necessary Firebase functions
-import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail} from '../js/database.js';
+import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from '../js/database.js';
 import { db, doc, getDoc } from '../js/database.js';
+
+function showSnackbar(message) {
+    const snackbar = document.getElementById('snackbar');
+    snackbar.textContent = message;
+    snackbar.className = 'show';
+    setTimeout(() => { snackbar.className = snackbar.className.replace('show', ''); }, 3000);
+}
+
 
 // Email and Password Login
 const submit = document.getElementById('submit');
@@ -22,12 +30,13 @@ submit.addEventListener("click", async function (event) {
             const studentDocSnap = await getDoc(studentDocRef);
 
             if (studentDocSnap.exists()) {
-                console.log('User found in Students collection:', studentDocSnap.data());
-                alert("Welcome, Student!");
-                window.location.href = "../Student/Homepage/home_student.html";
+                showSnackbar("Welcome, Student!");
+                setTimeout(() => window.location.href = "../Student/Homepage/home_student.html", 1000);
+                // window.location.href = "../Student/Homepage/home_student.html";
             } else {
-                alert("Welcome, Teacher!");
-                window.location.href = "../Teacher/Homepage/home_teacher.html";
+                showSnackbar("Welcome, Teacher!");
+                setTimeout(() => window.location.href = "../Teacher/Homepage/home_teacher.html", 1000);
+                // window.location.href = "../Teacher/Homepage/home_teacher.html";
             }
         }
     } catch (error) {
