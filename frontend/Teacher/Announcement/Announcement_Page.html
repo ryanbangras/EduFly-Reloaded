@@ -193,24 +193,24 @@
                 // },
 
                 async deleteAnnouncement(id, index) {
-    const stringId = id.toString(); // Convert id to string
-    const classId = this.selectedClass.toString(); // Ensure selectedClass is a string
+                    const stringId = id.toString(); // Convert id to string
+                    const classId = this.selectedClass.toString(); // Ensure selectedClass is a string
 
-    console.log('Deleting announcement with ID:', stringId, 'Type:', typeof stringId);
-    console.log('Selected class:', classId, 'Type:', typeof classId);
+                    console.log('Deleting announcement with ID:', stringId, 'Type:', typeof stringId);
+                    console.log('Selected class:', classId, 'Type:', typeof classId);
 
-    if (typeof stringId !== 'string' || typeof classId !== 'string') {
-        console.error('Invalid ID or class:', stringId, classId);
-        return;
-    }
+                    if (typeof stringId !== 'string' || typeof classId !== 'string') {
+                        console.error('Invalid ID or class:', stringId, classId);
+                        return;
+                    }
 
-    try {
-        await deleteDoc(doc(db, 'Classes', classId, 'AnnouncementList', stringId));
-        this.announcements.splice(index, 1);
-    } catch (error) {
-        console.error('Error deleting document:', error);
-    }
-},
+                    try {
+                        await deleteDoc(doc(db, 'Classes', classId, 'AnnouncementList', stringId));
+                        this.announcements.splice(index, 1);
+                    } catch (error) {
+                        console.error('Error deleting document:', error);
+                    }
+                },
 
                 // formatDate(timestamp) {
                 //     return new Date(timestamp.seconds * 1000).toLocaleString();
