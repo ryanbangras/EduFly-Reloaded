@@ -1,0 +1,19 @@
+/* Navbar styling */
+.navbar {
+    background-color: green;
+}
+
+.navbar .nav-link {
+    color: white; /* Makes the text white */
+    font-size: 18px; /* Sets font size */
+}
+
+.navbar .navbar-brand, .navbar .navbar-toggler-icon {
+    color: white 
+}
+
+#logout-btn {
+    color: white;
+    background-color: #007bff;
+    border: none;
+}
