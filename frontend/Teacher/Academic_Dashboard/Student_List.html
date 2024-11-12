@@ -137,6 +137,18 @@
                     <label for="birthdate" class="form-label">Date of Birth (YYYY-MM-DD)</label>
                     <input type="text" v-model="newStudent.BirthDate" id="birthDate" class="form-control" required>
                 </div>
+                <div class="mb-3">
+                    <label for="parent" class="form-label">Emergency Contact Name</label>
+                    <input type="text" v-model="newStudent.Parent" id="parent" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="relationship" class="form-label">Relationship with Emergency Contact </label>
+                    <input type="text" v-model="newStudent.Relationship" id="relationship" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="contact" class="form-label">Emergency Contact No. </label>
+                    <input type="text" v-model="newStudent.EmergencyContact" id="contact" class="form-control" required>
+                </div>
                 <button type="submit" class="btn btn-success">Add Student</button>
                 <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
             </form>
@@ -158,7 +170,10 @@
                         <p><strong>Last Name:</strong> {{ selectedStudent.Lname }}</p>
                         <p><strong>NRIC: </strong>{{selectedStudent.NRIC}}</p>
                         <p><strong>Date of Birth: </strong>{{selectedStudent.BirthDate}}</p>
-                        <p><strong>AbsentCount:</strong> {{selectedStudent.AbsentCount }}</p>
+                        <p><strong>AbsentCount: </strong> {{selectedStudent.AbsentCount }}</p>
+                        <p><strong>Emergency Contact Name: </strong> {{selectedStudent.Parent }}</p>
+                        <p><strong>Relationship with Emergency Contact: </strong> {{selectedStudent.Relationship}}</p>
+                        <p><strong>Emergency Contact: </strong> {{selectedStudent.EmergencyContact}}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="closeStudentInfoModal">Close</button>
@@ -182,7 +197,11 @@
                         studentId: "",
                         Fname: "",
                         Lname: "",
-                        AbsentCount: 0
+                        BirthDate: "",
+                        AbsentCount: 0,
+                        Parent: "",
+                        Relationship: "",
+                        EmergencyContact: ""
                     },
                     selectedStudent: null // set to null initially
                 };
@@ -217,8 +236,12 @@
                                 Fname: doc.data().FName,
                                 Lname: doc.data().LName,
                                 AbsentCount: doc.data().AbsentCount,
-                                BirthDate: doc.data().BirthDate
-                            });
+                                BirthDate: doc.data().BirthDate, 
+                                Parent: doc.data().Parent,
+                                Relationship: doc.data().Relationship,
+                                EmergencyContact: doc.data().EmergencyContact,
+
+                             });
                         });
                     }
                 },
@@ -231,6 +254,9 @@
                             LName: this.newStudent.Lname,
                             NRIC: this.newStudent.NRIC,
                             BirthDate: this.newStudent.BirthDate,
+                            Parent: this.newStudent.Parent,
+                            Relationship: this.newStudent.Relationship,
+                            EmegencyContact: this.newStudent.EmergencyContact,
                             AbsentCount: 0
                         });
                         this.fetchStudents();
@@ -274,13 +300,14 @@
                         student.Fname,
                         student.Lname,
                         student.BirthDate,
-                        student.AbsentCount
+                        student.Parent,
+                        student.EmergencyContact
                     ]);
 
                     // Add table with student data
                     doc.autoTable({
                         startY: 40,
-                        head: [['Student ID', 'NRIC', 'First Name', 'Last Name', 'Birth Date', 'Absences']],
+                        head: [['Student ID', 'NRIC', 'First Name', 'Last Name', 'Birth Date', 'Emergency Contact', 'Emergency Contact No.']],
                         body: studentRows,
                         theme: 'striped',
                         headStyles: { fillColor: [0, 102, 204] },

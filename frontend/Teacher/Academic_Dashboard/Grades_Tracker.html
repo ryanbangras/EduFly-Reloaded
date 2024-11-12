@@ -18,6 +18,10 @@
         .navbar {
             background-color: green;
         }
+
+        .card {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
@@ -66,33 +70,26 @@
             </option>
         </select>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Score (out of {{ maxGrade }})</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="student in students" :key="student.studentId">
-                    <td>{{ student.studentId }}</td>
-                    <td>{{ student.Fname }}</td>
-                    <td>{{ student.Lname }}</td>
-                    <td>
-                        <input type="number" v-model.number="student.score" min="0" :max="maxGrade" class="form-control"
-                            @input="validateScore(student)" />
-                    </td>
-                </tr>
-                <tr>
-                    <button v-if="students.length > 0 && selectedClass" class="btn btn-primary mt-3"
-                        @click="saveAllScores">
-                        Save Grades
-                    </button>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Cards for each student -->
+        <div class="row">
+            <div class="col-md-4" v-for="student in students" :key="student.studentId">
+                <div :class="['card', getScoreClass(student.score)]">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ student.Fname }} {{ student.Lname }}</h5>
+                        <p class="card-text">Student ID: {{ student.studentId }}</p>
+                        <p class="card-text">
+                            Score: 
+                            <input type="number" v-model.number="student.score" min="0" :max="maxGrade" class="form-control"
+                                @input="validateScore(student)" />
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button v-if="students.length > 0 && selectedClass" class="btn btn-primary mt-3" @click="saveAllScores">
+            Save Grades
+        </button>
     </div>
 
     <script type="module">
@@ -153,6 +150,9 @@
                         });
                         await this.fetchStudentScores();
                     }
+
+                    // Sort students by score initially
+                    this.sortStudentsByScore();
                 },
                 async fetchStudentScores() {
                     try {
@@ -182,6 +182,9 @@
                         return;
                     }
 
+                    // Sort students by score (descending) before saving
+                    this.sortStudentsByScore();
+
                     try {
                         const scoresRef = doc(db, 'Classes', this.selectedClass, 'Scores', this.selectedAssignment);
                         const scoresData = {};
@@ -199,13 +202,24 @@
                     } catch (error) {
                         console.error("Error saving scores:", error);
                     }
+                },
+                sortStudentsByScore() {
+                    this.students.sort((a, b) => b.score - a.score);
+                },
+                getScoreClass(score) {
+                    if (score >= this.maxGrade * 0.75) {
+                        return 'bg-success text-white';
+                    } else if (score >= this.maxGrade * 0.5) {
+                        return 'bg-warning text-dark';
+                    } else {
+                        return 'bg-danger text-white';
+                    }
                 }
             }
         });
 
         vueApp.mount('#app');
     </script>
-
 
 </body>
 
