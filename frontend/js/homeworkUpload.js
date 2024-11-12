@@ -7,7 +7,8 @@ const vueApp = Vue.createApp({
             userId: "", // Holds StudentID after Firebase fetch
             userClass: "",  // Holds Class after Firebase fetch
             homeworkFile: null, // Stores the uploaded file
-            message: "" // Stores the response message
+            message: "", // Stores the response message
+            submissionSummary: null, // Submission summary object
         };
     },
     async created() {
@@ -60,8 +61,15 @@ const vueApp = Vue.createApp({
 
                 if (response.ok) {
                     this.message = '<div class="alert alert-success">Homework uploaded successfully</div>';
-                    this.homeworkFile = null; // Clear file data
+
+                    this.submissionSummary = {
+                        title: this.title,
+                        fileName: this.homeworkFile.name,
+                        uploadTime: new Date().toLocaleString()
+                    };
+
                     this.title = "Untitled";
+                    this.homeworkFile = null; // Clear file data
                     document.getElementById('homeworkFileInput').value = ""; // Clear file input in UI
                 } else {
                     console.error('Server responded with error:', response.status, responseText);
