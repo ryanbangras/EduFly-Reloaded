@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +12,54 @@
     <script type="module" src="../../js/update.js"></script>
     <title>Announcement List</title>
     <style>
-        .navbar {
+
+        .navbar{
             background-color: green;
         }
+        .timeline {
+            list-style-type: none;
+            padding: 0;
+        }
+    
+        .timeline-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            position: relative;
+        }
+    
+        /* Timeline Indicator Circle */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            width: 14px;
+            height: 14px;
+            background-color: green;
+            border-radius: 50%;
+            transform: translateY(-50%); /* Ensures vertical centering */
+        }
+    
+        .timeline-item .content {
+            flex-grow: 1;
+            padding-left: 30px; /* Adjusted padding to give space for the circle */
+        }
+    
+        .timeline-item h5 {
+            margin-bottom: 0.5rem;
+        }
+    
+        .timeline-item p {
+            margin-bottom: 0.5rem;
+        }
+    
+        .timeline-item .date {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
     </style>
+    
 </head>
 
 <body class="bg-light">
@@ -33,23 +76,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="../Homework_Tracker/Assignment_List.html">&#9997;&#65039;
-                        Homework</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Timetable/timetable.html">&#128467;&#65039;
-                        Timetable</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Summary/SummaryPage.html">&#127891; Progress
-                        Tracker</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226;
-                        Announcement</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Medical/upload_medical.html">&#128221; Form
-                        Submission</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Pomodoro_Timer/pomodoro.html">&#128338; Pomodoro
-                        Timer</a></li>
-                <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172; Book
-                        Consults</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Homework_Tracker/Assignment_List.html">&#9997;&#65039; Homework</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Timetable/timetable.html">&#128467;&#65039; Timetable</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Summary/SummaryPage.html">&#127891; Progress Tracker</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Announcement/Announcement_Page.html">&#128226; Announcement</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Medical/upload_medical.html">&#128221; Form Submission</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Pomodoro_Timer/pomodoro.html">&#128338; Pomodoro Timer</a></li>
+                <li class="nav-item"><a class="nav-link" href="../Consultation/student_consultation.html">&#128172; Book Consults</a></li>
                 <li class="nav-item">
                     <a class="nav-link" id="profileLink" href="#">&#128100; User's Profile</a>
-                    <!-- Target for dynamic name -->
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
@@ -58,30 +93,24 @@
         </div>
     </nav>
 
-    <!-- Announcement Table -->
+    <!-- Announcement Timeline -->
     <div id="app" class="container mt-5">
         <h2>Announcements</h2>
         <p v-if="!studentClass">Fetching your class information...</p>
         <p v-else-if="announcements.length === 0">No announcements available for your class.</p>
 
-        <table v-if="announcements.length > 0" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Message</th>
-                    <th>Posted Date</th>
-                    <th>Deadline (Date)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="announcement in announcements" :key="announcement.id">
-                    <td>{{ announcement.title }}</td>
-                    <td>{{ announcement.message }}</td>
-                    <td>{{ announcement.postedDate }}</td>
-                    <td>{{ announcement.deadlineDate }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <ul v-if="announcements.length > 0" class="timeline">
+            <li v-for="announcement in announcements" :key="announcement.id" class="timeline-item">
+                <div class="content">
+                    <h5>{{ announcement.title }}</h5>
+                    <p>{{ announcement.message }}</p>
+                    <div class="date">
+                        <strong>Posted:</strong> {{ announcement.postedDate }} <br>
+                        <strong>Deadline:</strong> {{ announcement.deadlineDate }}
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 
     <script type="module">
@@ -173,5 +202,4 @@
     </script>
 
 </body>
-
 </html>
