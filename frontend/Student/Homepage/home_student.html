@@ -20,28 +20,36 @@
 
         /* Standardize the image sizes in cards */
         .card-img-top {
-            height: 200px; /* Fixed height for all images */
-            object-fit: cover; /* Ensures images fill the space without distortion */
+            height: 200px;
+            /* Fixed height for all images */
+            object-fit: cover;
+            /* Ensures images fill the space without distortion */
         }
 
         /* Styling for the card body to align content */
         .card-body {
             display: flex;
-            flex-direction: column; /* Aligns content vertically */
-            justify-content: space-between; /* Distributes space between text and button */
+            flex-direction: column;
+            /* Aligns content vertically */
+            justify-content: space-between;
+            /* Distributes space between text and button */
             height: 100%;
         }
 
         /* Aligning and standardizing the button and icon size */
         .card .btn {
             display: flex;
-            justify-content: center; /* Center the icon */
-            align-items: center; /* Center the icon vertically */
-            height: 50px; /* Fixed height for buttons */
+            justify-content: center;
+            /* Center the icon */
+            align-items: center;
+            /* Center the icon vertically */
+            height: 50px;
+            /* Fixed height for buttons */
         }
 
         .card .btn span {
-            font-size: 2em; /* Standardize the icon size */
+            font-size: 2em;
+            /* Standardize the icon size */
         }
 
         /* Optional: Add some margin to space out the cards */
@@ -52,19 +60,23 @@
         /* Make sure each row has 2 cards per line */
         @media (min-width: 768px) {
             .card-column {
-                flex: 1 1 48%; /* Each card takes up 48% of the row width, leaving 4% space between */
+                flex: 1 1 48%;
+                /* Each card takes up 48% of the row width, leaving 4% space between */
                 margin-right: 2%;
                 margin-bottom: 20px;
             }
 
             .card-column:last-child {
-                margin-right: 0; /* Remove right margin for last card in row */
+                margin-right: 0;
+                /* Remove right margin for last card in row */
             }
 
             .row {
                 display: flex;
-                flex-wrap: wrap; /* Ensures wrapping of cards */
-                justify-content: space-between; /* Align cards evenly within each row */
+                flex-wrap: wrap;
+                /* Ensures wrapping of cards */
+                justify-content: space-between;
+                /* Align cards evenly within each row */
             }
         }
 
@@ -77,7 +89,8 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="#">
-            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top" style="height: 30px; width: auto;">
+            <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top"
+                style="height: 30px; width: auto;">
             EduFly
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -87,7 +100,8 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" id="profileLink" href="./profile.html">Profile</a> <!-- Updated link with label -->
+                    <a class="nav-link" id="profileLink" href="./profile.html">Profile</a>
+                    <!-- Updated link with label -->
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
@@ -100,7 +114,7 @@
             </ul>
         </div>
     </nav>
-
+    <!-- Main container -->
     <div class="container-fluid">
         <div class="row text-center mt-5" style="background-color:#8F8073">
             <h1 id="Welcome"></h1>
@@ -113,104 +127,108 @@
                 <div class="row">
                     <!-- First Card -->
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <img src="homework.gif" class="card-img-top" alt="Homework Icon">
-                            <div class="card-body">
-                                <h5 class="card-title">Homework & Task Management</h5>
-                                <p class="card-text">Manage your homework and tasks easily. Track upcoming assignments and deadlines.</p>
-                                <a href="../Homework_Tracker/Assignment_List.html" class="btn btn-success w-100">
-                                    <span>&#9997;&#65039;</span>
-                                </a>
+                        <a href="../Homework_Tracker/Assignment_List.html" class="text-decoration-none">
+                            <div class="card">
+                                <img src="homework.gif" class="card-img-top" alt="Homework Icon">
+                                <div class="card-body">
+                                    <h3 class="card-title">Homework & Task Management</h3>
+                                    <p class="card-subtitle mb-2 text-muted">Manage your homework and tasks easily.
+                                        Track upcoming assignments and deadlines.</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-        
+
                     <!-- Second Card -->
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <img src="timetable.gif" class="card-img-top" alt="Timetable Icon">
-                            <div class="card-body">
-                                <h5 class="card-title">Dynamic Timetable</h5>
-                                <p class="card-text">View and manage your timetable with ease. Keep track of your lessons and events.</p>
-                                <a href="../Timetable/timetable.html" class="btn btn-success w-100">
-                                    <span>&#128467;&#65039;</span>
-                                </a>
+                        <a href="../Timetable/timetable.html" class="text-decoration-none">
+                            <div class="card">
+                                <img src="timetable.gif" class="card-img-top" alt="Timetable Icon">
+                                <div class="card-body">
+                                    <h3 class="card-title">Dynamic Timetable</h3>
+                                    <p class="card-subtitle mb-2 text-muted">View and manage your timetable with ease.
+                                        Keep track of your lessons and events.</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-        
+
                     <!-- Third Card -->
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <img src="dashboard.gif" class="card-img-top" alt="Dashboard Icon">
-                            <div class="card-body">
-                                <h5 class="card-title">Progress Monitor</h5>
-                                <p class="card-text">Access your grades, attendance, and more. Stay on top of your academic performance!</p>
-                                <a href="../Summary/SummaryPage.html" class="btn btn-success w-100">
-                                    <span>&#127891;</span>
-                                </a>
+                        <a href="../Summary/SummaryPage.html" class="text-decoration-none">
+                            <div class="card">
+                                <img src="dashboard.gif" class="card-img-top" alt="Dashboard Icon">
+                                <div class="card-body">
+                                    <h3 class="card-title">Progress Monitor</h3>
+                                    <p class="card-subtitle mb-2 text-muted">Access your grades, attendance, and more.
+                                        Stay on top of your academic performance!</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-        
+
                     <!-- Fourth Card -->
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <img src="notifications.gif" class="card-img-top" alt="Announcement Icon">
-                            <div class="card-body">
-                                <h5 class="card-title">Announcements & Notifications</h5>
-                                <p class="card-text">Stay informed with the latest important announcements from your teachers and school.</p>
-                                <a href="../Announcement/Announcement_Page.html" class="btn btn-success w-100">
-                                    <span>&#128226;</span>
-                                </a>
+                        <a href="../Announcement/Announcement_Page.html" class="text-decoration-none">
+                            <div class="card">
+                                <img src="notifications.gif" class="card-img-top" alt="Announcement Icon">
+                                <div class="card-body">
+                                    <h3 class="card-title">Announcements & Notifications</h3>
+                                    <p class="card-subtitle mb-2 text-muted">Stay informed with the latest important
+                                        announcements from your teachers and school.</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-        
+
                     <!-- Fifth Card -->
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <img src="forms.gif" class="card-img-top" alt="Medical Icon">
-                            <div class="card-body">
-                                <h5 class="card-title">Upload Medical Certificate</h5>
-                                <p class="card-text">Easily upload and manage medical certificates and consent forms for school activities. Stay organized and ensure timely submissions.</p>
-                                <a href="../Medical/upload_medical.html" class="btn btn-success w-100">
-                                    <span>&#128221;</span>
-                                </a>
+                        <a href="../Medical/upload_medical.html" class="text-decoration-none">
+                            <div class="card">
+                                <img src="forms.gif" class="card-img-top" alt="Medical Icon">
+                                <div class="card-body">
+                                    <h3 class="card-title">Upload Medical Certificate</h3>
+                                    <p class="card-subtitle mb-2 text-muted">Easily upload and manage medical
+                                        certificates and consent forms for school activities. Stay organized and ensure
+                                        timely submissions.</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-        
+
                     <!-- Sixth Card -->
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <img src="pomodoro.gif" class="card-img-top" alt="Consent Icon">
-                            <div class="card-body">
-                                <h5 class="card-title">Pomodoro Timer</h5>
-                                <p class="card-text">Stay focused with the Pomodoro timer. Work in intervals to boost productivity and manage your time efficiently.</p>
-                                <a href="../Pomodoro_Timer/pomodoro.html" class="btn btn-success w-100">
-                                    <span>&#128338;</span>
-                                </a>
+                        <a href="../Pomodoro_Timer/pomodoro.html" class="text-decoration-none">
+                            <div class="card">
+                                <img src="pomodoro.gif" class="card-img-top" alt="Pomodoro Timer Icon">
+                                <div class="card-body">
+                                    <h3 class="card-title">Pomodoro Timer</h3>
+                                    <p class="card-subtitle mb-2 text-muted">Stay focused with the Pomodoro timer. Work
+                                        in intervals to boost productivity and manage your time efficiently.</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
+
                     <!-- Seventh Card -->
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <img src="consultation.gif" class="card-img-top" alt="Consultation Icon">
-                            <div class="card-body">
-                                <h5 class="card-title">Consultation</h5>
-                                <p class="card-text">Easily book consultations with your teacher, and view all your consultations instantly</p>
-                                <a href="../Consultation/student_consultation.html" class="btn btn-success w-100">
-                                    <span>&#128172;</span>
-                                </a>
+                        <a href="../Consultation/student_consultation.html" class="text-decoration-none">
+                            <div class="card">
+                                <img src="consultation.gif" class="card-img-top" alt="Consultation Icon">
+                                <div class="card-body">
+                                    <h3 class="card-title">Consultation</h3>
+                                    <p class="card-subtitle mb-2 text-muted">Easily book consultations with your
+                                        teacher, and view all your consultations instantly.</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
+
                 </div>
             </div>
             <div class="col-1"></div>
-        </div>        
+        </div>
     </div>
 </body>
+
 </html>
