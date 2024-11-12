@@ -101,7 +101,7 @@
                     assignments: [],
                     selectedClass: "",
                     selectedAssignment: "",
-                    maxGrade: 100, // Default maxGrade
+                    maxGrade: 0, // Default maxGrade
                     students: []
                 };
             },
@@ -207,12 +207,14 @@
                     this.students.sort((a, b) => b.score - a.score);
                 },
                 getScoreClass(score) {
-                    if (score >= this.maxGrade * 0.75) {
+                    if (score === "" || score == null){
+                        return 'bg-white text-dark'
+                    }else if(score >= this.maxGrade * 0.75){
                         return 'bg-success text-white';
-                    } else if (score >= this.maxGrade * 0.5) {
+                    }else if(score >= this.maxGrade * 0.5){
                         return 'bg-warning text-dark';
-                    } else {
-                        return 'bg-danger text-white';
+                    }else{
+                        return 'bg-danger text-white'
                     }
                 }
             }
