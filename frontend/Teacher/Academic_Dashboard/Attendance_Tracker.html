@@ -78,7 +78,7 @@
             <label for="attendanceDate" class="form-label me-2">Select Date:</label>
             <input type="date" v-model="attendanceDate" id="attendanceDate" class="form-control" style="width: auto;">
             <button class="btn btn-primary ms-2" @click="fetchAttendance">GO</button>
-            <a :href="`../../view_medical.html?class=${selectedClass}`" class="btn btn-secondary ms-auto">View Medical
+            <a :href="`./view_medical.html?class=${selectedClass}`" class="btn btn-secondary ms-auto">View Medical
                 Certificates submissions</a>
         </div>
 
