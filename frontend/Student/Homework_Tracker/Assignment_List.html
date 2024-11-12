@@ -86,7 +86,7 @@
                         <p><strong>Deadline (Time):</strong> {{ assignment.deadlineTime }}</p>
                         <a :href="`./upload_homework.html?title=${encodeURIComponent(assignment.title)}`"
                             class="btn btn-success" target="_blank">
-                            View Homework
+                            Upload Homework
                         </a>
                         <span v-if="submissionCounts[assignment.title] >= 1">
                             ({{ submissionCounts[assignment.title] }} submissions)
