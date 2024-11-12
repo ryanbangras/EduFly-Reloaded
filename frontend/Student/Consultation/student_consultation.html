@@ -55,16 +55,6 @@
             margin-bottom: 10px;
         }
 
-        /* .calendar-day {
-            padding: 15px;
-            background-color: #f9f9f9;
-            text-align: center;
-            border-radius: 5px;
-            font-size: 14px;
-            position: relative;
-            min-height: 50px;
-        }
-/*  */
         .calendar-day.empty {
             background-color: transparent;
         }
@@ -72,33 +62,7 @@
         .calendar-day:hover {
             background-color: #f1f1f1;
             cursor: pointer;
-        } */
-
-        /* .calendar-day .consultation {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            right: 5px;
-            font-size: 12px;
-            background-color: #ffcc00;
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-        } */
-/* 
-        .calendar-header {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 0;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 5px 5px 0 0;
-        } */
+        }
 
         .calendar-header div {
             font-size: 16px;
@@ -162,6 +126,8 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+                <!-- Snackbar Notification -->
+                <div id="snackbar" class="snackbar">Logged out successfully!</div>
             </ul>
         </div>
     </nav>

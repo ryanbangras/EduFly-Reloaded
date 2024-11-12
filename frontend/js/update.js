@@ -19,14 +19,33 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // Logout functionality
+// Logout functionality with Snackbar
 document.getElementById("logout-btn").addEventListener("click", () => {
     signOut(auth).then(() => {
-        alert("Logged out successfully");
-        window.location.href = "../../Login_page/login.html";
+        showSnackbar("Logged out successfully!");
+        window.location.href = "../../Login_page/login.html"; // Redirect after showing snackbar
     }).catch((error) => {
-        alert("Error logging out: " + error.message);
+        showSnackbar("Error logging out: " + error.message, true);
     });
 });
+
+// Function to show the snackbar
+function showSnackbar(message, isError = false) {
+    const snackbar = document.getElementById("snackbar");
+    snackbar.textContent = message;
+
+    // Change background color if it's an error
+    snackbar.style.backgroundColor = isError ? '#dc3545' : '#4caf50';
+
+    // Show the snackbar
+    snackbar.classList.add("show");
+
+    // Hide the snackbar after 3 seconds
+    setTimeout(() => {
+        snackbar.classList.remove("show");
+    }, 3000);
+}
+
 
 
 

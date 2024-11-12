@@ -15,6 +15,7 @@
         body {
             background-color: #f8f9fa;
         }
+
         .navbar-brand img {
             height: 30px;
             width: auto;
@@ -82,6 +83,8 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+                <!-- Snackbar Notification -->
+                <div id="snackbar" class="snackbar">Logged out successfully!</div>
             </ul>
         </div>
     </nav>
@@ -89,7 +92,7 @@
     <!-- Main Content -->
     <div class="container mt-5">
         <div id="app">
-             <!-- Main upload homework card -->
+            <!-- Main upload homework card -->
             <div v-if="submissionSummary === null" class="card mx-auto shadow-lg" style="max-width: 500px;">
                 <div class="card-body">
                     <h3 class="text-center mb-4">Upload Homework</h3>
