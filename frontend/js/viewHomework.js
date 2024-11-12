@@ -7,7 +7,7 @@ const vueApp = Vue.createApp({
             classes: [],
             selectedClass: "",
             homeworkList: [],
-            // insert loading flag
+            loading: false
         };
     },
     async created() {
@@ -41,6 +41,7 @@ const vueApp = Vue.createApp({
             console.log(this.selectedClass); // Log the selected class to the console
         },
         async loadHomework() {
+            this.loading = true;
             try {
                 const response = await fetch('http://localhost:3000/api/homeworks');
                 const homeworks = await response.json();
@@ -50,6 +51,8 @@ const vueApp = Vue.createApp({
                 
             } catch (error) {
                 console.error('Error loading homework:', error);
+            }finally{
+                this.loading = false
             }
         },
     },
