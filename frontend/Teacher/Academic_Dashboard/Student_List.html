@@ -21,10 +21,10 @@
 
     <title>EduFly Portal</title>
     <style>
-        /* Highlight row with high absence count */
-        .absent-warning {
-            background-color: #ffdddd !important;
-            /* Light red background */
+        table tbody tr.absent-warning {
+            border-left: 6px solid #dc3545 !important; /* Red left border */
+            font-weight: bold;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -111,7 +111,7 @@
             </thead>
             <tbody>
                 <tr v-for="student in students" :key="student.studentId" @click="viewStudentInfo(student)"
-                    :class="{'absent-warning': student.AbsentCount >= Number(0)}">
+                    :class="{'absent-warning': student.AbsentCount > 20}">
                     <td><a href="#" @click.prevent="viewStudentInfo(student)">{{ student.studentId }}</a></td>
                     <td>{{ student.Fname }}</td>
                     <td>{{ student.Lname }}</td>
@@ -289,7 +289,7 @@
                         });
                         this.fetchStudents();
                         this.cancelAddStudent();
-                    } 
+                    }
                 },
 
                 cancelAddStudent() {

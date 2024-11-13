@@ -70,6 +70,8 @@
             </option>
         </select>
 
+        <p v-if="!selectedClass">Please select a class.</p>
+
         <!-- Add Announcement Button -->
         <button v-if="selectedClass" @click="showAddAnnouncementForm = true" class="btn btn-primary mb-3">Add
             Announcement</button>
