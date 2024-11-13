@@ -138,7 +138,7 @@
     </style>
 </head>
 
-<body>
+<body class="full-height">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
@@ -223,8 +223,8 @@
             <button @click="addAssignment" class="btn btn-success">Submit Assignment</button>
         </div>
 
-         <!-- Loading Spinner -->
-         <div v-if="loading" class="text-center">
+        <!-- Loading Spinner -->
+        <div v-if="loading" class="text-center">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
@@ -303,6 +303,13 @@
         <!-- Snackbar -->
         <div v-if="snackbarMessage" class="snackbar show">{{ snackbarMessage }}</div>
     </div>
+
+    <!-- Footer -->
+    <footer class="container-fluid text-white pt-4 mt-auto text-center" style="background-color: #343a40">
+        <div class="row">
+            <p>&copy; 2024 EduFly. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script type="module">
         import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc, Timestamp } from '../../js/database.js';
@@ -416,7 +423,7 @@
                         this.showSnackbar("Assignment added successfully!");
                     } catch (error) {
                         console.error("Error adding assignment: ", error);
-                    }finally{
+                    } finally {
                         this.loading = false
                     }
                 },
@@ -458,7 +465,7 @@
                         this.showSnackbar("Assignment updated successfully!");
                     } catch (error) {
                         console.error("Error updating assignment: ", error);
-                    }finally{
+                    } finally {
                         this.loading = false;
                     }
                 },
@@ -477,7 +484,7 @@
                         this.showSnackbar("Assignment deleted successfully!");
                     } catch (error) {
                         console.error("Error deleting assignment: ", error);
-                    }finally{
+                    } finally {
                         this.loading = false;
                     }
                 },

@@ -28,7 +28,8 @@
     </style>
 </head>
 
-<body class="bg-light">
+<body class="full-height bg-light">
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
@@ -66,7 +67,7 @@
     </nav>
 
     <!-- Consultation Requests -->
-    <div id="app" class="container mt-5">
+    <div id="app" class="container mt-5 mb-5">
         <h2>Consultation Requests</h2>
 
         <!-- Dropdown for selecting class -->
@@ -114,7 +115,7 @@
         </div>
 
         <!-- Display Consultation Requests -->
-         <hr v-if="!loading && selectedClass && consultations.length > 0">
+        <hr v-if="!loading && selectedClass && consultations.length > 0">
         <h3 v-if="!loading && consultations.length > 0">Pending Consultation Requests</h3>
         <table v-if="!loading && consultations.length > 0" class="table table-striped">
             <thead>
@@ -156,8 +157,13 @@
                 </div>
             </div>
         </div>
-
     </div>
+    <!-- Footer -->
+    <footer class="container-fluid text-white pt-4 mt-auto text-center" style="background-color: #343a40">
+        <div class="row">
+            <p>&copy; 2024 EduFly. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script type="module">
         import { auth, db, onAuthStateChanged, doc, getDoc, collection, query, getDocs, updateDoc, setDoc, deleteDoc } from '../../js/database.js';

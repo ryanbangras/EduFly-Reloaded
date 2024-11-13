@@ -23,7 +23,8 @@
     </style>
 </head>
 
-<body>
+<body class="full-height bg-light">
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
@@ -95,10 +96,19 @@
             </div>
         </div>
 
-        <button v-if="!loading && students.length > 0 && selectedClass" class="btn btn-primary mt-3" @click="saveAllScores">
+        <button v-if="!loading && students.length > 0 && selectedClass" class="btn btn-primary mt-3"
+            @click="saveAllScores">
             Save Grades
         </button>
     </div>
+    <!-- Footer -->
+    <footer class="container-fluid text-white pt-4 mt-auto text-center" style="background-color: #343a40">
+        <div class="row">
+            <p>&copy; 2024 EduFly. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+
 
     <script type="module">
         import { auth, db, getDocs, getDoc, doc, collection, setDoc } from '../../js/database.js';
@@ -192,7 +202,7 @@
                         }
                     } catch (error) {
                         console.error("Error fetching scores data:", error);
-                    }finally{
+                    } finally {
                         this.loading = false
                     }
                 },

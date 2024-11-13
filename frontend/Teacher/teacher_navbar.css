@@ -48,3 +48,12 @@
     visibility: visible;
     opacity: 1;
 }
+
+html, body {
+    height: 100%;
+}
+
+.full-height {
+    display: flex;
+    flex-direction: column;
+}

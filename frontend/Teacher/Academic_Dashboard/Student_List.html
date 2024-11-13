@@ -29,7 +29,8 @@
     </style>
 </head>
 
-<body>
+<body class="full-height bg-light">
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand" href="../Homepage/home_teacher.html">
@@ -126,7 +127,7 @@
         <!-- Add Student Form -->
         <div v-if="!loading && showAddStudentForm" class="mt-4">
             <h3>Add New Student</h3>
-            <form @submit.prevent="addStudent">
+            <form @submit.prevent="addStudent" class="mb-5">
                 <div class="mb-3">
                     <label for="studentId" class="form-label">Student ID</label>
                     <input type="text" v-model="newStudent.studentId" id="studentId" class="form-control" required>
@@ -193,6 +194,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="container-fluid text-white pt-4 mt-auto text-center" style="background-color: #343a40">
+        <div class="row">
+            <p>&copy; 2024 EduFly. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script type="module">
         import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc } from '../../js/database.js';
