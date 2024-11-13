@@ -18,6 +18,16 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// Logout functionality
+document.getElementById("logout-btn").addEventListener("click", () => {
+    signOut(auth).then(() => {
+        alert("Logged out successfully");
+        window.location.href = "../../Login_page/login.html";
+    }).catch((error) => {
+        alert("Error logging out: " + error.message);
+    });
+});
+
 // // Logout functionality with Snackbar
 // document.getElementById("logout-btn").addEventListener("click", () => {
 //     signOut(auth)
