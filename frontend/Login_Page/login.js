@@ -64,11 +64,11 @@ googleLogin.addEventListener("click", async function () {
 
             if (studentDocSnap.exists()) {
                 console.log('User found in Students collection:', studentDocSnap.data());
-                alert("Welcome, Student!");
-                window.location.href = "../Student/Homepage/home_student.html";
+                showSnackbar("Welcome, Student!");
+                setTimeout(() => window.location.href = "../Student/Homepage/home_student.html", 1000);
             } else {
-                alert("Welcome, Teacher!");
-                window.location.href = "../Teacher/Homepage/home_teacher.html";
+                showSnackbar("Welcome, Teacher!");
+                setTimeout(() => window.location.href = "../Teacher/Homepage/home_teacher.html", 1000);
             }
         }
     } catch (error) {

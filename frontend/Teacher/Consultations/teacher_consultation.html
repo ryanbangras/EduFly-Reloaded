@@ -59,6 +59,8 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+                <!-- Snackbar Notification -->
+                <div id="snackbar" class="snackbar"></div>
             </ul>
         </div>
     </nav>
@@ -76,9 +78,17 @@
                 </option>
             </select>
         </div>
-        
-        <h3 v-if="selectedClass">Calendar View</h3>
-        <p v-else>No class selected.</p>
+
+        <!-- Loading Spinner -->
+        <div v-if="loading" class="text-center my-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading data, please wait...</p>
+        </div>
+
+        <h3 v-if="!loading && selectedClass">Calendar View</h3>
+        <p v-else-if="!loading && !selectedClass">No class selected.</p>
         <div id="calendar" class="my-4"></div>
 
         <!-- Event Information Modal -->
@@ -104,8 +114,8 @@
         </div>
 
         <!-- Display Consultation Requests -->
-        <h3 v-if="consultations.length > 0">Pending Consultation Requests</h3>
-        <table v-if="consultations.length > 0" class="table table-striped">
+        <h3 v-if="!loading && consultations.length > 0">Pending Consultation Requests</h3>
+        <table v-if="!loading && consultations.length > 0" class="table table-striped">
             <thead>
                 <tr>
                     <th>Student Name</th>
@@ -113,7 +123,7 @@
                     <th>Subject</th>
                     <th>Description</th>
                     <th>Preferred Time</th>
-                    <th  style="text-align: center;">Actions</th>
+                    <th style="text-align: center;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -124,7 +134,8 @@
                     <td>{{ consultation.reason }}</td>
                     <td>{{ consultation.preferredTime }}</td>
                     <td style="text-align: center">
-                        <button class="btn btn-success me-2" @click="approveConsultation(consultation.id)">Approve</button>
+                        <button class="btn btn-success me-2"
+                            @click="approveConsultation(consultation.id)">Approve</button>
                         <button class="btn btn-danger" @click="rejectConsultation(consultation.id)">Reject</button>
                     </td>
                 </tr>
@@ -133,13 +144,13 @@
 
         <!-- Snackbar for Notifications -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="noConsultationsToast" class="toast align-items-center text-bg-warning" role="alert"
+            <div id="noConsultationsToast" class="toast align-items-center text-bg-dark" role="alert"
                 aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
                         No pending consultations.
                     </div>
-                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                    <button type="button" class="btn-close me-2 m-auto bg-white" data-bs-dismiss="toast"
                         aria-label="Close"></button>
                 </div>
             </div>
@@ -167,7 +178,8 @@
                         subject: '',
                         reason: '',
                         formattedPreferredTime: ''
-                    } // Initialize with default properties
+                    }, // Initialize with default properties
+                    loading: false
                 };
             },
             async created() {
@@ -191,19 +203,26 @@
                 },
                 async fetchConsultations() {
                     if (this.selectedClass) {
-                        const classRef = collection(db, 'Classes', this.selectedClass, 'RequestedConsultations');
-                        const q = query(classRef);
-                        const querySnapshot = await getDocs(q);
+                        this.loading = true
+                        try {
+                            const classRef = collection(db, 'Classes', this.selectedClass, 'RequestedConsultations');
+                            const q = query(classRef);
+                            const querySnapshot = await getDocs(q);
 
-                        this.consultations = querySnapshot.docs.map(doc => ({
-                            id: doc.id,
-                            ...doc.data()
-                        }));
+                            this.consultations = querySnapshot.docs.map(doc => ({
+                                id: doc.id,
+                                ...doc.data()
+                            }));
 
-                        await this.fetchApprovedConsultations();
+                            await this.fetchApprovedConsultations();
 
-                        if (this.consultations.length === 0) {
-                            this.showNoConsultationsToast()
+                            if (this.consultations.length === 0) {
+                                this.showNoConsultationsToast()
+                            }
+                        } catch (error) {
+                            console.error('Error fetching consultations:', error);
+                        } finally {
+                            this.loading = false; // Hide loading spinner
                         }
                     }
                 },
@@ -216,24 +235,32 @@
 
                 async fetchApprovedConsultations() {
                     if (this.selectedClass) {
-                        const approvedConsultationsRef = collection(db, 'Classes', this.selectedClass, 'ApprovedConsultations');
-                        const querySnapshot = await getDocs(approvedConsultationsRef);
+                        this.loading = true;
+                        try {
+                            const approvedConsultationsRef = collection(db, 'Classes', this.selectedClass, 'ApprovedConsultations');
+                            const querySnapshot = await getDocs(approvedConsultationsRef);
 
-                        this.approvedConsultations = querySnapshot.docs.map(doc => {
-                            const consultation = doc.data();
-                            let formattedTime = consultation.preferredTime?.toDate ? consultation.preferredTime.toDate() : new Date(consultation.preferredTime);
+                            this.approvedConsultations = querySnapshot.docs.map(doc => {
+                                const consultation = doc.data();
+                                let formattedTime = consultation.preferredTime?.toDate ? consultation.preferredTime.toDate() : new Date(consultation.preferredTime);
 
-                            return {
-                                id: doc.id,
-                                studentName: consultation.studentName,
-                                studentID: consultation.studentID,
-                                subject: consultation.subject,
-                                reason: consultation.reason,
-                                formattedPreferredTime: formattedTime
-                            };
-                        });
+                                return {
+                                    id: doc.id,
+                                    studentName: consultation.studentName,
+                                    studentID: consultation.studentID,
+                                    subject: consultation.subject,
+                                    reason: consultation.reason,
+                                    formattedPreferredTime: formattedTime
+                                };
 
-                        this.renderCalendar();
+                            });
+
+                            this.renderCalendar();
+                        } catch (error) {
+                            console.error('Error fetching approved consultations:', error);
+                        } finally {
+                            this.loading = false; // Hide loading spinner
+                        }
                     }
                 },
 
