@@ -113,7 +113,6 @@
                         if (user) {
                             const email = user.email;
                             this.profile.email = email;
-
                             // Fetch profile data from Firestore
                             const docRef = doc(db, "Teachers", email);
                             const docSnap = await getDoc(docRef);
@@ -123,8 +122,9 @@
                                 console.log("No such document!");
                             }
                         } else {
-                            alert("User not signed in");
-                            window.location.href = "../Login Page/login_teacher.html";
+                            // Will alert user not sign in when click on log out button in profile.html
+                            //alert("User not signed in");
+                            //window.location.href = "../Login Page/login_teacher.html";
                         }
                     });
                 },

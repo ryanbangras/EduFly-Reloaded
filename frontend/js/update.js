@@ -1,32 +1,31 @@
 import { auth, onAuthStateChanged, signOut } from './database.js';
 auth.languageCode = "en";
 
-// Monitor authentication state
+/// Monitor authentication state with a logout flag
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // User is signed in, set profile link text
+        // User is signed in
         const profileLink = document.getElementById('profileLink');
         if (profileLink) {
             profileLink.textContent = `👤 Profile`;
         }
     } else {
-        // User is not signed in; ensure profile link redirects to login
-        document.getElementById('profileLink').addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default action
-            window.location.href = "../../Login_Page/login.html"; // Redirect to login
-        });
+        // Check if the logout flag is set, and only redirect if it isn't
+        if (!localStorage.getItem('isLoggingOut')) {
+            window.location.href = "../../Login_Page/login.html";
+        }
     }
 });
 
-// Logout functionality
-document.getElementById("logout-btn").addEventListener("click", () => {
-    signOut(auth).then(() => {
-        alert("Logged out successfully");
-        window.location.href = "../../Login_page/login.html";
-    }).catch((error) => {
-        alert("Error logging out: " + error.message);
-    });
-});
+// // Logout functionality
+// document.getElementById("logout-btn").addEventListener("click", () => {
+//     signOut(auth).then(() => {
+//         alert("Logged out successfully");
+//         window.location.href = "../../Login_page/login.html";
+//     }).catch((error) => {
+//         alert("Error logging out: " + error.message);
+//     });
+// });
 
 // // Logout functionality with Snackbar
 // document.getElementById("logout-btn").addEventListener("click", () => {
@@ -44,21 +43,24 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 //         });
 // });
 
+// Logout functionality with Snackbar
 document.getElementById("logout-btn").addEventListener("click", () => {
+    // Set the logout flag in local storage
+    localStorage.setItem('isLoggingOut', 'true');
+
     signOut(auth)
         .then(() => {
             showSnackbar("Logged out successfully!");
             
-            // Log the path to verify
-            console.log("Redirecting to: " + "../../Login_page/login.html");
-
-            // Delay the redirection by 1 second
+            // Delay redirection for the snackbar display
             setTimeout(() => {
-                window.location.href = "../../Login_page/login.html"; // Ensure this is correct
-            }, 1000);
+                localStorage.removeItem('isLoggingOut'); // Clear the logout flag
+                window.location.href = "../../Login_page/login.html"; // Redirect after snackbar
+            }, 1000); // Adjust delay to match snackbar display time
         })
         .catch((error) => {
             showSnackbar("Error logging out: " + error.message, true);
+            localStorage.removeItem('isLoggingOut'); // Clear flag if error occurs
         });
 });
 
