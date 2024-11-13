@@ -20,38 +20,39 @@
             color: white;
             font-weight: bold;
         }
-    
+
         .assignment-card {
             margin-bottom: 20px;
-            height: 300px; /* Fixed height for uniform card size */
+            height: 300px;
+            /* Fixed height for uniform card size */
             display: flex;
             flex-direction: column;
         }
-    
+
         .card-body {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-    
+
         /* Adjust button and text alignment in the card */
         .card-body p {
             flex-grow: 1;
         }
-    
+
         .card-body .btn {
             margin-top: 10px;
             align-self: flex-start;
         }
     </style>
-    
+
 </head>
 
 <body class="bg-light">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="../Homepage/home_student.html">
+        <a class="navbar-brand" href="#">
             <img src="../../img/icon.png" alt="Logo" class="d-inline-block align-top"
                 style="height: 30px; width: auto;">
             EduFly
@@ -78,13 +79,17 @@
                         Consults</a></li>
                 <li class="nav-item">
                     <a class="nav-link" id="profileLink" href="../Homepage/profile.html">&#128100; Profile</a>
-                    <!-- Target for dynamic name -->
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
-                <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
-                <!-- Snackbar Notification -->
-                <div id="snackbar" class="snackbar">Logged out successfully!</div>
+                <li class="nav-item">
+                    <span id="account_type" class="nav-link"></span>
+                </li>
+                <li class="nav-item">
+                    <button id="logout-btn" class="btn btn-primary">&#128682; Log Out</button>
+                    <!-- Snackbar Notification -->
+                    <div id="snackbar" class="snackbar">Logged out successfully!</div>
+                </li>
             </ul>
         </div>
     </nav>

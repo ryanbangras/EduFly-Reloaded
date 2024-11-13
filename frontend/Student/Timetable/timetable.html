@@ -13,6 +13,7 @@
     <title>Google Calendar Viewer</title>
 
     <link rel="stylesheet" href="../student_navbar.css">
+    <script type="module" src="../../js/update.js"></script>
     <style>
         /* General Styling */
         body {
@@ -219,11 +220,6 @@
         }
 
 
-
-
-
-        /* Customize other calendar elements as needed */
-
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
@@ -300,7 +296,7 @@
 
         <div id="calendar-events"></div>
 
-        <!-- Event creation/edit form -->
+        Event creation/edit form
         <div id="event-form" class="form-container" style="display: none;">
             <h3>Create or Edit Event</h3>
             <form id="event-form-content">
@@ -315,211 +311,13 @@
                 <input type="datetime-local" id="event-end" required><br><br>
 
                 <button type="submit">Save Event</button>
-                <!-- <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button> -->
+                <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button>
                 <button id="signout-button" style="display:none;">Sign out</button>
             </form>
         </div>
     </div>
 
-    <!-- <script type="module">
-        import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc, Timestamp } from '../js/database.js';
-        const CLIENT_ID = '253069344619-3irs1nn3r35c9cfrt1qepmhqqt2gclqc.apps.googleusercontent.com';
-        const API_KEY = ""
-        const SCOPES = 'https://www.googleapis.com/auth/calendar';
-
-        let tokenClient;
-
-        // Load GAPI client for Google Calendar API
-        function gapiLoaded() {
-            gapi.load('client', initializeGapiClient);
-        }
-
-        async function initializeGapiClient() {
-            await gapi.client.init({
-                apiKey: API_KEY,
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-            });
-            console.log("GAPI client initialized.");
-        }
-
-        // Load Google Identity Services for Sign-In
-        function gisLoaded() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: handleAuthSuccess,
-            });
-
-            google.accounts.id.renderButton(
-                document.getElementById("signin-button"),
-                { theme: 'outline', size: 'large', type: 'standard', shape: 'pill' }
-            );
-
-            document.getElementById("signin-button").onclick = () => {
-                tokenClient.requestAccessToken();
-            };
-        }
-
-        function handleAuthSuccess(tokenResponse) {
-            console.log("Authentication successful.");
-            localStorage.setItem("googleAccessToken", tokenResponse.access_token);
-            document.getElementById("signin-button").style.display = "none";
-            document.getElementById("signout-button").style.display = "block";
-            document.getElementById("event-form").style.display = "block"; // Show form
-
-            loadCalendarEvents();
-        }
-
-        function handleSignOut() {
-            console.log("Signing out...");
-            if (tokenClient.credentials && tokenClient.credentials.access_token) {
-                google.accounts.oauth2.revoke(tokenClient.credentials.access_token, () => {
-                    console.log("Access token revoked.");
-                    tokenClient.credentials.access_token = '';
-                    document.getElementById("calendar-events").innerHTML = "";
-                    document.getElementById("signin-button").style.display = "block";
-                    document.getElementById("signout-button").style.display = "none";
-                    document.getElementById("event-form").style.display = "none"; // Hide form
-                });
-            } else {
-                console.log("No access token to revoke.");
-                document.getElementById("calendar-events").innerHTML = "";
-                document.getElementById("signin-button").style.display = "block";
-                document.getElementById("signout-button").style.display = "none";
-                document.getElementById("event-form").style.display = "none";
-            }
-        }
-        document.getElementById("signout-button").addEventListener("click", handleSignOut);
-
-        async function loadCalendarEvents() {
-            const token = localStorage.getItem("googleAccessToken");
-            if (!token) {
-                console.log("No access token found.");
-                return;
-            }
-
-            try {
-                const response = await gapi.client.calendar.events.list({
-                    'calendarId': 'primary',
-                    'showDeleted': false,
-                    'singleEvents': true,
-                    'orderBy': 'startTime'
-                });
-
-                const events = response.result.items.map(event => ({
-                    id: event.id,
-                    title: event.summary,
-                    start: event.start.dateTime || event.start.date,
-                    end: event.end.dateTime || event.end.date
-                }));
-
-                const calendarDiv = document.getElementById("calendar-events");
-                calendarDiv.innerHTML = '';
-                const calendar = new FullCalendar.Calendar(calendarDiv, {
-                    initialView: 'dayGridMonth',
-                    events: events,
-                    eventClick: function (info) {
-                        openEventForm(info.event);
-                    }
-                });
-                calendar.render();
-            } catch (error) {
-                console.error("Error fetching calendar events:", error);
-            }
-        }
-
-        function openEventForm(event) {
-            // Fill the form with the selected event's data
-            document.getElementById("event-id").value = event.id;
-            document.getElementById("event-title").value = event.title;
-            document.getElementById("event-start").value = event.start.toISOString().slice(0, 16); // Format for datetime-local
-            document.getElementById("event-end").value = event.end.toISOString().slice(0, 16); // Format for datetime-local
-            document.getElementById("delete-event-button").style.display = "inline-block"; // Show delete button
-        }
-
-        document.getElementById('event-form-content').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const title = document.getElementById('event-title').value;
-            const startTime = document.getElementById('event-start').value;
-            const endTime = document.getElementById('event-end').value;
-            const eventId = document.getElementById('event-id').value;
-
-            const token = localStorage.getItem("googleAccessToken");
-            if (!token) {
-                alert("Please sign in to Google.");
-                return;
-            }
-
-            const event = {
-                summary: title,
-                start: {
-                    dateTime: new Date(startTime).toISOString(),
-                    timeZone: 'UTC'
-                },
-                end: {
-                    dateTime: new Date(endTime).toISOString(),
-                    timeZone: 'UTC'
-                }
-            };
-
-            try {
-                if (eventId) {
-                    // Edit the event
-                    await gapi.client.calendar.events.update({
-                        calendarId: 'primary',
-                        eventId: eventId,
-                        resource: event
-                    });
-                    alert("Event updated successfully!");
-                } else {
-                    // Add new event
-                    await gapi.client.calendar.events.insert({
-                        calendarId: 'primary',
-                        resource: event
-                    });
-                    alert("Event added successfully!");
-                }
-                loadCalendarEvents(); // Reload events
-            } catch (error) {
-                console.error("Error adding/updating event:", error);
-                alert("Error: " + error.message);
-            }
-        });
-
-        function deleteEvent() {
-            const eventId = document.getElementById("event-id").value;
-            const token = localStorage.getItem("googleAccessToken");
-
-            if (!eventId || !token) {
-                alert("No event selected or not signed in.");
-                return;
-            }
-
-            try {
-                gapi.client.calendar.events.delete({
-                    calendarId: 'primary',
-                    eventId: eventId
-                }).then(() => {
-                    alert("Event deleted successfully.");
-                    loadCalendarEvents(); // Reload events
-                });
-            } catch (error) {
-                console.error("Error deleting event:", error);
-                alert("Error: " + error.message);
-            }
-        }
-
-        window.onload = () => {
-            gapiLoaded();
-            gisLoaded();
-        };
-    </script> -->
-
-
-
-
-
+   
     <script type="module">
         import { auth, db, onAuthStateChanged, getFirestore, doc, getDoc, collection, getDocs, setDoc, addDoc, deleteDoc, Timestamp } from '../../js/database.js';
 
