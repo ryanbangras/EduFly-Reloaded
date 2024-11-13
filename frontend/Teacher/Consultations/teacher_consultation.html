@@ -87,8 +87,8 @@
             <p>Loading data, please wait...</p>
         </div>
 
-        <h3 v-if="!loading && selectedClass">Calendar View</h3>
-        <p v-else-if="!loading && !selectedClass">No class selected.</p>
+        <h3 v-if="!loading && selectedClass" class="mt-3">Calendar View</h3>
+        <p v-else-if="!loading && !selectedClass" class="mt-3">No class selected.</p>
         <div id="calendar" class="my-4"></div>
 
         <!-- Event Information Modal -->
@@ -114,6 +114,7 @@
         </div>
 
         <!-- Display Consultation Requests -->
+         <hr v-if="!loading && selectedClass && consultations.length > 0">
         <h3 v-if="!loading && consultations.length > 0">Pending Consultation Requests</h3>
         <table v-if="!loading && consultations.length > 0" class="table table-striped">
             <thead>
