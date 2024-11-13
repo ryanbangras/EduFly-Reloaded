@@ -6,6 +6,8 @@ const vueApp = Vue.createApp({
             studentName: "",
             userId: "", // Holds StudentID after Firebase fetch
             userClass: "",  // Holds Class after Firebase fetch
+            startDate: "",
+            endDate: "",
             certificateFile: null, // Stores the uploaded file
             message: "" // Stores the response message
         };
@@ -31,6 +33,18 @@ const vueApp = Vue.createApp({
             }
         });
     },
+    computed: {
+        dateError() {
+                if (this.startDate && this.endDate) {
+                    if (this.startDate > this.endDate) {
+                        return 'Start date cannot be later than end date.';
+                    } else if (this.endDate < this.startDate) {
+                        return 'End date cannot be earlier than start date.';
+                    }
+                }
+                return null;
+            },
+    },
     methods: {
         handleFileUpload(event) {
             this.certificateFile = event.target.files[0]; // Store selected file
@@ -45,6 +59,8 @@ const vueApp = Vue.createApp({
             formData.append('studentId', this.userId);
             formData.append('sectionId', this.userClass);
             formData.append('certificateFile', this.certificateFile);
+            formData.append('startDate', this.startDate);
+            formData.append('endDate', this.endDate);
 
             try {
                 const response = await fetch('http://localhost:3000/api/upload-medical', {
@@ -54,6 +70,9 @@ const vueApp = Vue.createApp({
 
                 if (response.ok) {
                     this.message = '<div class="alert alert-success">Medical certificate uploaded successfully</div>';
+                    console.log(this.startDate, this.endDate);
+                    this.startDate = null;
+                    this.endDate = null;
                     this.certificateFile = null; // Clear file data
                     document.getElementById('certificateFileInput').value = ""; // Clear file input in UI
                 } else {

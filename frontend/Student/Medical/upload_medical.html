@@ -97,11 +97,27 @@
                 <div id="app">
                     <h3 class="text-center mb-4">Upload Medical Certificate</h3>
                     <form @submit.prevent="uploadMedicalCertificate">
+                        <!-- Start Date Field -->
+                        <div class="form-group">
+                            <label for="startDate">Start Date of Medical Leave</label>
+                            <input id="startDate" type="date" v-model="startDate" class="form-control" required>
+                        </div>
+
+                        <!-- End Date Field -->
+                        <div class="form-group">
+                            <label for="endDate">End Date of Medical Leave</label>
+                            <input id="endDate" type="date" v-model="endDate" class="form-control" required>
+                        </div>
+
+                        <!-- Date Validation Error Message -->
+                        <div v-if="dateError" class="alert alert-danger mt-2">{{ dateError }}</div>
+
                         <!-- File Upload Section -->
                         <div class="form-group">
                             <label for="certificateFile">Select Medical Certificate (PDF or Image)</label>
                             <input id="certificateFileInput" type="file" @change="handleFileUpload" class="form-control"
                                 accept=".pdf,.jpg,.jpeg,.png" required>
+
                             <!-- File Name Display -->
                             <div v-if="certificateFile" class="file-name mt-2">
                                 <strong>Selected File: </strong>{{ certificateFile.name }}
@@ -109,7 +125,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary btn-block" :disabled="!certificateFile">
+                        <button type="submit" class="btn btn-primary btn-block" :disabled="!certificateFile || dateError">
                             Upload
                         </button>
 

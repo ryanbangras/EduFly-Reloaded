@@ -44,7 +44,7 @@ const vueApp = Vue.createApp({
         },
         async loadMedicalCertificates() {
             this.loading = true;
-            
+
             try {
                 const response = await fetch('http://localhost:3000/api/medical-certificates');
                 const certificates = await response.json();
@@ -62,7 +62,9 @@ const vueApp = Vue.createApp({
                             item.href = `http://localhost:3000/api/medical-certificates/${cert._id}`;
                             item.target = "_blank";
                             item.innerHTML = `
-                                <strong>${cert.fileName}</strong> <br>
+                                <strong>${cert.studentId}</strong> <br>
+                                <span>Medically certified from <u style='color:grey'>${cert.startDate}</u> to <u style='color:grey'>${cert.endDate}</u></span> <br>
+                                <span>${cert.fileName}</span> <br>
                                 <small>Uploaded by: ${cert.studentId} from ${cert.sectionId} on ${new Date(cert.uploadedAt).toLocaleString()}</small>
                             `;
                             medicalList.appendChild(item);
@@ -72,7 +74,7 @@ const vueApp = Vue.createApp({
             } catch (error) {
                 console.error('Error loading medical certificates:', error);
             } finally {
-                this.loading=false
+                this.loading = false
             }
         },
     },
