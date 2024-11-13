@@ -93,6 +93,13 @@
             <button @click="cancelAddAnnouncement" class="btn btn-secondary btn-sm mt-2">Cancel</button>
         </div>
 
+        <!-- Loading Spinner -->
+        <div v-if="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
         <!-- Announcements Table -->
         <table v-if="announcements.length > 0" class="table table-striped">
             <thead>
@@ -136,7 +143,8 @@
                         </div>
                         <!-- Action buttons -->
                         <div v-if="announcement.isEditing" class="mt-2">
-                            <button @click="saveEdit(announcement, index)" class="btn btn-success btn-sm me-2">Save</button>
+                            <button @click="saveEdit(announcement, index)"
+                                class="btn btn-success btn-sm me-2">Save</button>
                             <button @click="cancelEdit(announcement)" class="btn btn-secondary btn-sm">Cancel</button>
                         </div>
                     </td>
@@ -145,6 +153,9 @@
         </table>
 
         <p v-else-if="selectedClass">No announcements available for {{ selectedClass }}</p>
+        <!-- Snackbar -->
+        <div v-if="snackbarMessage" class="snackbar show">{{ snackbarMessage }}</div>
+    </div>
     </div>
 
     <script type="module">
@@ -160,7 +171,9 @@
                     newAnnouncement: {
                         title: "",
                         message: ""
-                    }
+                    },
+                    loading: false,
+                    snackbarMessage: ""
                 };
             },
 
@@ -183,6 +196,7 @@
             },
             methods: {
                 async fetchAnnouncements() {
+                    this.loading = true;
                     this.announcements = [];
                     if (this.selectedClass) {
                         const querySnapshot = await getDocs(collection(db, 'Classes', this.selectedClass, 'AnnouncementList'));
@@ -203,6 +217,7 @@
                             });
                         });
                     }
+                    this.loading = false;
                 },
                 handleAction(action, announcement, index) {
                     if (action === "edit") {
@@ -214,7 +229,7 @@
                 },
                 async saveEdit(announcement, index) {
                     if (!announcement.editTitle || !announcement.editMessage || !announcement.editDeadline) {
-                        alert("Please fill in all fields.");
+                        this.showSnackbar("Please fill in all fields.");
                         return;
                     }
 
@@ -232,6 +247,7 @@
                     this.announcements[index].message = announcement.editMessage;
                     this.announcements[index].deadline = deadlineDate;
                     this.announcements[index].isEditing = false;
+                    this.showSnackbar("Announcement updated successfully!")
                 },
 
                 cancelEdit(announcement) {
@@ -241,6 +257,7 @@
                     const docRef = doc(db, 'Classes', this.selectedClass, 'AnnouncementList', id);
                     await deleteDoc(docRef);
                     this.announcements.splice(index, 1); // Remove from local array
+                    this.showSnackbar("Announcement deleted successfully!")
                 },
                 async addAnnouncement() {
                     if (this.newAnnouncement.title && this.newAnnouncement.message && this.newAnnouncement.deadline) {
@@ -250,7 +267,7 @@
                         // Ensure deadline is not in the past
                         const currentDate = new Date();
                         if (deadlineDate < currentDate) {
-                            alert("Deadline cannot be in the past!");
+                            this.showSnackbar("Deadline cannot be in the past!");
                             return;
                         }
 
@@ -266,14 +283,22 @@
                         // Refresh the announcements list and reset the form
                         this.fetchAnnouncements();
                         this.cancelAddAnnouncement();
+                        this.showSnackbar("Announcement added successfully!")
                     } else {
-                        alert("Please fill out all fields!");
+                        this.showSnackbar("Please fill out all fields!");
                     }
                 },
 
                 cancelAddAnnouncement() {
                     this.showAddAnnouncementForm = false;
                     this.newAnnouncement = { title: "", message: "" }; // Reset new announcement data
+                },
+                
+                showSnackbar(message) {
+                    this.snackbarMessage = message;
+                    setTimeout(() => {
+                        this.snackbarMessage = ""; // Hide snackbar after 3 seconds
+                    }, 3000);
                 },
 
                 formatDate(date) {

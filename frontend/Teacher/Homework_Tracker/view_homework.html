@@ -57,12 +57,14 @@
         <h3 class="text-center mb-4">Uploaded Homework</h3>
         <div id="app">
             <p v-if="selectedClass" class="text-center"> Class: {{ selectedClass }}</p>
+           
             <!-- Loading Spinner -->
             <div v-if="loading" class="text-center">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
+            
             <!-- Only show the homework list if there are any items -->
             <div v-if="!loading && homeworkList.length > 0" class="list-group shadow-sm">
                 <a v-for="homework in homeworkList" :key="homework.id" href="#"

@@ -34,6 +34,67 @@
             margin-top: 30px;
         }
 
+
+        /* Spinner styling */
+        #loading-spinner {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            /* Ensure it's above all content */
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 5px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Animation to make it spin */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #323232;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 12px;
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            z-index: 1000;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.5s, bottom 0.5s;
+        }
+
+        /* Show the snackbar when it's active */
+        #snackbar.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+            /* Adjusts its position slightly when visible */
+        }
+
+
+
         .container {
             width: 90%;
             max-width: 900px;
@@ -296,7 +357,16 @@
         <h1>Google Calendar Events</h1>
 
         <div id="signin-button" style="display: block;">Sign in With Google</div>
-        <button id="signout-button" style="display:none; background-color:white"  onclick="handleSignOut()" disabled aria-disabled="true">Exit Calendar</button>
+        <button id="signout-button" style="display:none; background-color:white" onclick="handleSignOut()" disabled
+            aria-disabled="true">Exit Calendar</button>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="spinner-border text-primary"
+            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);"
+            role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+
 
         <div id="calendar-events"></div>
 
@@ -315,8 +385,9 @@
                 <input type="datetime-local" id="event-end" required><br><br>
 
                 <button type="submit" style="margin-bottom: 10px">Save Event</button>
-                <button type="button" id="delete-event-button" onclick="deleteEvent()" style="margin-bottom: 10px">Delete Event</button>
-                <!-- <button id="i-button" style="display:none;">Sign out</button> -->
+                <button type="button" id="delete-event-button" onclick="deleteEvent()"
+                    style="margin-bottom: 10px">Delete Event</button>
+                <div id="snackbar"></div>
             </form>
         </div>
     </div>
@@ -330,22 +401,48 @@
 
         let tokenClient;
 
+        function showLoadingSpinner() {
+            document.getElementById('loading-spinner').style.display = 'block';
+        }
+
+        function hideLoadingSpinner() {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+
+        function showSnackbar(message) {
+            const snackbar = document.getElementById("snackbar");
+            snackbar.textContent = message;
+            snackbar.classList.add("show");
+
+            // Hide the snackbar after 3 seconds
+            setTimeout(() => {
+                snackbar.classList.remove("show");
+            }, 3000);
+        }
+
         // Load GAPI client for Google Calendar API
         async function initializeGapiClient() {
-            await gapi.client.init({
-                apiKey: API_KEY,
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-            });
-            console.log("GAPI client initialized.");
+            showLoadingSpinner();
+            try {
+                await gapi.client.init({
+                    apiKey: API_KEY,
+                    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+                });
+                console.log("GAPI client initialized.");
+            } catch (error) {
+                console.error("Error initializing GAPI client:", error);
+            } finally {
+                hideLoadingSpinner();
 
-            // Check if token is already stored
-            const token = localStorage.getItem("googleAccessToken");
-            if (token) {
-                gapi.client.setToken({ access_token: token });
-                loadCalendarEvents();
-                document.getElementById("signin-button").style.display = "none";
-                document.getElementById("signout-button").style.display = "block";
-                document.getElementById("event-form").style.display = "block"; // Show event form
+                // Check if token is already stored
+                const token = localStorage.getItem("googleAccessToken");
+                if (token) {
+                    gapi.client.setToken({ access_token: token });
+                    loadCalendarEvents();
+                    document.getElementById("signin-button").style.display = "none";
+                    document.getElementById("signout-button").style.display = "block";
+                    document.getElementById("event-form").style.display = "block"; // Show event form
+                }
             }
         }
 
@@ -400,6 +497,8 @@
                 return;
             }
 
+            showLoadingSpinner()
+
             try {
                 const response = await gapi.client.calendar.events.list({
                     'calendarId': 'primary',
@@ -427,6 +526,8 @@
                 calendar.render();
             } catch (error) {
                 console.error("Error fetching calendar events:", error);
+            } finally {
+                hideLoadingSpinner();
             }
         }
 
@@ -448,28 +549,35 @@
 
             const token = localStorage.getItem("googleAccessToken");
             if (!token) {
-                alert("Please sign in to Google.");
+                showSnackbar("Please sign in to Google.");
                 return;
             }
-
+            if (new Date(endTime) < new Date(startTime)) {
+                showSnackbar("Error: End date/time cannot be earlier than the start date/time.");
+                return;
+            }
             const event = {
                 summary: title,
                 start: { dateTime: new Date(startTime).toISOString(), timeZone: 'UTC' },
                 end: { dateTime: new Date(endTime).toISOString(), timeZone: 'UTC' }
             };
 
+            showLoadingSpinner()
+
             try {
                 if (eventId) {
                     await gapi.client.calendar.events.update({ calendarId: 'primary', eventId: eventId, resource: event });
-                    alert("Event updated successfully!");
+                    showSnackbar("Event updated successfully!")
                 } else {
                     await gapi.client.calendar.events.insert({ calendarId: 'primary', resource: event });
-                    alert("Event added successfully!");
+                    showSnackbar("Event added successfully!");
                 }
                 loadCalendarEvents();
             } catch (error) {
                 console.error("Error adding/updating event:", error);
-                alert("Error: " + error.message);
+                showSnackbar("Error: " + error.message);
+            } finally {
+                hideLoadingSpinner()
             }
         });
         function gapiLoaded() {
@@ -480,28 +588,52 @@
             gisLoaded();
         };
 
-       
+
     </script>
 
     <script>
-         async function deleteEvent() {
+
+        function showLoadingSpinner() {
+            document.getElementById('loading-spinner').style.display = 'block';
+        }
+
+        function hideLoadingSpinner() {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+
+        function showSnackbar(message) {
+            const snackbar = document.getElementById("snackbar");
+            snackbar.textContent = message;
+            snackbar.classList.add("show");
+
+            // Hide the snackbar after 3 seconds
+            setTimeout(() => {
+                snackbar.classList.remove("show");
+            }, 3000);
+        }
+
+
+        async function deleteEvent() {
             const eventId = document.getElementById('event-id').value;
             const token = localStorage.getItem("googleAccessToken");
             if (!token) {
-                alert("Please sign in to Google.");
+                showSnackbar("Please sign in to Google.");
                 return;
             }
+            showLoadingSpinner()
 
             try {
                 await gapi.client.calendar.events.delete({
                     calendarId: 'primary',
                     eventId: eventId
                 });
-                alert("Event deleted successfully!");
+                showSnackbar("Event deleted successfully!");
                 loadCalendarEvents();
             } catch (error) {
                 console.error("Error deleting event:", error);
-                alert("Error: " + error.message);
+                showSnackbar("Error: " + error.message);
+            } finally {
+                hideLoadingSpinner();
             }
         }
 

@@ -91,13 +91,20 @@
         <label for="classSelect" class="form-label">Select Class:</label>
 
         <div id="app">
-            <select v-model="selectedClass" @change="loadMedicalCertificates" id="classSelect"
-                class="form-select mb-4">
+            <select v-model="selectedClass" @change="loadMedicalCertificates" id="classSelect" class="form-select mb-4">
                 <option value="" disabled>Select a class</option>
                 <option v-for="className in classes" :key="className" :value="className">
                     {{ className }}
                 </option>
             </select>
+
+            <!-- Loading Spinner -->
+            <div v-if="loading" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
         </div>
         <div id="medicalList" class="list-group shadow-sm"></div>
     </div>

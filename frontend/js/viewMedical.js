@@ -6,6 +6,7 @@ const vueApp = Vue.createApp({
         return {
             classes: [],
             selectedClass: "",
+            loading: false
 
         };
     },
@@ -42,6 +43,7 @@ const vueApp = Vue.createApp({
             console.log(this.selectedClass); // Log the selected class to the console
         },
         async loadMedicalCertificates() {
+            this.loading = true;
 
             try {
                 const response = await fetch('http://localhost:3000/api/medical-certificates');
@@ -69,6 +71,8 @@ const vueApp = Vue.createApp({
                 }
             } catch (error) {
                 console.error('Error loading medical certificates:', error);
+            } finally {
+                this.loading=false
             }
         },
     },

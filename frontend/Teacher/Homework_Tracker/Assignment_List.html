@@ -22,20 +22,26 @@
             border-spacing: 0;
             width: 100%;
             margin-top: 20px;
-            border-radius: 12px; /* Rounded corners */
+            border-radius: 12px;
+            /* Rounded corners */
             overflow: hidden;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
-            background: linear-gradient(135deg, #f0f7ff, #e6f1ff); /* Soft gradient background */
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+            /* Enhanced shadow */
+            background: linear-gradient(135deg, #f0f7ff, #e6f1ff);
+            /* Soft gradient background */
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
         table.table:hover {
-            transform: scale(1.02); /* Slight scale on hover */
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+            transform: scale(1.02);
+            /* Slight scale on hover */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            /* Stronger shadow on hover */
         }
 
         table.table thead {
-            background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient header */
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            /* Gradient header */
             color: white;
             font-weight: bold;
             font-size: 1.1rem;
@@ -62,7 +68,8 @@
         }
 
         table.table tbody tr:hover {
-            background: linear-gradient(135deg, #e6f1ff, #d0e4ff); /* Light gradient on row hover */
+            background: linear-gradient(135deg, #e6f1ff, #d0e4ff);
+            /* Light gradient on row hover */
             transition: background-color 0.3s ease;
         }
 
@@ -72,7 +79,8 @@
 
         /* Hover Effects on Cells */
         table.table td:hover {
-            background: rgba(0, 123, 255, 0.1); /* Subtle background change on cell hover */
+            background: rgba(0, 123, 255, 0.1);
+            /* Subtle background change on cell hover */
             cursor: pointer;
         }
 
@@ -87,8 +95,10 @@
         }
 
         .action-buttons button:hover {
-            transform: scale(1.1); /* Slightly enlarge button on hover */
-            background-color: #0056b3; /* Blue background on hover */
+            transform: scale(1.1);
+            /* Slightly enlarge button on hover */
+            background-color: #0056b3;
+            /* Blue background on hover */
             color: white;
         }
 
@@ -125,8 +135,6 @@
             font-size: 1rem;
             text-align: right;
         }
-
-
     </style>
 </head>
 
@@ -210,9 +218,16 @@
             <div class="mb-3">
                 <label for="maxGrade" class="form-label">Maximum Grade</label>
                 <input type="number" v-model="newAssignment.maxGrade" id="maxGrade" class="form-control" min="1"
-                    max="100" placeholder="30">
+                    max="100" placeholder="eg. 30">
             </div>
             <button @click="addAssignment" class="btn btn-success">Submit Assignment</button>
+        </div>
+
+         <!-- Loading Spinner -->
+         <div v-if="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
 
         <!-- Assignment Table -->
@@ -268,7 +283,7 @@
                                 Delete
                             </button>
                         </div>
-                    
+
                         <div v-if="editingAssignmentId === assignment.id" class="mt-2">
                             <button @click="saveEdit" class="btn btn-success btn-sm me-2">
                                 Save
@@ -278,13 +293,15 @@
                             </button>
                         </div>
                     </td>
-                
+
                 </tr>
             </tbody>
         </table>
 
 
         <p v-if="assignments.length === 0 && selectedClass">No assignments available for {{ selectedClass }}</p>
+        <!-- Snackbar -->
+        <div v-if="snackbarMessage" class="snackbar show">{{ snackbarMessage }}</div>
     </div>
 
     <script type="module">
@@ -298,7 +315,9 @@
                     showAddAssignmentForm: false,
                     newAssignment: { title: "", description: "", deadline: "", maxGrade: null },
                     editingAssignmentId: null,
-                    editAssignmentData: { title: "", description: "", deadlineDate: "", deadlineTime: "", maxGrade: null }
+                    editAssignmentData: { title: "", description: "", deadlineDate: "", deadlineTime: "", maxGrade: null },
+                    loading: false,
+                    snackbarMessage: ""
                 };
             },
             async created() {
@@ -328,6 +347,7 @@
             },
             methods: {
                 async fetchAssignments() {
+                    this.loading = true;
                     this.assignments = [];
                     if (this.selectedClass) {
                         // Update the URL with the selected class as a query parameter
@@ -351,6 +371,7 @@
                             });
                         });
                     }
+                    this.loading = false;
                 },
                 formatFirestoreTimestamp(timestamp) {
                     const date = timestamp.toDate();
@@ -360,16 +381,17 @@
                 },
                 async addAssignment() {
                     if (!this.selectedClass || !this.newAssignment.title || !this.newAssignment.description || !this.newAssignment.deadline || !this.newAssignment.maxGrade) {
-                        alert("Please fill out all assignment fields.");
+                        this.showSnackbar("Please fill out all assignment fields.");
                         return;
                     }
+                    this.loading = true;
 
                     try {
                         const deadlineDate = new Date(this.newAssignment.deadline);
                         const currentDate = new Date();
 
                         if (deadlineDate < currentDate) {
-                            alert("The deadline cannot be set in the past. Please select a valid future date.");
+                            this.showSnackbar("The deadline cannot be set in the past. Please select a valid future date.");
                             return;
                         }
 
@@ -391,9 +413,11 @@
                         this.fetchAssignments();
                         this.newAssignment = { title: "", description: "", deadline: "", maxGrade: null };
                         this.showAddAssignmentForm = false;
-                        alert("Assignment added successfully!");
+                        this.showSnackbar("Assignment added successfully!");
                     } catch (error) {
                         console.error("Error adding assignment: ", error);
+                    }finally{
+                        this.loading = false
                     }
                 },
 
@@ -410,9 +434,11 @@
                 },
                 async saveEdit() {
                     if (!this.editAssignmentData.title || !this.editAssignmentData.description || !this.editAssignmentData.deadlineDate || !this.editAssignmentData.deadlineTime) {
-                        alert("Please fill out all fields before saving.");
+                        this.showSnackbar("Please fill out all fields before saving.");
                         return;
                     }
+
+                    this.loading = true;
 
                     try {
                         const assignmentRef = doc(db, 'Classes', this.selectedClass, 'AssignmentList', `assignment${this.editingAssignmentId}`);
@@ -429,26 +455,40 @@
 
                         this.fetchAssignments();
                         this.editingAssignmentId = null;
-                        alert("Assignment updated successfully!");
+                        this.showSnackbar("Assignment updated successfully!");
                     } catch (error) {
                         console.error("Error updating assignment: ", error);
+                    }finally{
+                        this.loading = false;
                     }
                 },
+
                 cancelEdit() {
                     this.editingAssignmentId = null;
                     this.editAssignmentData = { title: "", description: "", deadlineDate: "", deadlineTime: "" };
                 },
                 async deleteAssignment(assignment) {
+                    this.loading = true;
                     try {
                         const assignmentRef = doc(db, 'Classes', this.selectedClass, 'AssignmentList', `assignment${assignment.id}`);
                         await deleteDoc(assignmentRef);
 
                         this.fetchAssignments();
-                        alert("Assignment deleted successfully!");
+                        this.showSnackbar("Assignment deleted successfully!");
                     } catch (error) {
                         console.error("Error deleting assignment: ", error);
+                    }finally{
+                        this.loading = false;
                     }
-                }
+                },
+
+                showSnackbar(message) {
+                    this.snackbarMessage = message;
+                    setTimeout(() => {
+                        this.snackbarMessage = ""; // Hide snackbar after 3 seconds
+                    }, 3000);
+                },
+
             }
         });
 

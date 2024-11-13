@@ -21,8 +21,6 @@
 
     <title>EduFly Portal</title>
     <style>
-
-
         /* Highlight row with high absence count */
         .absent-warning {
             background-color: #ffdddd !important;
@@ -70,6 +68,7 @@
 
     <!-- Main Container -->
     <div id="app" class="container mt-4">
+
         <label for="classSelect" class="form-label">Select Class:</label>
         <select v-model="selectedClass" @change="fetchStudents" id="classSelect" class="form-select mb-4">
             <option value="" disabled>Select a class</option>
@@ -216,7 +215,7 @@
                         EmergencyContact: ""
                     },
                     selectedStudent: null, // set to null initially
-                    loading: false
+                    loading: false,
                 };
             },
             async created() {
@@ -282,8 +281,9 @@
                         });
                         this.fetchStudents();
                         this.cancelAddStudent();
-                    }
+                    } 
                 },
+
                 cancelAddStudent() {
                     this.showAddStudentForm = false;
                     this.newStudent = { studentId: "", Fname: "", Lname: "" };
@@ -294,6 +294,7 @@
                 closeStudentInfoModal() {
                     this.selectedStudent = null; // Reset selectedStudent to close the modal
                 },
+
                 goToAttendanceTracker() {
                     // Redirect to AttendanceTracker.html with the selected class as a query parameter
                     window.location.href = `Attendance_Tracker.html?class=${this.selectedClass}`;
