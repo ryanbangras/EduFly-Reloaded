@@ -46,7 +46,14 @@
     visibility: visible;
     opacity: 1;
 }
+html, body {
+    height: 100%;
+}
 
+.full-height {
+    display: flex;
+    flex-direction: column;
+}
 /* Add right margin to navbar toggler on smaller screens */
 @media (max-width: 992px) {
     .navbar-toggler {

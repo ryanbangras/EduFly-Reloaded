@@ -76,7 +76,7 @@
 
 </head>
 
-<body class="bg-light">
+<body class="full-height bg-light">
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -123,7 +123,7 @@
     </nav>
 
     <!-- Assignment Cards -->
-    <div id="app" class="container mt-5">
+    <div id="app" class="container mt-5 mb-5">
         <h2 style="padding-bottom: 10px;">Your Assignments</h2>
 
         <!-- Loading Spinner -->
@@ -137,7 +137,7 @@
 
         <div v-if="!loading && assignments.length > 0" class="row">
             <div v-for="assignment in assignments" :key="assignment.id" class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="card assignment-card h-100">
+                <div class="card assignment-card h-100" v-if="submissionCounts.hasOwnProperty(assignment.title)">
                     <div class="card-header">
                         <h5 class="mb-0">{{ assignment.title }}</h5>
                     </div>
@@ -159,7 +159,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="container-fluid text-white pt-4 mt-5 text-center" style="background-color: #343a40">
+    <footer class="container-fluid text-white pt-4 mt-auto text-center" style="background-color: #343a40">
         <div class="row">
             <p>&copy; 2024 EduFly. All Rights Reserved.</p>
         </div>
@@ -175,12 +175,11 @@
                     studentClass: null,
                     assignments: [],
                     submissionCounts: {},
-                    loading: false
+                    loading: true
                 };
             },
-            async created() {
-                await this.fetchUserClass();
-                await this.fetchSubmissionCounts();
+            async mounted() {
+                await this.fetchUserClass();      
             },
             methods: {
                 async fetchUserClass() {
@@ -196,17 +195,15 @@
                                 this.studentClass = docSnap.data().Class;
                                 console.log("Student's class:", this.studentClass);
                                 await this.fetchAssignments();
+                                await this.fetchSubmissionCounts();
+                                this.loading = false
                             } else {
                                 console.error("No such student document!");
                             }
-                        } else {
-                            // console.error("User not logged in.");
-                            // window.location.href = "../Login_Page/login.html";
                         }
                     });
                 },
                 async fetchSubmissionCounts(title) {
-                    this.loading = true;
                     try {
                         const response = await fetch('http://localhost:3000/api/homeworks');
                         const homeworks = await response.json();
@@ -214,18 +211,15 @@
                         // Filter homework based on the selected class and assignment title
                         const filteredHomeworks = homeworks.filter(hw => hw.studentId === this.userId && hw.title === title);
                         // Store the submission count in the submissionCounts object
-                        this.submissionCounts[title] = filteredHomeworks.length;
+                        return filteredHomeworks.length;
 
                     } catch (error) {
                         console.error('Error loading homework:', error);
-                    } finally {
-                        this.loading = false;
-                    }
+                    } 
                 },
 
                 async fetchAssignments() {
                     if (this.studentClass) {
-                        this.loading = true;
                         this.assignments = [];
                         try {
                             const assignmentsRef = collection(db, 'Classes', this.studentClass, 'AssignmentList');
@@ -246,14 +240,15 @@
                             console.log("Assignments fetched:", this.assignments);
 
                             // Fetch submission counts for each assignment
-                            this.assignments.forEach(assignment => {
-                                this.fetchSubmissionCounts(assignment.title);
-                            });
+                             let result = {}
+                             for (let i = 0; i < this.assignments.length; i++) {
+                                result[this.assignments[i].title]= await this.fetchSubmissionCounts(this.assignments[i].title);
+                            }
+                            console.log(result)
+                            this.submissionCounts = result
                         } catch (error) {
                             console.error('Error fetching assignments:', error);
-                        } finally {
-                            this.loading = false;
-                        }
+                        } 
                     }
                 },
                 formatFirestoreTimestamp(timestamp) {
