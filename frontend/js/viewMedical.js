@@ -44,7 +44,7 @@ const vueApp = Vue.createApp({
         },
         async loadMedicalCertificates() {
             this.loading = true;
-
+            
             try {
                 const response = await fetch('http://localhost:3000/api/medical-certificates');
                 const certificates = await response.json();
