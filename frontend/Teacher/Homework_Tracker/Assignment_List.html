@@ -135,6 +135,7 @@
             font-size: 1rem;
             text-align: right;
         }
+
     </style>
 </head>
 
@@ -231,72 +232,74 @@
         </div>
 
         <!-- Assignment Table -->
-        <table v-if="assignments.length > 0" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Assignment ID</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Deadline (Date)</th>
-                    <th>Deadline (Time)</th>
-                    <th>Max Grade</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="assignment in assignments" :key="assignment.id">
-                    <td>{{ assignment.id }}</td>
+        <div class="table-responsive">
+            <table v-if="assignments.length > 0" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Assignment ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Deadline (Date)</th>
+                        <th>Deadline (Time)</th>
+                        <th>Max Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="assignment in assignments" :key="assignment.id">
+                        <td>{{ assignment.id }}</td>
 
-                    <!-- Title Field -->
-                    <td v-if="editingAssignmentId !== assignment.id">{{ assignment.title }}</td>
-                    <td v-else>
-                        <input type="text" v-model="editAssignmentData.title" class="form-control">
-                    </td>
+                        <!-- Title Field -->
+                        <td data-label v-if="editingAssignmentId !== assignment.id">{{ assignment.title }}</td>
+                        <td v-else>
+                            <input type="text" v-model="editAssignmentData.title" class="form-control">
+                        </td>
 
-                    <!-- Description Field -->
-                    <td v-if="editingAssignmentId !== assignment.id">{{ assignment.description }}</td>
-                    <td v-else>
-                        <input type="text" v-model="editAssignmentData.description" class="form-control">
-                    </td>
+                        <!-- Description Field -->
+                        <td data-label v-if="editingAssignmentId !== assignment.id">{{ assignment.description }}</td>
+                        <td v-else>
+                            <input type="text" v-model="editAssignmentData.description" class="form-control">
+                        </td>
 
-                    <!-- Deadline Date Field -->
-                    <td v-if="editingAssignmentId !== assignment.id">{{ assignment.deadlineDate }}</td>
-                    <td v-else>
-                        <input type="date" v-model="editAssignmentData.deadlineDate" class="form-control">
-                    </td>
+                        <!-- Deadline Date Field -->
+                        <td data-label v-if="editingAssignmentId !== assignment.id">{{ assignment.deadlineDate }}</td>
+                        <td v-else>
+                            <input type="date" v-model="editAssignmentData.deadlineDate" class="form-control">
+                        </td>
 
-                    <!-- Deadline Time Field -->
-                    <td v-if="editingAssignmentId !== assignment.id">{{ assignment.deadlineTime }}</td>
-                    <td v-else>
-                        <input type="time" v-model="editAssignmentData.deadlineTime" class="form-control">
-                    </td>
+                        <!-- Deadline Time Field -->
+                        <td data-label v-if="editingAssignmentId !== assignment.id">{{ assignment.deadlineTime }}</td>
+                        <td v-else>
+                            <input type="time" v-model="editAssignmentData.deadlineTime" class="form-control">
+                        </td>
 
-                    <td>{{ assignment.maxGrade }}</td>
+                        <td data-label>{{ assignment.maxGrade }}</td>
 
-                    <!-- Action Buttons -->
-                    <td>
-                        <div v-if="editingAssignmentId !== assignment.id" class="action-buttons d-flex">
-                            <button @click="editAssignment(assignment)" class="btn btn-warning btn-sm me-2">
-                                Edit
-                            </button>
-                            <button @click="deleteAssignment(assignment)" class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
-                        </div>
+                        <!-- Action Buttons -->
+                        <td data-label>
+                            <div v-if="editingAssignmentId !== assignment.id" class="action-buttons d-flex">
+                                <button @click="editAssignment(assignment)" class="btn btn-warning btn-sm me-2">
+                                    Edit
+                                </button>
+                                <button @click="deleteAssignment(assignment)" class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
+                            </div>
 
-                        <div v-if="editingAssignmentId === assignment.id" class="mt-2">
-                            <button @click="saveEdit" class="btn btn-success btn-sm me-2">
-                                Save
-                            </button>
-                            <button @click="cancelEdit" class="btn btn-secondary btn-sm">
-                                Cancel
-                            </button>
-                        </div>
-                    </td>
+                            <div v-if="editingAssignmentId === assignment.id" class="mt-2">
+                                <button @click="saveEdit" class="btn btn-success btn-sm me-2">
+                                    Save
+                                </button>
+                                <button @click="cancelEdit" class="btn btn-secondary btn-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </td>
 
-                </tr>
-            </tbody>
-        </table>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 
         <p v-if="assignments.length === 0 && selectedClass">No assignments available for {{ selectedClass }}</p>
