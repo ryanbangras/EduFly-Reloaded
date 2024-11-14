@@ -2,6 +2,17 @@
 
 The goal of this project is to develop an online platform that simplifies administrative tasks for secondary school teachers in Singapore. Leveraging student learning devices, the app centralizes communication and documentation, helping to reduce the administrative burden on educators. This allows teachers to dedicate more time to their core responsibility of educating and guiding students.
 
+# About Us
+
+## Team Members
+
+| S/N | Name           | Email ID         | 
+|-----|----------------|---------- -------|
+| 1   | Jamie Tan      | jamie.tan.2023   |
+| 2   | Leandro Gay    | leandro.gay.2023 |
+| 3   | Ryan Ng        | ryanng.2023      |
+| 4   | Ryan Bangras   | rnbangras.2023   |
+
 ## Table of Contents
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -137,9 +148,9 @@ node app.js
 
 If setup is successful, the console should display:
 ```
-Server running on http://localhost:5000
 Connected to Homework Database on MongoDB Atlas
 Connected to Medical Certificate Database on MongoDB Atlas
+Server running on http://localhost:3000
 ```
 
 #### 4. Serve the Frontend
