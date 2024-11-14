@@ -135,6 +135,7 @@
             font-size: 1rem;
             text-align: right;
         }
+
     </style>
 </head>
 
@@ -221,10 +222,9 @@
             <div class="mb-2">
                 <label for="maxGrade" class="form-label">Maximum Mark</label>
                 <input type="number" v-model="newAssignment.maxGrade" id="maxGrade" class="form-control" min="1"
-                    max="100" placeholder="e.g., 30">
+                    max="100" placeholder="eg. 30">
             </div>
-            <button @click="addAssignment" class="btn btn-success btn-sm mt-1">Add Assignment</button>
-            <button @click="clearAddAssignment" class="btn btn-secondary btn-sm mt-2">Clear</button>
+            <button @click="addAssignment" class="btn btn-success">Submit Assignment</button>
         </div>
 
 
@@ -328,6 +328,7 @@
                     assignments: [],
                     showAddAssignmentForm: false,
                     newAssignment: { title: "", description: "", deadline: "", maxGrade: null },
+                    maxGradeError: "", // New property to handle error message
                     editingAssignmentId: null,
                     editAssignmentData: { title: "", description: "", deadlineDate: "", deadlineTime: "", maxGrade: null },
                     loading: false,
@@ -394,10 +395,18 @@
                     return { date: formattedDate, time: formattedTime };
                 },
                 async addAssignment() {
+                    // Form Validation
                     if (!this.selectedClass || !this.newAssignment.title || !this.newAssignment.description || !this.newAssignment.deadline || !this.newAssignment.maxGrade) {
                         this.showSnackbar("Please fill out all assignment fields.");
                         return;
                     }
+
+                    // Validate maxGrade
+                    if (!this.newAssignment.maxGrade || this.newAssignment.maxGrade <= 0) {
+                        this.showSnackbar("Maximum Mark must be a positive number.");
+                        return;
+                    }
+                    this.maxGradeError = ""; // Clear error if validation passes
                     this.loading = true;
 
                     try {

@@ -246,6 +246,12 @@
     <script src="https://apis.google.com/js/api.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+
+    <script>function setMinDate() { // Makes sure that users can't create/edit calendar events in the past
+    const today = new Date().toISOString().slice(0, 16); // Current date in YYYY-MM-DDTHH:MM format
+    document.getElementById("event-start").setAttribute("min", today);
+    document.getElementById("event-end").setAttribute("min", today);
+}</script>
 </head>
 
 <body class="full-height bg-light">
@@ -290,14 +296,13 @@
         </div>
     </nav>
     <div class="container mb-5">
-        <h1>Google Calendar Events</h1>
-
-        <div id="signin-button" style="display: block;">Sign in With Google</div>
-        <button id="signout-button" style="display:none;" onclick="handleSignOut()">Sign out</button>
 
         <div id="calendar-events"></div>
 
-        Event creation/edit form
+        <div id="signin-button" style="display: block;">Sign in With Google</div>
+        <button id="signout-button" style="display:none; background-color:white" onclick="handleSignOut()" disabled
+            aria-disabled="true">Exit Calendar</button>
+
         <div id="event-form" class="form-container" style="display: none;">
             <h3>Create or Edit Event</h3>
             <form id="event-form-content">
@@ -306,10 +311,10 @@
                 <input type="text" id="event-title" required><br><br>
 
                 <label for="event-start">Start Time:</label>
-                <input type="datetime-local" id="event-start" required><br><br>
+                <input type="datetime-local" id="event-start" required onfocus="setMinDate()"><br><br>
 
                 <label for="event-end">End Time:</label>
-                <input type="datetime-local" id="event-end" required><br><br>
+                <input type="datetime-local" id="event-end" required onfocus="setMinDate()"><br><br>
 
                 <button type="submit">Save Event</button>
                 <button type="button" id="delete-event-button" onclick="deleteEvent()">Delete Event</button>
