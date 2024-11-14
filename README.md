@@ -52,7 +52,6 @@ The goal of this project is to develop an online platform that simplifies admini
 - **Pomodoro Timer**:  
   Boost productivity by working in focused intervals with the Pomodoro technique.
 
-
 ## Tech Stack
 - **Frontend**: HTML, JavaScript, Bootstrap
 - **Backend**: Node.js, Express, Multer for file handling
@@ -64,6 +63,7 @@ The goal of this project is to develop an online platform that simplifies admini
 - **Node.js**: Install Node.js (v14 or above recommended).
 
 ### Folder Structure
+
 ```
 EduFly-Reloaded
 ├── backend
