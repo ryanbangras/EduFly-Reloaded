@@ -51,10 +51,6 @@ The goal of this project is to develop an online platform that simplifies admini
 
 ### Prerequisites
 - **Node.js**: Install Node.js (v14 or above recommended).
-- **MongoDB Atlas**: Set up a MongoDB Atlas cluster and create two databases:
-  - `homework_db` for homework uploads
-  - `medical_certificate_db` for medical certificate uploads
-- **MongoDB Database Access**: Create a user with readWrite permissions.
 
 ### Folder Structure
 ```
@@ -158,19 +154,13 @@ cd ../frontend
 http-server -p 5500
 ```
 
-## Usage (TO BE UPDATED)
-
-
 ### Login Credentials:
-1. Teacher Account:
-- Username: `chewhuile@gmail.com`
-- Password: `testing123$$`
-Teacher Hui Le oversees and teaches 2 classes: 3A and 4A.
 
-2. Student Gmail Account:
-- Username: `toddlee8888@gmail.com`
-- Password: `testing123$$`
-Todd Lee is a student in class 3A.
+| Account Type     | Username                  | Password        | Additional Info               |
+|------------------|---------------------------|-----------------|-------------------------------|
+| Teacher Account  | `chewhuile@gmail.com`      | `testing123$$`  | Oversees 3A and 4A classes     |
+| Student Account  | `toddlee8888@gmail.com`    | `testing123$$`  | Student in class 3A           |
+
 
 ## Endpoints
 
