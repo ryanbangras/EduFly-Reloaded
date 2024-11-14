@@ -54,10 +54,10 @@
     </nav>
 
     <!-- Main container -->
-    <div class="container mt-5">
-        <h3 class="text-center mb-4">Uploaded Homework</h3>
+    <div class="container mt-4">
+        <h2 style="margin-bottom: 15px">Uploaded Homework</h2>
         <div id="app">
-            <p v-if="selectedClass" class="text-center"> Class: {{ selectedClass }}</p>
+            <h4 v-if="selectedClass" class="text-center"> Class: {{ selectedClass }}</h4>
 
             <!-- Loading Spinner -->
             <div v-if="loading" class="text-center">
