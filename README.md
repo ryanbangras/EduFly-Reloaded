@@ -89,25 +89,9 @@ EduFly-Reloaded
 └── README.md
 ```
 
-## Environment Variables
+## Setting Up API Yeys
 
-Set up the MongoDB URI for each database in `dbHomework.js` and `dbMedicalCertificate.js`. Update these files with your MongoDB credentials:
-
-```javascript
-// dbHomework.js
-const mongoose = require('mongoose');
-const connectHomeworkDB = async () => {
-    return mongoose.createConnection('mongodb+srv://<username>:<password>@cluster0.mongodb.net/homework_db?retryWrites=true&w=majority');
-};
-
-// dbMedicalCertificate.js
-const mongoose = require('mongoose');
-const connectMedicalCertificateDB = async () => {
-    return mongoose.createConnection('mongodb+srv://<username>:<password>@cluster0.mongodb.net/medical_certificate_db?retryWrites=true&w=majority');
-};
-```
-
-Replace `<username>`, `<password>`, and `<database>` with your MongoDB credentials.
+To enable connections to the databases, place the `secret.env` file, which contains the necessary API keys, into the project’s root directory. This file can be obtained from the group’s shared submission documents. Ensure this file is correctly positioned to allow seamless integration and secure database access.
 
 ## Running the Project
 
