@@ -7,7 +7,7 @@ The goal of this project is to develop an online platform that simplifies admini
 ## Team Members
 
 | S/N | Name           | Email ID         | 
-|-----|----------------|---------- -------|
+|-----|----------------|------------------|
 | 1   | Jamie Tan      | jamie.tan.2023   |
 | 2   | Leandro Gay    | leandro.gay.2023 |
 | 3   | Ryan Ng        | ryanng.2023      |
