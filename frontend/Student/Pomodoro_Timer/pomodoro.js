@@ -1,4 +1,11 @@
 $(document).ready(function() {
+    // Request notification permission when the page loads
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission().then(function(permission) {
+          console.log("Notification permission: " + permission);
+        });
+      }
+
     // Initial session and break lengths
     var countS = 25; // Session length in minutes
     var countB = 5;  // Break length in minutes
@@ -22,10 +29,12 @@ $(document).ready(function() {
                         pos = "Break";
                         clock.setTime(countB * 60); // Set to break length
                         document.getElementById('alertSound').play();
+                        sendNotification('Break Time!', 'Your break is starting now.');
                     } else {
                         pos = "Session";
                         clock.setTime(countS * 60); // Set to session length
                         document.getElementById('alertSound').play();
+                        sendNotification('Break Over!', 'Time to get back to work!');
                     }
                     $("#stats").html(pos);
                     clock.start(); // Start the new timer
@@ -90,5 +99,14 @@ $(document).ready(function() {
         document.getElementById('backgroundMusic').pause();
         document.getElementById('backgroundMusic').currentTime = 0; // Reset audio
     });
-});
 
+    // Function to send notifications
+    function sendNotification(title, body) {
+        if (Notification.permission === 'granted') {
+            var notification = new Notification(title, {
+                body: body,
+                icon: '../../img/icon.png',
+            });
+        }
+    }
+});
