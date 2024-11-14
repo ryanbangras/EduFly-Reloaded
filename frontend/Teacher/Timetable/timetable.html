@@ -335,11 +335,7 @@
 
     <!-- Main container -->
     <div class="container">
-        <h1>Google Calendar Events</h1>
-
-        <div id="signin-button" style="display: block;">Sign in With Google</div>
-        <button id="signout-button" style="display:none; background-color:white" onclick="handleSignOut()" disabled
-            aria-disabled="true">Exit Calendar</button>
+        <!-- <h1>Google Calendar Events</h1> -->
 
         <!-- Loading Spinner -->
         <div id="loading-spinner" class="spinner-border text-primary"
@@ -350,6 +346,11 @@
 
 
         <div id="calendar-events"></div>
+
+
+        <div id="signin-button" style="display: block;">Sign in With Google</div>
+        <button id="signout-button" style="display:none; background-color:white" onclick="handleSignOut()" disabled
+            aria-disabled="true">Exit Calendar</button>
 
         <!-- Event creation/edit form -->
         <div id="event-form" class="form-container" style="display: none;">
@@ -372,6 +373,8 @@
             </form>
         </div>
     </div>
+
+    
 
     <!-- Footer -->
     <footer class="container-fluid text-white pt-4 mt-5 text-center" style="background-color: #343a40">
