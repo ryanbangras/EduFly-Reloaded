@@ -70,9 +70,11 @@
     <!-- Main Container -->
     <div id="app" class="container mt-4">
 
+        <h2 style="margin-bottom:15px">Student Progress Monitor</h2>
+
         <label for="classSelect" class="form-label">Select Class:</label>
         <select v-model="selectedClass" @change="fetchStudents" id="classSelect" class="form-select mb-4">
-            <option value="" disabled>Select a class</option>
+            <option value="" disabled>No class selected</option>
             <option v-for="className in classes" :key="className" :value="className">
                 {{ className }}
             </option>
@@ -98,7 +100,6 @@
                 Download Student List
             </button>
         </div>
-        <div v-else>No class selected.</div>
 
         <h2 v-if="!loading && selectedClass">Students in {{ selectedClass }}</h2>
         <table v-if="!loading && selectedClass" class="table table-striped">
@@ -161,7 +162,7 @@
                     <label for="contact" class="form-label">Emergency Contact No. </label>
                     <input type="text" v-model="newStudent.EmergencyContact" id="contact" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-success">Add Student</button>
+                <button type="submit" class="btn btn-success me-2">Add Student</button>
                 <button type="button" class="btn btn-secondary" @click="cancelAddStudent">Cancel</button>
             </form>
         </div>

@@ -85,14 +85,14 @@
         </div>
     </nav>
 
-    <div class="container mt-5 mb-5">
+    <div class="container mt-4">
 
-        <h3 class="text-center mb-4">Uploaded Medical Certificates</h3>
+        <h2 style="margin-bottom: 15px">Uploaded Medical Certificates</h2>
         <label for="classSelect" class="form-label">Select Class:</label>
 
         <div id="app">
             <select v-model="selectedClass" @change="loadMedicalCertificates" id="classSelect" class="form-select mb-4">
-                <option value="" disabled>Select a class</option>
+                <option value="" disabled>No class selected</option>
                 <option v-for="className in classes" :key="className" :value="className">
                     {{ className }}
                 </option>
