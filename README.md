@@ -118,12 +118,12 @@ EduFly-Reloaded
 
 ## Running the Project
 
-### Option A: Visit our deployed website:
+### Option A: Visit our deployed website (RECOMMENDED)
 
 #### Hosted link: (TO BE UPDATED)
 [Edufly](URL) update link please
 
-### Option B: Run on Localhost:
+### Option B: Run on Localhost
 
 #### 1. Setting Up API Keys
 
