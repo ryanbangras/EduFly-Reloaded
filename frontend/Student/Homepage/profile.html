@@ -59,7 +59,7 @@
 
     <!-- Main Container -->
     <div id="app" class="container mt-4">
-        <h2>Edit Profile</h2>
+        <h2>Profile</h2>
         <form @submit.prevent="updateProfile">
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
@@ -67,15 +67,15 @@
             </div>
             <div class="mb-3">
                 <label for="fname" class="form-label">First Name</label>
-                <input type="text" id="fname" class="form-control" v-model="profile.FName">
+                <input type="text" id="fname" class="form-control" v-model="profile.FName" readonly>
             </div>
             <div class="mb-3">
                 <label for="lname" class="form-label">Last Name</label>
-                <input type="text" id="lname" class="form-control" v-model="profile.LName">
+                <input type="text" id="lname" class="form-control" v-model="profile.LName" readonly>
             </div>
             <div class="mb-3">
                 <label for="studentId" class="form-label">Student ID</label>
-                <input type="text" id="studentId" class="form-control" v-model="profile.StudentID">
+                <input type="text" id="studentId" class="form-control" v-model="profile.StudentID" readonly>
             </div>
             <div class="mb-3">
                 <label for="class" class="form-label">Class</label>
