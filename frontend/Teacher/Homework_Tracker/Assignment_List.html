@@ -135,7 +135,6 @@
             font-size: 1rem;
             text-align: right;
         }
-
     </style>
 </head>
 
@@ -188,7 +187,7 @@
             </option>
         </select>
 
-        <h2 v-if="selectedClass">Assignments for {{ selectedClass }}</h2>
+        <!-- <h2 v-if="selectedClass">Assignments for {{ selectedClass }}</h2> -->
 
         <!-- Add Assignment Button and Form -->
         <button v-if="selectedClass" @click="showAddAssignmentForm = !showAddAssignmentForm"
@@ -201,28 +200,33 @@
             View Submitted Assignments
         </a>
 
-        <div v-if="showAddAssignmentForm" class="mb-4">
-            <h3>Add New Assignment</h3>
-            <div class="mb-3">
+        <!-- Form to Add New Assignment (Styled Similar to Add New Announcement) -->
+        <div v-if="showAddAssignmentForm" class="card p-3 mb-3">
+            <h5>Add New Assignment</h5>
+            <div class="mb-2">
                 <label for="title" class="form-label">Title</label>
-                <input type="text" v-model="newAssignment.title" id="title" class="form-control">
+                <input type="text" v-model="newAssignment.title" id="title" class="form-control"
+                    placeholder="Enter title">
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label for="description" class="form-label">Description</label>
-                <textarea v-model="newAssignment.description" id="description" class="form-control"></textarea>
+                <textarea v-model="newAssignment.description" id="description" class="form-control"
+                    placeholder="Enter description"></textarea>
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label for="deadline" class="form-label">Deadline (Date & Time)</label>
                 <input type="datetime-local" v-model="newAssignment.deadline" id="deadline" class="form-control"
                     :min="new Date().toISOString().slice(0, 16)">
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label for="maxGrade" class="form-label">Maximum Mark</label>
                 <input type="number" v-model="newAssignment.maxGrade" id="maxGrade" class="form-control" min="1"
-                    max="100" placeholder="eg. 30">
+                    max="100" placeholder="e.g., 30">
             </div>
-            <button @click="addAssignment" class="btn btn-success">Submit Assignment</button>
+            <button @click="addAssignment" class="btn btn-success btn-sm mt-1">Add Assignment</button>
+            <button @click="clearAddAssignment" class="btn btn-secondary btn-sm mt-2">Clear</button>
         </div>
+
 
         <!-- Loading Spinner -->
         <div v-if="loading" class="text-center">
@@ -430,9 +434,6 @@
                         this.loading = false
                     }
                 },
-
-
-
                 editAssignment(assignment) {
                     this.editingAssignmentId = assignment.id;
                     this.editAssignmentData = {
@@ -490,6 +491,9 @@
                     } finally {
                         this.loading = false;
                     }
+                },
+                clearAddAssignment() {
+                    this.newAssignment = { title: "", description: "", deadline: "", maxGrade: null };
                 },
 
                 showSnackbar(message) {
