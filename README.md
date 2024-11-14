@@ -1,4 +1,4 @@
-# EduFly-Reloaded
+# EduFly
 
 The goal of this project is to develop an online platform that simplifies administrative tasks for secondary school teachers in Singapore. Leveraging student learning devices, the app centralizes communication and documentation, helping to reduce the administrative burden on educators. This allows teachers to dedicate more time to their core responsibility of educating and guiding students.
 
@@ -107,22 +107,29 @@ EduFly-Reloaded
 └── README.md
 ```
 
-## Setting Up API Keys
+## Running the Project
+
+### Option A: Visit our deployed website:
+
+#### Hosted link: (TO BE UPDATED)
+[Edufly](URL) update link please
+
+### Option B: Run on Localhost:
+
+#### 1. Setting Up API Keys
 
 To enable connections to the databases, place the `secret.env` file, which contains the necessary API keys, into the project’s root directory. This file can be obtained from the group’s shared submission documents. Ensure this file is correctly positioned to allow seamless integration and secure database access.
 
-## Running the Project
+#### 2. Install Dependencies
 
-### 1. Install Dependencies
-
-#### Backend
+##### Backend
 Navigate to the backend directory and install dependencies:
 ```bash
 cd backend
 npm install
 ```
 
-### 2. Start Backend Server
+#### 3. Start Backend Server
 Run the backend server:
 ```bash
 node app.js
@@ -135,10 +142,10 @@ Connected to Homework Database on MongoDB Atlas
 Connected to Medical Certificate Database on MongoDB Atlas
 ```
 
-### 3. Serve the Frontend
+#### 4. Serve the Frontend
 To serve the frontend files, you can use http-server.
 
-#### Using http-server
+##### Using http-server
 1. Install http-server globally:
 ```bash
 npm install -g http-server
@@ -154,7 +161,7 @@ cd ../frontend
 http-server -p 5500
 ```
 
-### Login Credentials:
+## Login Credentials:
 
 | Account Type     | Username                  | Password        | Additional Info               |
 |------------------|---------------------------|-----------------|-------------------------------|
