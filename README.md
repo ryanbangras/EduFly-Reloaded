@@ -1,9 +1,5 @@
 # EduFly-Reloaded
 
-
-# BELOW IS THE README FOR THE UPLOAD AND DOWNLOADING OF DOCUMENTS
-# PDF and Document Uploader with View and Download
-
 This project provides a full-stack application for uploading and viewing documents, specifically for homework assignments (PDF, DOC, DOCX) and medical certificates (PDF and image formats). Users can upload, view, and download documents through a web interface.
 
 ## Table of Contents
@@ -38,49 +34,64 @@ This project provides a full-stack application for uploading and viewing documen
   - `medical_certificate_db` for medical certificate uploads
 - **MongoDB Database Access**: Create a user with readWrite permissions.
 
-### Folder Structure (TO BE UPDATED)
+### Folder Structure
 ```
-project_root/
-├── backend/
-│   ├── config/
-│   │   ├── dbHomework.js               # MongoDB connection for homework
-│   │   └── dbMedicalCertificate.js     # MongoDB connection for medical certificates
-│   ├── models/
-│   ├── routes/
-│   │   ├── homeworkRoutes.js           # Routes for homework upload and view
-│   │   └── medicalCertificateRoutes.js # Routes for medical certificate upload and view
-│   ├── app.js                          # Main backend server file
-│   └── package.json                    # Backend dependencies
-└── frontend/
-    ├── upload_homework.html            # Homework upload form
-    ├── upload_medical.html             # Medical certificate upload form
-    ├── view_homework.html              # View and download homework files
-    ├── view_medical.html              # View and download medical certificates
-    └── js/
-        ├── homeworkUpload.js           # JavaScript for homework upload
-        ├── medicalUpload.js            # JavaScript for medical certificate upload
-        └── viewFiles.js                # JavaScript for viewing and downloading files
+EduFly-Reloaded
+├── backend
+│   ├── config
+│   │   ├── dbHomework.js
+│   │   └── dbMedicalCertificate.js
+│   ├── models
+│   │   ├── homeworkModel.js
+│   │   └── medicalCertificateModel.js
+│   ├── node_modules
+│   ├── routes
+│   │   ├── homeworkRoutes.js
+│   │   └── medicalCertificateRoutes.js
+│   ├── app.js
+│   ├── package-lock.json
+│   ├── package.json
+│   └── vercel.json
+├── frontend
+│   ├── About_Us
+│   ├── css
+│   ├── img
+│   ├── js
+│   ├── Login_Page
+│   │   ├── classroom.avif
+│   │   ├── login.html
+│   │   └── login.js
+│   ├── Student
+│   │   ├── Announcement
+│   │   ├── Consultation
+│   │   ├── Homepage
+│   │   ├── Homework_Tracker
+│   │   ├── Medical
+│   │   ├── Pomodoro_Timer
+│   │   ├── Summary
+│   │   ├── Timetable
+│   │   └── student_navbar.css
+│   ├── Teacher
+│   │   ├── Academic_Dashboard
+│   │   ├── Announcement
+│   │   ├── Consultations
+│   │   ├── Homepage
+│   │   ├── Homework_Tracker
+│   │   ├── Timetable
+│   │   └── teacher_navbar.css
+│   ├── favicon.ico
+│   └── index.html
+├── node_modules
+├── .gitattributes
+├── .gitignore
+├── package-lock.json
+├── package.json
+└── README.md
 ```
 
-## Environment Variables
+## Setting Up API Yeys
 
-Set up the MongoDB URI for each database in `dbHomework.js` and `dbMedicalCertificate.js`. Update these files with your MongoDB credentials:
-
-```javascript
-// dbHomework.js
-const mongoose = require('mongoose');
-const connectHomeworkDB = async () => {
-    return mongoose.createConnection('mongodb+srv://<username>:<password>@cluster0.mongodb.net/homework_db?retryWrites=true&w=majority');
-};
-
-// dbMedicalCertificate.js
-const mongoose = require('mongoose');
-const connectMedicalCertificateDB = async () => {
-    return mongoose.createConnection('mongodb+srv://<username>:<password>@cluster0.mongodb.net/medical_certificate_db?retryWrites=true&w=majority');
-};
-```
-
-Replace `<username>`, `<password>`, and `<database>` with your MongoDB credentials.
+To enable connections to the databases, place the `secret.env` file, which contains the necessary API keys, into the project’s root directory. This file can be obtained from the group’s shared submission documents. Ensure this file is correctly positioned to allow seamless integration and secure database access.
 
 ## Running the Project
 
@@ -107,10 +118,10 @@ Connected to Medical Certificate Database on MongoDB Atlas
 ```
 
 ### 3. Serve the Frontend
-To serve the frontend files, you can use http-server or Live Server extension in Visual Studio Code.
+To serve the frontend files, you can use http-server.
 
 #### Using http-server
-1. Install http-server globally if you haven't already:
+1. Install http-server globally:
 ```bash
 npm install -g http-server
 ```
@@ -124,12 +135,6 @@ cd ../frontend
 ```bash
 http-server -p 5500
 ```
-
-4. Open your browser and navigate to:
-- Upload Homework: http://localhost:5500/upload_homework.html
-- View Homework: http://localhost:5500/view_homework.html
-- Upload Medical Certificate: http://localhost:5500/upload_medical.html
-- View Medical Certificates: http://localhost:5500/view_medical.html
 
 ## Usage (TO BE UPDATED)
 
