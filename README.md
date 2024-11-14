@@ -134,10 +134,10 @@ Connected to Medical Certificate Database on MongoDB Atlas
 ```
 
 ### 3. Serve the Frontend
-To serve the frontend files, you can use http-server or Live Server extension in Visual Studio Code.
+To serve the frontend files, you can use http-server.
 
 #### Using http-server
-1. Install http-server globally if you haven't already:
+1. Install http-server globally:
 ```bash
 npm install -g http-server
 ```
@@ -151,12 +151,6 @@ cd ../frontend
 ```bash
 http-server -p 5500
 ```
-
-4. Open your browser and navigate to:
-- Upload Homework: http://localhost:5500/upload_homework.html
-- View Homework: http://localhost:5500/view_homework.html
-- Upload Medical Certificate: http://localhost:5500/upload_medical.html
-- View Medical Certificates: http://localhost:5500/view_medical.html
 
 ## Usage (TO BE UPDATED)
 
