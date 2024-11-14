@@ -18,11 +18,9 @@ The goal of this project is to develop an online platform that simplifies admini
 - [Tech Stack](#tech-stack)
 - [Setup](#setup)
 - [Folder Structure](#folder-structure)
-- [Environment Variables](#environment-variables)
 - [Running the Project](#running-the-project)
-- [Usage](#usage)
+- [Login Credentials](#login-credentials)
 - [Endpoints](#endpoints)
-- [Troubleshooting](#troubleshooting)
 
 ## Features
 
@@ -172,7 +170,7 @@ cd ../frontend
 http-server -p 5500
 ```
 
-## Login Credentials:
+## Login Credentials
 
 | Account Type     | Username                  | Password        | Additional Info               |
 |------------------|---------------------------|-----------------|-------------------------------|
