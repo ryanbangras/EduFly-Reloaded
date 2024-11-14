@@ -1,11 +1,4 @@
 $(document).ready(function() {
-    // Request notification permission when the page loads
-    if (Notification.permission !== "granted") {
-        Notification.requestPermission().then(function(permission) {
-          console.log("Notification permission: " + permission);
-        });
-      }
-
     // Initial session and break lengths
     var countS = 25; // Session length in minutes
     var countB = 5;  // Break length in minutes
@@ -71,6 +64,13 @@ $(document).ready(function() {
 
     // START Button
     $("#start").on("click", function() {
+        // Request notification permission if not already granted
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission().then(function(permission) {
+                console.log("Notification permission: " + permission);
+            });
+        }
+
         // Start the session timer
         if (clock.getTime() === 0 || pos === "Pomodoro") {
             clock.setTime(countS * 60);
@@ -78,6 +78,8 @@ $(document).ready(function() {
             $("#stats").html(pos);
         }
         clock.start();
+
+        // Play background music
         const audio = document.getElementById('backgroundMusic');
         audio.play().catch(function(error) {
             console.error("Audio playback failed:", error);
