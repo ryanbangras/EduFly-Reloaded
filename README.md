@@ -1,9 +1,5 @@
 # EduFly-Reloaded
 
-
-# BELOW IS THE README FOR THE UPLOAD AND DOWNLOADING OF DOCUMENTS
-# PDF and Document Uploader with View and Download
-
 This project provides a full-stack application for uploading and viewing documents, specifically for homework assignments (PDF, DOC, DOCX) and medical certificates (PDF and image formats). Users can upload, view, and download documents through a web interface.
 
 ## Table of Contents
@@ -38,60 +34,59 @@ This project provides a full-stack application for uploading and viewing documen
   - `medical_certificate_db` for medical certificate uploads
 - **MongoDB Database Access**: Create a user with readWrite permissions.
 
-### Folder Structure (TO BE UPDATED)
+### Folder Structure
 ```
-EduFly-Reloaded/
-├── backend/                     # Backend logic and server configuration
-│   ├── app.js                   # Main server file
-│   ├── config/                  # Configuration files for databases and environment
-│   │   ├── dbHomework.js        # Homework database configuration
-│   │   └── dbMedicalCertificate.js  # Medical certificate database configuration
-│   ├── models/                  # Data models for MongoDB collections
-│   │   ├── homeworkModel.js     # Schema for homework data
-│   │   └── medicalCertificateModel.js # Schema for medical certificate data
-│   ├── routes/                  # API routes (define specific endpoints here)
-│   ├── package.json             # Backend dependencies and scripts
-│   ├── package-lock.json        # Package lock file for consistent dependencies
-│   └── vercel.json              # Vercel deployment configuration
-│
-├── frontend/                    # Frontend files for the web application
-│   ├── About_Us/                # About Us page
-│   │   └── aboutUs.html         # HTML file for About Us page
-│   ├── css/                     # Stylesheets for the frontend
-│   │   ├── aboutUs.css          # Styles for the About Us page
-│   │   ├── edustyle-navbar.css  # Navbar styles
-│   │   ├── edustyle.css         # General styles for education theme
-│   │   └── styles.css           # Core styles for the frontend
-│   ├── img/                     # Images for the frontend
-│   ├── js/                      # JavaScript files
-│   ├── Login_Page/              # Login page files
-│   │   ├── classroom.avif       # Classroom image for login
-│   │   ├── login.html           # Login HTML file
-│   │   └── login.js             # Login JavaScript functionality
-│   ├── Student/                 # Student-specific pages and components
-│   │   ├── Announcement/        # Announcement page
-│   │   │   └── Announcement_Page.html # HTML file for announcements
-│   │   ├── Consultation/        # Consultation booking page
-│   │   │   └── student_consultation.html # HTML for consultation
-│   │   ├── Homepage/            # Student dashboard and main homepage
-│   │   ├── Homework_Tracker/    # Homework tracking page
-│   │   ├── Medical/             # Medical certificate upload
-│   │   ├── Pomodoro_Timer/      # Pomodoro timer feature
-│   │   ├── Summary/             # Summary page for student progress
-│   │   └── Timetable/           # Timetable page for students
-│   ├── Teacher/                 # Teacher-specific pages
-│   ├── favicon.ico              # Site favicon
-│   ├── index.html               # Main entry page
-│   ├── upload_homework.html     # Homework upload page
-│   └── upload_medical.html      # Medical certificate upload page
-│
-├── .gitattributes               # Git configuration for handling file attributes
-├── .gitignore                   # Files and folders to ignore in Git
-├── feedback.txt                 # User feedback and notes
-├── package.json                 # Project dependencies and scripts
-├── package-lock.json            # Lock file for dependencies
-└── README.md                    # Project documentation (this file)
-
+EduFly-Reloaded
+├── backend
+│   ├── config
+│   │   ├── dbHomework.js
+│   │   └── dbMedicalCertificate.js
+│   ├── models
+│   │   ├── homeworkModel.js
+│   │   └── medicalCertificateModel.js
+│   ├── node_modules
+│   ├── routes
+│   │   ├── homeworkRoutes.js
+│   │   └── medicalCertificateRoutes.js
+│   ├── app.js
+│   ├── package-lock.json
+│   ├── package.json
+│   └── vercel.json
+├── frontend
+│   ├── About_Us
+│   ├── css
+│   ├── img
+│   ├── js
+│   ├── Login_Page
+│   │   ├── classroom.avif
+│   │   ├── login.html
+│   │   └── login.js
+│   ├── Student
+│   │   ├── Announcement
+│   │   ├── Consultation
+│   │   ├── Homepage
+│   │   ├── Homework_Tracker
+│   │   ├── Medical
+│   │   ├── Pomodoro_Timer
+│   │   ├── Summary
+│   │   ├── Timetable
+│   │   └── student_navbar.css
+│   ├── Teacher
+│   │   ├── Academic_Dashboard
+│   │   ├── Announcement
+│   │   ├── Consultations
+│   │   ├── Homepage
+│   │   ├── Homework_Tracker
+│   │   ├── Timetable
+│   │   └── teacher_navbar.css
+│   ├── favicon.ico
+│   └── index.html
+├── node_modules
+├── .gitattributes
+├── .gitignore
+├── package-lock.json
+├── package.json
+└── README.md
 ```
 
 ## Environment Variables
