@@ -121,7 +121,7 @@ EduFly-Reloaded
 
 ### Option A: Visit our deployed website (RECOMMENDED)
 
-#### Hosted link: (TO BE UPDATED)
+#### Hosted link:
 [Edufly](https://edufly-nine.vercel.app/)
 
 ### Option B: Run on Localhost
