@@ -40,26 +40,58 @@ This project provides a full-stack application for uploading and viewing documen
 
 ### Folder Structure (TO BE UPDATED)
 ```
-project_root/
-├── backend/
-│   ├── config/
-│   │   ├── dbHomework.js               # MongoDB connection for homework
-│   │   └── dbMedicalCertificate.js     # MongoDB connection for medical certificates
-│   ├── models/
-│   ├── routes/
-│   │   ├── homeworkRoutes.js           # Routes for homework upload and view
-│   │   └── medicalCertificateRoutes.js # Routes for medical certificate upload and view
-│   ├── app.js                          # Main backend server file
-│   └── package.json                    # Backend dependencies
-└── frontend/
-    ├── upload_homework.html            # Homework upload form
-    ├── upload_medical.html             # Medical certificate upload form
-    ├── view_homework.html              # View and download homework files
-    ├── view_medical.html              # View and download medical certificates
-    └── js/
-        ├── homeworkUpload.js           # JavaScript for homework upload
-        ├── medicalUpload.js            # JavaScript for medical certificate upload
-        └── viewFiles.js                # JavaScript for viewing and downloading files
+EduFly-Reloaded/
+├── backend/                     # Backend logic and server configuration
+│   ├── app.js                   # Main server file
+│   ├── config/                  # Configuration files for databases and environment
+│   │   ├── dbHomework.js        # Homework database configuration
+│   │   └── dbMedicalCertificate.js  # Medical certificate database configuration
+│   ├── models/                  # Data models for MongoDB collections
+│   │   ├── homeworkModel.js     # Schema for homework data
+│   │   └── medicalCertificateModel.js # Schema for medical certificate data
+│   ├── routes/                  # API routes (define specific endpoints here)
+│   ├── package.json             # Backend dependencies and scripts
+│   ├── package-lock.json        # Package lock file for consistent dependencies
+│   └── vercel.json              # Vercel deployment configuration
+│
+├── frontend/                    # Frontend files for the web application
+│   ├── About_Us/                # About Us page
+│   │   └── aboutUs.html         # HTML file for About Us page
+│   ├── css/                     # Stylesheets for the frontend
+│   │   ├── aboutUs.css          # Styles for the About Us page
+│   │   ├── edustyle-navbar.css  # Navbar styles
+│   │   ├── edustyle.css         # General styles for education theme
+│   │   └── styles.css           # Core styles for the frontend
+│   ├── img/                     # Images for the frontend
+│   ├── js/                      # JavaScript files
+│   ├── Login_Page/              # Login page files
+│   │   ├── classroom.avif       # Classroom image for login
+│   │   ├── login.html           # Login HTML file
+│   │   └── login.js             # Login JavaScript functionality
+│   ├── Student/                 # Student-specific pages and components
+│   │   ├── Announcement/        # Announcement page
+│   │   │   └── Announcement_Page.html # HTML file for announcements
+│   │   ├── Consultation/        # Consultation booking page
+│   │   │   └── student_consultation.html # HTML for consultation
+│   │   ├── Homepage/            # Student dashboard and main homepage
+│   │   ├── Homework_Tracker/    # Homework tracking page
+│   │   ├── Medical/             # Medical certificate upload
+│   │   ├── Pomodoro_Timer/      # Pomodoro timer feature
+│   │   ├── Summary/             # Summary page for student progress
+│   │   └── Timetable/           # Timetable page for students
+│   ├── Teacher/                 # Teacher-specific pages
+│   ├── favicon.ico              # Site favicon
+│   ├── index.html               # Main entry page
+│   ├── upload_homework.html     # Homework upload page
+│   └── upload_medical.html      # Medical certificate upload page
+│
+├── .gitattributes               # Git configuration for handling file attributes
+├── .gitignore                   # Files and folders to ignore in Git
+├── feedback.txt                 # User feedback and notes
+├── package.json                 # Project dependencies and scripts
+├── package-lock.json            # Lock file for dependencies
+└── README.md                    # Project documentation (this file)
+
 ```
 
 ## Environment Variables
