@@ -1,6 +1,6 @@
 # EduFly-Reloaded
 
-This project provides a full-stack application for uploading and viewing documents, specifically for homework assignments (PDF, DOC, DOCX) and medical certificates (PDF and image formats). Users can upload, view, and download documents through a web interface.
+The goal of this project is to develop an online platform that simplifies administrative tasks for secondary school teachers in Singapore. Leveraging student learning devices, the app centralizes communication and documentation, helping to reduce the administrative burden on educators. This allows teachers to dedicate more time to their core responsibility of educating and guiding students.
 
 ## Table of Contents
 - [Features](#features)
@@ -14,11 +14,33 @@ This project provides a full-stack application for uploading and viewing documen
 - [Troubleshooting](#troubleshooting)
 
 ## Features
-- **File Upload**: Upload homework and medical certificate files with validation.
-  - Homework: PDF, DOC, DOCX.
-  - Medical Certificates: PDF, JPG, JPEG, PNG.
-- **View and Download**: View PDF documents in the browser and download documents.
-- **Error Handling**: Prevents upload of invalid file types.
+
+- **Homework & Task Management**:  
+  - **Teachers**: Upload, track, and manage assignments and deadlines.  
+  - **Students**: View and track upcoming assignments and deadlines.
+
+- **Dynamic Timetable**:  
+  Easily view and manage class schedules for both teachers and students.
+
+- **Progress Monitoring**:  
+  - **Teachers**: Monitor grades and attendance for all students within a class.  
+  - **Students**: Access and track personal academic progress, including grades and attendance.
+
+- **Announcements & Notifications**:  
+  Stay updated with the latest important announcements and notifications.
+
+- **Assignment Submission & Viewing**:  
+  Simple and efficient process for students to submit homework and for teachers to view and grade them.
+
+- **Medical Certificate Submission & Viewing**:  
+  Submit and view medical certificates easily within the platform.
+
+- **Consultation Booking**:  
+  Facilitates the booking of consultations between teachers and students.
+
+- **Pomodoro Timer**:  
+  Boost productivity by working in focused intervals with the Pomodoro technique.
+
 
 ## Tech Stack
 - **Frontend**: HTML, JavaScript, Bootstrap
@@ -89,7 +111,7 @@ EduFly-Reloaded
 └── README.md
 ```
 
-## Setting Up API Yeys
+## Setting Up API Keys
 
 To enable connections to the databases, place the `secret.env` file, which contains the necessary API keys, into the project’s root directory. This file can be obtained from the group’s shared submission documents. Ensure this file is correctly positioned to allow seamless integration and secure database access.
 
@@ -167,18 +189,3 @@ The backend provides the following API endpoints:
 - **Get All Medical Certificates**: `GET /api/medical-certificates`
 - **View Medical Certificate by ID**: `GET /api/medical-certificates/:id`
   - Responds with a PDF or downloadable file.
-
-## Troubleshooting
-
-### Common Errors
-
-#### Failed to Load PDF Document:
-- Ensure the backend sets the correct Content-Type headers.
-- Check that files are uploaded with the correct format and encoding.
-
-#### MongoDB Connection Issues:
-- Double-check the MongoDB URI in `dbHomework.js` and `dbMedicalCertificate.js`.
-- Ensure your IP is whitelisted in MongoDB Atlas.
-
-#### Invalid File Type:
-- Ensure that only allowed file types are uploaded based on frontend accept attributes and backend validation.
