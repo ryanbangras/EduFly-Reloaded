@@ -219,8 +219,8 @@
                 <label for="maxGrade" class="form-label">Maximum Mark</label>
                 <input type="number" v-model="newAssignment.maxGrade" id="maxGrade" class="form-control" min="1"
                     step="1" placeholder="e.g., 30">
-                <!-- Error message -->
-                <small v-if="maxGradeError" class="text-danger">{{ maxGradeError }}</small>
+                <!-- Error message
+                <small v-if="maxGradeError" class="text-danger">{{ maxGradeError }}</small> -->
             </div>
 
             <button @click="addAssignment" class="btn btn-success">Submit Assignment</button>
@@ -401,7 +401,7 @@
 
                     // Validate maxGrade
                     if (!this.newAssignment.maxGrade || this.newAssignment.maxGrade <= 0) {
-                        this.maxGradeError = "Maximum Mark must be a positive number.";
+                        this.showSnackbar("Maximum Mark must be a positive number.");
                         return;
                     }
                     this.maxGradeError = ""; // Clear error if validation passes
