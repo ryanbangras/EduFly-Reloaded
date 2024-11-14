@@ -17,14 +17,12 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-    <link rel="stylesheet" href="../teacher_navbar.css">
+    <link rel="stylesheet" href="../../css/teacher_navbar.css">
 
-    <title>EduFly Portal</title>
+    <title>EduFly - Student List</title>
     <style>
         table tbody tr.absent-warning {
             border-left: 6px solid #dc3545 !important; /* Red left border */
-            font-weight: bold;
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -102,6 +100,7 @@
         </div>
 
         <h2 v-if="!loading && selectedClass">Students in {{ selectedClass }}</h2>
+        <p v-if="!loading && selectedClass">Note: Students with more than 20 absences are marked red.</p>
         <table v-if="!loading && selectedClass" class="table table-striped">
             <thead>
                 <tr>
