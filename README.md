@@ -123,6 +123,15 @@ EduFly-Reloaded
 
 #### Hosted link:
 [Edufly](https://edufly-nine.vercel.app/)
+Link to deployed Git Repository: (https://github.com/jamieeeeeeeeeeeeeee/Edufly)
+- The deployed Git Repository is a clone of this Repository, except the URL links in these files: 
+  homeworkUpload.js
+  medicalUpload.js
+  viewHomework.js
+  viewMedical.js
+
+  Instead of localhost, it directs to the link of the backend deployment. This is to ensure that the web application runs during deployment itself. 
+- The deployed Git Repository has an additional file called "Vercel.json". This is to connect the repository to Vercel for deployment. 
 
 ### Option B: Run on Localhost
 
