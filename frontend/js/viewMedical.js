@@ -55,7 +55,8 @@ const vueApp = Vue.createApp({
                 if (certificates.length === 0) {
                     medicalList.innerHTML = '<p class="text-center">No medical certificates uploaded yet.</p>';
                 } else {
-                    certificates.forEach(cert => {
+                    for (let i = certificates.length - 1; i >= 0; i--) {
+                        let cert = certificates[i];
                         if (cert.sectionId === this.selectedClass) { // Filter by selected class if needed
                             const item = document.createElement('a');
                             item.className = "list-group-item list-group-item-action";
@@ -69,7 +70,7 @@ const vueApp = Vue.createApp({
                             `;
                             medicalList.appendChild(item);
                         }
-                    });
+                    };
                 }
             } catch (error) {
                 console.error('Error loading medical certificates:', error);
