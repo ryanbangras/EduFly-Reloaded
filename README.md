@@ -55,10 +55,6 @@ The goal of this project is to develop an online platform that simplifies admini
 - **Backend**: Node.js, Express, Multer for file handling
 - **Database**: Firebase for storing of user data, MongoDB Atlas for storing files and metadata
 
-## Link to Deployed Application: https://edufly-nine.vercel.app/
-
-**To run locally, follow the steps below:** 
-
 ## Setup
 
 ### Prerequisites
@@ -179,7 +175,7 @@ http-server -p 5500
 
 | Account Type     | Username                  | Password        | Additional Info               |
 |------------------|---------------------------|-----------------|-------------------------------|
-| Teacher Account  | `chewhuile@gmail.com`      | `testing123$$`  | Oversees and teaches Classes 3A and 4A  |
+| Teacher Account  | `chewhuile@gmail.com`      | `testing123$$`  | Oversees and teaches Classes 3A and 4A. |
 | Student Account  | `toddlee8888@gmail.com`    | `testing123$$`  | Student in class 3A.           |
 
 
