@@ -126,10 +126,10 @@ EduFly-Reloaded
 
 ##### Link to deployed Git Repository: (https://github.com/jamieeeeeeeeeeeeeee/Edufly)
 - The deployed Git Repository is a clone of this Repository, except the URL links in these files: 
-  homeworkUpload.js
-  medicalUpload.js
-  viewHomework.js
-  viewMedical.js
+  homeworkUpload.js, 
+  medicalUpload.js, 
+  viewHomework.js, 
+  viewMedical.js, 
 
   Instead of localhost, it directs to the link of the backend deployment. This is to ensure that the web application runs during deployment itself. 
 - The deployed Git Repository has an additional file called "Vercel.json". This is to connect the repository to Vercel for deployment. 
@@ -187,6 +187,7 @@ http-server -p 5500
 |------------------|---------------------------|-----------------|-------------------------------|
 | Teacher Account  | `chewhuile@gmail.com`      | `testing123$$`  | Oversees and teaches Classes 3A and 4A. |
 | Student Account  | `toddlee8888@gmail.com`    | `testing123$$`  | Student in class 3A.           |
+| Class Account (log in for Google Calendar) |  `edufly.class.3A.2024@gmail.com` | `testing123$$` | Shared Class Gmail available to all 3A students and teacher.| 
 
 
 ## Endpoints
@@ -206,3 +207,8 @@ The backend provides the following API endpoints:
 - **Get All Medical Certificates**: `GET /api/medical-certificates`
 - **View Medical Certificate by ID**: `GET /api/medical-certificates/:id`
   - Responds with a PDF or downloadable file.
+
+### Dyanmic Timetable 
+On first load of the dynamic timetable, there will be a "Sign in with Google" button. Users are to enter in the credentials of the shared
+class gmail account, so that they can access to the class-shared timetable. No subsequent sign-ins are required. 
+
