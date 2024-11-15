@@ -179,8 +179,8 @@ http-server -p 5500
 
 | Account Type     | Username                  | Password        | Additional Info               |
 |------------------|---------------------------|-----------------|-------------------------------|
-| Teacher Account  | `chewhuile@gmail.com`      | `testing123$$`  | Oversees 3A and 4A classes     |
-| Student Account  | `toddlee8888@gmail.com`    | `testing123$$`  | Student in class 3A           |
+| Teacher Account  | `chewhuile@gmail.com`      | `testing123$$`  | Oversees and teaches Classes 3A and 4A  |
+| Student Account  | `toddlee8888@gmail.com`    | `testing123$$`  | Student in class 3A.           |
 
 
 ## Endpoints
