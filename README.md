@@ -123,7 +123,8 @@ EduFly-Reloaded
 
 #### Hosted link:
 [Edufly](https://edufly-nine.vercel.app/)
-Link to deployed Git Repository: (https://github.com/jamieeeeeeeeeeeeeee/Edufly)
+
+# Link to deployed Git Repository: (https://github.com/jamieeeeeeeeeeeeeee/Edufly)
 - The deployed Git Repository is a clone of this Repository, except the URL links in these files: 
   homeworkUpload.js
   medicalUpload.js
